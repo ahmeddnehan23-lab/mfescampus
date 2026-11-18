@@ -404,7 +404,9 @@ tr:last-child td{border-bottom:0}
       <button class="nav-link" data-page="enter-marks" onclick="navigate('enter-marks')"><span class="ico">▥</span>Enter Marks</button>
       <button class="nav-link" data-page="my-classes" onclick="navigate('my-classes')"><span class="ico">🏫</span>My Classes</button>
       <button class="nav-link" data-page="teacher-announcements" onclick="navigate('teacher-announcements')"><span class="ico">◉</span>Announcements</button>
-      <button class="nav-link" data-page="my-profile" onclick="navigate('my-profile')"><span class="ico">♙</span>My Profile</button>
+      <button class="nav-link" data-page="teacher-substitutions" onclick="navigate('teacher-substitutions')">🔄 &nbsp; Substitution Duties</button>
+       <button class="nav-link" data-page="teacher-maintenance" onclick="navigate('teacher-maintenance')">🛠 &nbsp; Maintenance Requests</button>
+       <button class="nav-link" data-page="my-profile" onclick="navigate('my-profile')"><span class="ico">♙</span>My Profile</button>
       <button class="nav-link" data-page="leave" onclick="navigate('leave')"><span class="ico">🗓</span>Leave Requests</button>
     </div>
 
@@ -414,7 +416,9 @@ tr:last-child td{border-bottom:0}
       <button class="nav-link" data-page="admin-students" onclick="navigate('admin-students')">🎓 &nbsp; Student Management</button>
       <button class="nav-link" data-page="admin-fee-records" onclick="navigate('admin-fee-records')">💳 &nbsp; Fee Records</button>
       <button class="nav-link" data-page="admin-gate" onclick="navigate('admin-gate')">🕘 &nbsp; Late Entry & Early Exit</button>
-      <button class="nav-link" data-page="admin-transport" onclick="navigate('admin-transport')">🚌 &nbsp; Bus Shifting</button>
+      <button class="nav-link" data-page="admin-substitutions" onclick="navigate('admin-substitutions')">🔄 &nbsp; Teacher Substitutions</button>
+       <button class="nav-link" data-page="admin-maintenance" onclick="navigate('admin-maintenance')">🛠 &nbsp; Maintenance Desk</button>
+       <button class="nav-link" data-page="admin-transport" onclick="navigate('admin-transport')">🚌 &nbsp; Bus Shifting</button>
       <button class="nav-link" data-page="admin-helpdesk" onclick="navigate('admin-helpdesk')">🎧 &nbsp; Helpdesk</button>
       <button class="nav-link" data-page="admin-fees" onclick="navigate('admin-fees')">₹ &nbsp; Fee Enquiries</button>
     </div>
@@ -465,6 +469,24 @@ tr:last-child td{border-bottom:0}
       <section class="page" id="page-admin-transport"><div class="page-header"><div><h1>Bus Shifting Requests</h1><p>Review transport changes before they are approved.</p></div></div><div class="panel"><div id="mfAdminTransportList"></div></div></section>
       <section class="page" id="page-admin-helpdesk"><div class="page-header"><div><h1>Helpdesk Requests</h1><p>Reply to student support tickets.</p></div></div><div class="panel"><div id="mfAdminHelpdeskList"></div></div></section>
       <section class="page" id="page-admin-fees"><div class="page-header"><div><h1>Fee Enquiries</h1><p>Respond to questions about fees. No payments are processed here.</p></div></div><div class="panel"><div id="mfAdminFeesList"></div></div></section>
+
+<!-- MFESCAMPUS NEW MODULES: SUBSTITUTIONS + MAINTENANCE -->
+<section class="page" id="page-admin-substitutions"><div class="page-header"><div><h1>Teacher Substitution Management</h1><p>Assign substitute teachers when a teacher is absent.</p></div></div>
+<div class="panel"><form id="mfSubForm"><div class="form-grid">
+<div class="field"><label>Absent teacher</label><select id="mfSubAbsent" required></select></div>
+<div class="field"><label>Replacement teacher</label><select id="mfSubReplacement" required></select></div>
+<div class="field"><label>Class</label><select id="mfSubClass" required></select></div>
+<div class="field"><label>Date</label><input id="mfSubDate" type="date" required></div>
+<div class="field"><label>Period / time</label><input id="mfSubPeriod" maxlength="80" placeholder="e.g. Period 3, 11:30 AM" required></div>
+<div class="field"><label>Subject / note</label><input id="mfSubNote" maxlength="250" placeholder="e.g. Mathematics revision"></div>
+</div><button type="submit" class="action-btn">Assign substitute</button><p id="mfSubStatus" class="small-muted" aria-live="polite"></p></form></div>
+<div class="panel" style="margin-top:16px"><h3>All substitutions</h3><div id="mfAdminSubList">Open this page to load records.</div></div></section>
+<section class="page" id="page-teacher-substitutions"><div class="page-header"><div><h1>My Substitution Duties</h1><p>Classes assigned to you and your covered periods.</p></div></div><div class="panel"><div id="mfTeacherSubList">Open this page to load records.</div></div></section>
+<section class="page" id="page-teacher-maintenance"><div class="page-header"><div><h1>Maintenance Requests</h1><p>Report equipment and classroom problems to Administration.</p></div></div>
+<div class="panel"><form id="mfMaintenanceForm"><div class="form-grid"><div class="field"><label>Location</label><input id="mfMaintLocation" maxlength="120" placeholder="e.g. Class 8A, Computer Lab" required></div><div class="field"><label>Issue category</label><select id="mfMaintCategory"><option>Electrical</option><option>Furniture</option><option>Computer / IT</option><option>Plumbing</option><option>Other</option></select></div><div class="field"><label>Priority</label><select id="mfMaintPriority"><option>Normal</option><option>Urgent</option></select></div></div><div class="field"><label>Describe the problem</label><textarea id="mfMaintDescription" maxlength="1000" required placeholder="What needs to be repaired?"></textarea></div><button class="action-btn" type="submit">Send maintenance request</button><p id="mfMaintStatus" class="small-muted" aria-live="polite"></p></form></div>
+<div class="panel" style="margin-top:16px"><h3>My requests and status</h3><div id="mfTeacherMaintList">Open this page to load records.</div></div></section>
+<section class="page" id="page-admin-maintenance"><div class="page-header"><div><h1>Maintenance Desk</h1><p>Review teacher reports and track repair progress.</p></div></div><div class="panel"><div id="mfAdminMaintList">Open this page to load records.</div></div></section>
+
       <!-- STUDENT DASHBOARD -->
       <section class="page active" id="page-dashboard">
         <div class="welcome">
@@ -2841,6 +2863,79 @@ if(el('mfGateDate'))el('mfGateDate').value=today();
 if(el('mfGateExitDate')){el('mfGateExitDate').min=today();el('mfGateExitDate').value=today();}
 const prev=window.navigate;
 window.navigate=function(page){prev(page);if(page==='admin-gate'&&me()?.role==='Administration')loadAdmin();if(page==='student-gate'&&me()?.role==='Student')loadStudent();};
+})();
+</script>
+<script id="mfescampus-substitution-maintenance">
+(function(){
+'use strict';
+const $=id=>document.getElementById(id), me=()=>window.mfGetCurrentUser?.(), db=()=>window.mfesLeaveDb;
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const q=async request=>{const {data,error}=await request;if(error)throw error;return data||[];};
+const put=(id,html)=>{if($(id))$(id).innerHTML=html;};
+const msg=(id,t)=>{if($(id))$(id).textContent=t;};
+let teachers=[],classes=[];
+const teacherName=id=>teachers.find(t=>String(t.id)===String(id))?.full_name||'Teacher';
+const className=id=>classes.find(c=>String(c.id)===String(id))?.class_name||'Class';
+const isAdmin=()=>me()?.role==='Administration';
+const isTeacher=()=>me()?.role==='Teacher';
+const dateLocal=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+const showError=(id,e)=>msg(id,'Could not load: '+e.message+' (Run the new Supabase SQL setup first.)');
+async function directories(){
+  if(!db())throw Error('Sign in first.');
+  [teachers,classes]=await Promise.all([q(db().from('teachers').select('id,full_name').order('full_name')),q(db().from('classes').select('id,class_name').order('class_name'))]);
+}
+async function loadAdminSub(){
+ try{
+  if(!isAdmin())return;
+  await directories();
+  for(const [id,arr] of [['mfSubAbsent',teachers],['mfSubReplacement',teachers],['mfSubClass',classes]]){
+   const v=$(id)?.value;put(id,'<option value="">Select...</option>'+arr.map(x=>`<option value="${esc(x.id)}">${esc(x.full_name||x.class_name)}</option>`).join(''));if(v)$(id).value=v;
+  }
+  if(!$('mfSubDate').value)$('mfSubDate').value=dateLocal();
+  const rows=await q(db().from('teacher_substitutions').select('*').order('substitution_date',{ascending:false}).limit(200));
+  put('mfAdminSubList',rows.length?rows.map(r=>`<div class="student-row"><div><strong>${esc(r.substitution_date)} · ${esc(className(r.class_id))} · ${esc(r.period_label)}</strong><div class="small-muted">Absent: ${esc(teacherName(r.absent_teacher_id))} → Replacement: ${esc(teacherName(r.replacement_teacher_id))}</div><div class="small-muted">${esc(r.note||'No note')} · Status: ${esc(r.status)}</div></div><div class="action-row">${r.status==='Active'?`<button type="button" class="action-btn danger" data-sub-cancel="${esc(r.id)}">Cancel</button>`:''}</div></div>`).join(''):'<p class="small-muted">No substitution duties assigned yet.</p>');
+  $('mfAdminSubList').querySelectorAll('[data-sub-cancel]').forEach(b=>b.onclick=async()=>{if(!confirm('Cancel this substitution duty?'))return;try{await q(db().from('teacher_substitutions').update({status:'Cancelled'}).eq('id',b.dataset.subCancel).select('id'));await loadAdminSub();}catch(e){alert('Could not cancel: '+e.message);}});
+ }catch(e){showError('mfAdminSubList',e);}
+}
+async function loadTeacherSub(){
+ try{if(!isTeacher())return;await directories();const rows=await q(db().from('teacher_substitutions').select('*').order('substitution_date',{ascending:false}).limit(200));
+  put('mfTeacherSubList',rows.length?rows.map(r=>`<div class="student-row"><div><strong>${esc(r.substitution_date)} · ${esc(className(r.class_id))} · ${esc(r.period_label)}</strong><div class="small-muted">${'Replacement: '+teacherName(r.replacement_teacher_id)+' · Absent: '+teacherName(r.absent_teacher_id)} · ${esc(r.status)}</div><div class="small-muted">${esc(r.note||'')}</div></div></div>`).join(''):'<p class="small-muted">No substitution duties assigned to you.</p>');
+ }catch(e){showError('mfTeacherSubList',e);}
+}
+const maintCard=(r,admin)=>`<div class="panel" style="margin:12px 0"><strong>${esc(r.category)} · ${esc(r.location)}</strong><p class="small-muted">${esc(r.priority)} priority · ${esc(r.created_at?new Date(r.created_at).toLocaleString('en-IN'):'')} · ${esc(r.status)}${admin?' · '+esc(teacherName(r.teacher_id)):''}</p><p style="font-size:12px;white-space:pre-wrap">${esc(r.description)}</p>${admin?`<div class="form-grid"><div class="field"><label>Status</label><select id="mf-m-status-${esc(r.id)}">${['Pending','In Progress','Resolved'].map(x=>`<option ${x===r.status?'selected':''}>${x}</option>`).join('')}</select></div><div class="field"><label>Office update</label><input maxlength="500" id="mf-m-note-${esc(r.id)}" value="${esc(r.admin_note||'')}"></div></div><button class="action-btn" type="button" data-maint-save="${esc(r.id)}">Save update</button>`:`<p class="small-muted"><b>Office update:</b> ${esc(r.admin_note||'Awaiting review')}</p>`}</div>`;
+async function loadMaintenance(admin){
+ const id=admin?'mfAdminMaintList':'mfTeacherMaintList';
+ try{if(admin?!isAdmin():!isTeacher())return;if(admin)await directories();
+  const rows=await q(db().from('maintenance_requests').select('*').order('created_at',{ascending:false}).limit(200));
+  put(id,rows.length?rows.map(r=>maintCard(r,admin)).join(''):'<p class="small-muted">No maintenance requests yet.</p>');
+  if(admin)$(id).querySelectorAll('[data-maint-save]').forEach(b=>b.onclick=async()=>{try{const key=b.dataset.maintSave;await q(db().from('maintenance_requests').update({status:$('mf-m-status-'+key).value,admin_note:$('mf-m-note-'+key).value.trim(),updated_at:new Date().toISOString()}).eq('id',key).select('id'));await loadMaintenance(true);}catch(e){alert('Could not update: '+e.message);}});
+ }catch(e){showError(id,e);}
+}
+$('mfSubForm')?.addEventListener('submit',async e=>{e.preventDefault();try{
+ if(!isAdmin())throw Error('Administration login required.');
+ const absent=$('mfSubAbsent').value,replacement=$('mfSubReplacement').value,cls=$('mfSubClass').value,date=$('mfSubDate').value,period=$('mfSubPeriod').value.trim();
+ if(!absent||!replacement||!cls||!date||!period)throw Error('Complete the required fields.');
+ if(absent===replacement)throw Error('Absent and replacement teacher must be different.');
+ await q(db().from('teacher_substitutions').insert({absent_teacher_id:Number(absent),replacement_teacher_id:Number(replacement),class_id:Number(cls),substitution_date:date,period_label:period,note:$('mfSubNote').value.trim(),created_by:me().id}).select('id'));
+ msg('mfSubStatus','Substitute assigned successfully.');$('mfSubPeriod').value='';$('mfSubNote').value='';await loadAdminSub();
+ }catch(err){msg('mfSubStatus','Could not assign: '+err.message);}});
+$('mfMaintenanceForm')?.addEventListener('submit',async e=>{e.preventDefault();try{
+ if(!isTeacher())throw Error('Teacher login required.');
+ const profiles=await q(db().from('profiles').select('teacher_id').eq('id',me().id).limit(1));
+ const teacherId=profiles[0]?.teacher_id;
+ if(!teacherId)throw Error('Teacher account is not linked.');
+ const location=$('mfMaintLocation').value.trim(),description=$('mfMaintDescription').value.trim();
+ if(!location||!description)throw Error('Enter location and description.');
+ await q(db().from('maintenance_requests').insert({teacher_id:teacherId,location,category:$('mfMaintCategory').value,priority:$('mfMaintPriority').value,description}).select('id'));
+ $('mfMaintenanceForm').reset();msg('mfMaintStatus','Maintenance request sent to Administration.');await loadMaintenance(false);
+ }catch(err){msg('mfMaintStatus','Could not submit: '+err.message);}});
+const previous=window.navigate;
+window.navigate=function(page){previous(page);const role=me()?.role;
+ if(role==='Administration'&&page==='admin-substitutions')loadAdminSub();
+ if(role==='Administration'&&page==='admin-maintenance')loadMaintenance(true);
+ if(role==='Teacher'&&page==='teacher-substitutions')loadTeacherSub();
+ if(role==='Teacher'&&page==='teacher-maintenance')loadMaintenance(false);
+};
 })();
 </script>
 </body>
