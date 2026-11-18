@@ -1,0 +1,2847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MFESCAMPUS</title>
+
+    <link rel="icon" type="image/png" href="favicon.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --navy:#172b4d;
+  --blue:#3767e8;
+  --light-blue:#edf3ff;
+  --bg:#f6f8fc;
+  --white:#fff;
+  --text:#26344d;
+  --muted:#8994a8;
+  --border:#e9edf4;
+  --green:#159b70;
+  --orange:#e99b37;
+  --red:#df6262;
+  --shadow:0 12px 35px rgba(28,48,82,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* LOGIN */
+#loginScreen{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:25px;background:
+  radial-gradient(circle at 15% 10%,#e5edff 0,transparent 32%),
+  radial-gradient(circle at 90% 90%,#e8f5ff 0,transparent 30%),#f8faff;
+}
+.login-wrap{width:100%;max-width:470px}
+.brand{text-align:center;margin-bottom:28px}
+.brand-mark{
+  width:58px;height:58px;border-radius:18px;background:var(--navy);
+  color:white;display:grid;place-items:center;font-size:23px;font-weight:800;
+  margin:0 auto 13px;box-shadow:0 10px 25px #172b4d35;
+}
+.brand h1{font-family:Manrope,sans-serif;font-size:27px;letter-spacing:-1px;color:var(--navy)}
+.brand p{color:var(--muted);font-size:13px;margin-top:5px}
+.login-card{
+  background:white;border:1px solid var(--border);border-radius:22px;
+  padding:34px;box-shadow:0 20px 65px rgba(29,52,91,.09);
+}
+.step-label{font-size:11px;color:var(--blue);font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px}
+.login-card h2{font-family:Manrope,sans-serif;font-size:25px;color:var(--navy);margin-bottom:8px}
+.login-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:25px}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.role-card{
+  border:1.5px solid var(--border);border-radius:15px;padding:22px 12px;
+  background:white;text-align:center;transition:.2s;color:var(--navy);
+}
+.role-card:hover{border-color:var(--blue);background:#f8faff;transform:translateY(-2px)}
+.role-icon{font-size:29px;margin-bottom:12px}
+.role-card strong{display:block;font-size:15px}
+.role-card span{font-size:11px;color:var(--muted);display:block;margin-top:5px}
+.field{margin-bottom:17px}
+.field label{font-size:12px;font-weight:700;display:block;margin-bottom:8px;color:#52617a}
+.field input,.field select,.field textarea{
+  width:100%;border:1px solid var(--border);border-radius:10px;padding:13px 14px;
+  outline:none;background:#fbfcff;color:var(--text);font-size:13px;transition:.2s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #3767e815}
+.primary-btn{
+  width:100%;border:0;border-radius:10px;background:var(--blue);color:white;
+  padding:14px;font-weight:700;font-size:13px;transition:.2s;
+}
+.primary-btn:hover{background:#2855d0;transform:translateY(-1px)}
+.back-btn{border:0;background:none;color:var(--muted);font-size:12px;margin-top:18px}
+.back-btn:hover{color:var(--blue)}
+.login-error{font-size:12px;color:var(--red);margin:-5px 0 13px;display:none}
+.login-footer{text-align:center;color:#a0a9b8;font-size:11px;margin-top:20px}
+
+/* APP LAYOUT */
+#app{min-height:100vh}
+.sidebar{
+  width:245px;background:white;border-right:1px solid var(--border);
+  position:fixed;inset:0 auto 0 0;padding:25px 17px;z-index:10;
+  display:flex;flex-direction:column;transition:.25s;overflow-y:auto;
+}
+.side-brand{display:flex;align-items:center;gap:11px;padding:0 9px 28px}
+.side-logo{width:39px;height:39px;border-radius:12px;background:var(--navy);color:white;display:grid;place-items:center;font-weight:800}
+.side-brand strong{font-family:Manrope;font-size:16px;color:var(--navy);letter-spacing:-.5px}
+.side-brand small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.nav-label{font-size:10px;color:#a0a9b8;font-weight:800;letter-spacing:1.4px;padding:12px 11px 8px}
+.nav-link{
+  display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;
+  padding:12px 13px;border-radius:10px;color:#78859a;font-size:13px;
+  font-weight:600;text-align:left;margin:2px 0;transition:.2s;
+}
+.nav-link .ico{font-size:17px;width:21px;text-align:center}
+.nav-link:hover{background:#f5f7fc;color:var(--navy)}
+.nav-link.active{background:var(--light-blue);color:var(--blue);font-weight:800}
+.teacher-navigation{display:none}
+.side-bottom{margin-top:auto;border-top:1px solid var(--border);padding:17px 7px 0}
+.user-mini{display:flex;align-items:center;gap:10px;margin-bottom:15px}
+.avatar{width:36px;height:36px;border-radius:12px;background:#e8efff;color:var(--blue);display:grid;place-items:center;font-weight:800;font-size:13px}
+.user-mini strong{font-size:12px;display:block}
+.user-mini small{font-size:10px;color:var(--muted)}
+.logout{border:0;background:#fff2f2;color:#d45c5c;width:100%;padding:10px;border-radius:9px;font-size:12px;font-weight:700}
+.main{margin-left:245px;min-height:100vh}
+.topbar{
+  height:76px;background:#ffffffed;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 34px;
+  position:sticky;top:0;z-index:5;backdrop-filter:blur(12px);
+}
+.top-left{display:flex;align-items:center;gap:13px}
+.menu-btn{display:none;border:0;background:none;font-size:22px;color:var(--navy)}
+.top-title{font-family:Manrope;font-size:17px;font-weight:800;color:var(--navy)}
+.top-school{font-size:11px;color:var(--muted);margin-top:3px}
+.top-right{display:flex;align-items:center;gap:15px}
+.role-pill{background:#eef3ff;color:var(--blue);font-size:10px;font-weight:800;padding:7px 11px;border-radius:20px}
+.top-avatar{width:37px;height:37px;border-radius:12px;background:#e9efff;color:var(--blue);display:grid;place-items:center;font-weight:800}
+.content{padding:30px 34px 50px;max-width:1500px;margin:auto}
+.page{display:none;animation:fade .25s ease}
+.page.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.welcome{
+  border-radius:18px;padding:28px 30px;background:linear-gradient(110deg,#172b4d,#284c80);
+  color:white;display:flex;justify-content:space-between;align-items:center;
+  overflow:hidden;position:relative;margin-bottom:23px;
+}
+.welcome:after{content:"";position:absolute;width:260px;height:260px;border:1px solid #ffffff20;border-radius:50%;right:60px;top:-130px;box-shadow:0 0 0 35px #ffffff08,0 0 0 70px #ffffff06}
+.welcome h1{font-family:Manrope;font-size:25px;letter-spacing:-.7px;margin-bottom:7px}
+.welcome p{font-size:12px;color:#d0d9e9}
+.welcome-date{font-size:11px;color:#d0d9e9;text-align:right;z-index:1}
+.section-heading{display:flex;align-items:center;justify-content:space-between;margin:27px 0 15px}
+.section-heading h2{font-family:Manrope;font-size:16px;color:var(--navy)}
+.section-heading p{font-size:11px;color:var(--muted);margin-top:4px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.stat-card,.panel{
+  background:white;border:1px solid var(--border);border-radius:15px;padding:19px;
+  box-shadow:var(--shadow);
+}
+.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}
+.stat-icon{width:37px;height:37px;border-radius:11px;display:grid;place-items:center;font-size:17px;background:#eef3ff}
+.stat-card small{font-size:11px;color:var(--muted)}
+.stat-card h3{font-family:Manrope;font-size:25px;color:var(--navy);margin-top:5px}
+.stat-note{font-size:10px;color:var(--green);margin-top:5px}
+.two-col{display:grid;grid-template-columns:1.35fr 1fr;gap:17px}
+.panel{padding:21px}
+.panel-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}
+.panel-title h3{font-family:Manrope;font-size:14px;color:var(--navy)}
+.panel-title span{font-size:10px;color:var(--muted)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:420px}
+th{text-align:left;font-size:10px;color:#9aa4b4;font-weight:700;padding:11px 9px;border-bottom:1px solid var(--border)}
+td{font-size:11px;padding:13px 9px;border-bottom:1px solid #f0f2f6;color:#536078}
+tr:last-child td{border-bottom:0}
+.status{padding:5px 8px;border-radius:20px;font-size:9px;font-weight:800;display:inline-block}
+.status.green{background:#e8f8f1;color:#159b70}
+.status.orange{background:#fff4e5;color:#c9872b}
+.status.blue{background:#edf3ff;color:#3767e8}
+.status.red{background:#fff0f0;color:#d45c5c}
+.event-item,.notice-item,.teacher-item{
+  display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #f0f2f6
+}
+.event-item:last-child,.notice-item:last-child,.teacher-item:last-child{border-bottom:0}
+.event-date{min-width:43px;height:45px;border-radius:10px;background:#eef3ff;color:var(--blue);display:grid;place-items:center;font-size:10px;font-weight:800;text-align:center}
+.event-item strong,.notice-item strong,.teacher-item strong{font-size:12px;display:block;color:var(--navy)}
+.event-item small,.notice-item small,.teacher-item small{font-size:10px;color:var(--muted);display:block;margin-top:5px}
+.notice-dot{width:9px;height:9px;border-radius:50%;background:var(--blue);margin:4px 3px}
+.progress-row{margin:14px 0}
+.progress-label{display:flex;justify-content:space-between;font-size:11px;margin-bottom:7px}
+.progress-label span:last-child{color:var(--muted)}
+.progress{height:7px;background:#eef1f6;border-radius:20px;overflow:hidden}
+.progress div{height:100%;background:var(--blue);border-radius:20px}
+.action-btn{border:0;background:var(--blue);color:white;padding:9px 13px;border-radius:8px;font-size:11px;font-weight:700}
+.action-btn.secondary{background:#eef3ff;color:var(--blue)}
+.action-btn.danger{background:#fff0f0;color:#d45c5c}
+.action-row{display:flex;gap:8px;flex-wrap:wrap}
+.empty{padding:25px;text-align:center;color:var(--muted);font-size:12px}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.page-header h1{font-family:Manrope;color:var(--navy);font-size:23px}
+.page-header p{font-size:11px;color:var(--muted);margin-top:5px}
+.search-box{border:1px solid var(--border);border-radius:9px;padding:10px 12px;font-size:11px;outline:none;width:210px}
+.search-box:focus{border-color:var(--blue)}
+
+/* TEACHER PORTAL EXTRAS */
+.teacher-intro{
+  background:linear-gradient(110deg,#172b4d,#284c80);
+  color:white;border-radius:15px;padding:20px;margin-bottom:18px;
+}
+.teacher-intro h2{font-family:Manrope;font-size:18px;margin-bottom:6px}
+.teacher-intro p{font-size:11px;color:#d0d9e9;line-height:1.6}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.form-grid .field{margin-bottom:8px}
+.small-muted{font-size:10px;color:var(--muted);line-height:1.6}
+.student-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #f0f2f6}
+.student-row:last-child{border-bottom:0}
+.student-info{display:flex;align-items:center;gap:10px}
+.student-info strong{font-size:12px;display:block}
+.student-info small{font-size:10px;color:var(--muted)}
+.attendance-actions{display:flex;gap:6px}
+.attendance-actions button{border:0;padding:7px 10px;border-radius:7px;font-size:10px;font-weight:700}
+.present-btn{background:#e8f8f1;color:#159b70}
+.absent-btn{background:#fff0f0;color:#d45c5c}
+.attendance-actions button.selected{outline:2px solid var(--blue)}
+.mark-input{width:75px;border:1px solid var(--border);border-radius:7px;padding:8px;font-size:11px}
+.teacher-card{
+  background:white;border:1px solid var(--border);border-radius:13px;padding:17px;
+}
+.class-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.class-card{
+  border:1px solid var(--border);border-radius:12px;padding:17px;background:#fff;
+}
+.class-card .class-icon{width:35px;height:35px;background:#eef3ff;border-radius:10px;display:grid;place-items:center;margin-bottom:12px}
+.class-card h3{font-family:Manrope;font-size:14px;color:var(--navy)}
+.class-card p{font-size:10px;color:var(--muted);margin-top:5px}
+.profile-row{display:flex;justify-content:space-between;gap:15px;padding:14px 0;border-bottom:1px solid #f0f2f6;font-size:12px}
+.profile-row span:first-child{color:var(--muted)}
+.profile-row strong{text-align:right;color:var(--navy)}
+
+/* MODAL */
+.modal-backdrop{position:fixed;inset:0;background:#101e36a8;z-index:30;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-backdrop.show{display:flex}
+.modal{background:white;width:100%;max-width:430px;border-radius:18px;padding:25px;box-shadow:0 25px 70px #0002}
+.modal h3{font-family:Manrope;color:var(--navy);margin-bottom:18px}
+.modal-actions{display:flex;gap:9px;margin-top:10px}
+.modal-actions button{flex:1}
+.toast{
+  position:fixed;right:24px;bottom:24px;background:#172b4d;color:white;
+  padding:13px 18px;border-radius:10px;font-size:12px;z-index:60;
+  opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.mobile-overlay{display:none}
+
+@media(max-width:1050px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .two-col{grid-template-columns:1fr}
+  .class-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:760px){
+  .sidebar{transform:translateX(-100%);box-shadow:var(--shadow)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .menu-btn{display:block}
+  .topbar{padding:0 17px;height:68px}
+  .content{padding:20px 16px 40px}
+  .welcome{padding:23px 20px}
+  .welcome h1{font-size:20px}
+  .welcome-date{display:none}
+  .page-header{align-items:flex-start;gap:12px;flex-direction:column}
+  .search-box{width:100%}
+  .login-card{padding:25px 21px}
+  .mobile-overlay.show{display:block;position:fixed;inset:0;background:#101e3666;z-index:8}
+  .form-grid{grid-template-columns:1fr}
+}
+@media(max-width:430px){
+  .stats{gap:9px}
+  .stat-card{padding:14px}
+  .stat-card h3{font-size:21px}
+  .stat-icon{width:31px;height:31px}
+  .top-school{max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .class-grid{grid-template-columns:1fr}
+  .student-row{align-items:flex-start;flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- FIRST-TIME LOGIN -->
+<section id="loginScreen">
+  <div class="login-wrap">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <h1>MFESCAMPUS</h1>
+      <p>One campus. One connected future.</p>
+    </div>
+
+    <div class="login-card">
+      <div id="roleStep">
+        <div class="step-label">WELCOME TO MFESCAMPUS</div>
+        <h2>How are you joining?</h2>
+        <p class="login-sub">Choose your account type to continue to your school portal.</p>
+        <div class="role-grid">
+          <button class="role-card" onclick="chooseRole('Student')">
+            <div class="role-icon">🎓</div>
+            <strong>Student</strong>
+            <span>Access your learning portal</span>
+          </button>
+          <button class="role-card" onclick="chooseRole('Teacher')">
+            <div class="role-icon">👩‍🏫</div>
+            <strong>Teacher</strong>
+            <span>Access your teaching portal</span>
+          </button>
+          <button class="role-card" onclick="chooseRole('Administration')" style="grid-column:1/-1"><div class="role-icon">🏢</div><strong>Administration</strong><span>Manage school office requests</span></button>
+        </div>
+      </div>
+
+      <div id="detailsStep" class="hidden">
+        <div class="step-label" id="detailsLabel">YOUR DETAILS</div>
+        <h2 id="detailsTitle">Tell us about your school</h2>
+        <p class="login-sub" id="detailsSubtitle">Enter your school details to continue.</p>
+        <div class="field">
+          <label>School name</label>
+          <input id="schoolInput" list="keralaSchools" placeholder="Start typing your school name..." autocomplete="off">
+          <datalist id="keralaSchools">
+            <option value="MOUNT FLOWER ENGLISH SCHOOL, ULIYIL">
+            <option value="Chinmaya Vidyalaya, Kannur">
+            <option value="Kendriya Vidyalaya, Kannur">
+            <option value="Jawahar Navodaya Vidyalaya, Kannur">
+            <option value="The Choice School, Kochi">
+            <option value="Rajagiri Public School, Kochi">
+            <option value="Global Public School, Kochi">
+            <option value="Gregorian Public School, Kochi">
+            <option value="Bhavan's Vidya Mandir, Kochi">
+            <option value="Amrita Vidyalayam, Kochi">
+            <option value="Navy Children School, Kochi">
+            <option value="Kendriya Vidyalaya, Ernakulam">
+            <option value="Kendriya Vidyalaya, Kozhikode">
+            <option value="Kendriya Vidyalaya, Thiruvananthapuram">
+            <option value="Kendriya Vidyalaya, Palakkad">
+            <option value="Kendriya Vidyalaya, Kasaragod">
+            <option value="Kendriya Vidyalaya, Kottayam">
+            <option value="Kendriya Vidyalaya, Kollam">
+            <option value="Kendriya Vidyalaya, Thrissur">
+            <option value="Kendriya Vidyalaya, Wayanad">
+            <option value="Kendriya Vidyalaya, Malappuram">
+            <option value="Kendriya Vidyalaya, Idukki">
+            <option value="Kendriya Vidyalaya, Alappuzha">
+            <option value="Kendriya Vidyalaya, Pathanamthitta">
+          </datalist>
+        </div>
+        <div id="teacherFields" class="hidden">
+          <div class="field">
+            <label>Teacher name</label>
+            <input id="teacherNameInput" placeholder="Enter your full name">
+          </div>
+          <div class="field">
+            <label>Subject you teach</label>
+            <input id="subjectInput" placeholder="e.g. Mathematics">
+          </div>
+        </div>
+        <div class="login-error" id="detailsError">Please complete all required fields.</div>
+        <button class="primary-btn" onclick="submitDetails()">Done →</button>
+        <button class="back-btn" onclick="goBack('role')">← Back to role selection</button>
+      </div>
+
+      <div id="studentLoginStep" class="hidden">
+        <div class="step-label">STUDENT ACCOUNT</div>
+        <h2>Almost there!</h2>
+        <p class="login-sub">Sign in with your school account credentials.</p>
+        <div class="field">
+          <label>School account email</label>
+          <input id="usernameInput" type="email" placeholder="Enter your school account email" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input id="passwordInput" type="password" placeholder="Enter your account password" autocomplete="current-password" required>
+        </div>
+        <div class="login-error" id="studentError">Please enter both username and password.</div>
+        <button class="primary-btn" onclick="finishLogin()">Done → Open MFESCAMPUS</button>
+        <button class="back-btn" onclick="goBack('details')">← Back to school details</button>
+      </div>
+    </div>
+    <div class="login-footer">MFESCAMPUS · Smart School Portal</div>
+  </div>
+</section>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden">
+  <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="side-brand">
+      <div class="side-logo">M</div>
+      <div><strong>MFESCAMPUS</strong><small>SMART SCHOOL PORTAL</small></div>
+    </div>
+
+    <!-- STUDENT NAVIGATION -->
+    <div id="studentNavigation">
+      <div class="nav-label">MAIN MENU</div>
+      <button class="nav-link active" data-page="dashboard" onclick="navigate('dashboard')"><span class="ico">▦</span>Dashboard</button>
+      <button class="nav-link" data-page="timetable" onclick="navigate('timetable')"><span class="ico">▤</span>Timetable</button>
+      <button class="nav-link" data-page="assignments" onclick="navigate('assignments')"><span class="ico">📝</span>Assignments</button>
+      <button class="nav-link" data-page="attendance" onclick="navigate('attendance')"><span class="ico">✓</span>Attendance</button>
+      <button class="nav-link" data-page="student-gate" onclick="navigate('student-gate')"><span class="ico">🕘</span>Early Departure</button>
+      <button class="nav-link" data-page="results" onclick="navigate('results')"><span class="ico">▥</span>Results</button>
+      <div class="nav-label">CAMPUS</div>
+      <button class="nav-link" data-page="teachers" onclick="navigate('teachers')"><span class="ico">♙</span>Teachers</button>
+      <button class="nav-link" data-page="events" onclick="navigate('events')"><span class="ico">▣</span>Events</button>
+      <button class="nav-link" data-page="announcements" onclick="navigate('announcements')"><span class="ico">◉</span>Announcements</button>
+    </div>
+
+    <!-- TEACHER NAVIGATION -->
+    <div id="teacherNavigation" class="teacher-navigation">
+      <div class="nav-label">TEACHER WORKSPACE</div>
+      <button class="nav-link" data-page="teacher-dashboard" onclick="navigate('teacher-dashboard')"><span class="ico">▦</span>Dashboard</button>
+      <button class="nav-link" data-page="teacher-timetable" onclick="navigate('teacher-timetable')"><span class="ico">▤</span>My Timetable</button>
+      <button class="nav-link" data-page="teacher-attendance" onclick="navigate('teacher-attendance')"><span class="ico">✓</span>Manage Attendance</button>
+      <button class="nav-link" data-page="assignments" onclick="navigate('assignments')"><span class="ico">📝</span>Assignments</button>
+      <button class="nav-link" data-page="enter-marks" onclick="navigate('enter-marks')"><span class="ico">▥</span>Enter Marks</button>
+      <button class="nav-link" data-page="my-classes" onclick="navigate('my-classes')"><span class="ico">🏫</span>My Classes</button>
+      <button class="nav-link" data-page="teacher-announcements" onclick="navigate('teacher-announcements')"><span class="ico">◉</span>Announcements</button>
+      <button class="nav-link" data-page="my-profile" onclick="navigate('my-profile')"><span class="ico">♙</span>My Profile</button>
+      <button class="nav-link" data-page="leave" onclick="navigate('leave')"><span class="ico">🗓</span>Leave Requests</button>
+    </div>
+
+    <div id="adminNavigation" class="teacher-navigation">
+      <div class="nav-label">ADMINISTRATION PORTAL</div>
+      <button class="nav-link" data-page="admin-dashboard" onclick="navigate('admin-dashboard')">🏢 &nbsp; Request Dashboard</button>
+      <button class="nav-link" data-page="admin-students" onclick="navigate('admin-students')">🎓 &nbsp; Student Management</button>
+      <button class="nav-link" data-page="admin-fee-records" onclick="navigate('admin-fee-records')">💳 &nbsp; Fee Records</button>
+      <button class="nav-link" data-page="admin-gate" onclick="navigate('admin-gate')">🕘 &nbsp; Late Entry & Early Exit</button>
+      <button class="nav-link" data-page="admin-transport" onclick="navigate('admin-transport')">🚌 &nbsp; Bus Shifting</button>
+      <button class="nav-link" data-page="admin-helpdesk" onclick="navigate('admin-helpdesk')">🎧 &nbsp; Helpdesk</button>
+      <button class="nav-link" data-page="admin-fees" onclick="navigate('admin-fees')">₹ &nbsp; Fee Enquiries</button>
+    </div>
+    <div class="side-bottom">
+      <div class="user-mini">
+        <div class="avatar" id="sideAvatar">S</div>
+        <div><strong id="sideName">Student</strong><small id="sideRole">Student account</small></div>
+      </div>
+      <button class="logout" onclick="logout()">↪ Switch account / Logout</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="top-left">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <div>
+          <div class="top-title" id="topPageTitle">Dashboard</div>
+          <div class="top-school" id="topSchoolName">School portal</div>
+        </div>
+      </div>
+      <div class="top-right">
+        <span class="role-pill" id="rolePill">STUDENT</span>
+        <div class="top-avatar" id="topAvatar">S</div>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <section class="page" id="page-admin-dashboard"><div class="page-header"><div><h1>Administration Dashboard</h1><p>School office requests, connected to the database.</p></div></div><div id="mfAdminKpis"></div><div class="panel"><h3>Request status overview</h3><div id="mfAdminCharts"></div><div id="mfAdminSummary" style="margin-top:15px">Loading requests...</div></div></section>
+      <section class="page" id="page-admin-students"><div class="page-header"><div><h1>Student Management</h1><p>Search the school directory and review each student's records.</p></div></div><div class="panel"><div class="field"><label>Search admission number or student name</label><input id="mfStudentSearch" placeholder="e.g. 1762" autocomplete="off"></div><div id="mfStudentDirectory" style="margin-top:16px"></div></div></section>
+      <section class="page" id="page-admin-fee-records"><div class="page-header"><div><h1>Fee Records</h1><p>Office-managed fee records. No online payments are processed.</p></div></div><div class="panel"><div class="form-grid"><div class="field"><label>Student</label><select id="mfFeeStudent"></select></div><div class="field"><label>Fee description</label><input id="mfFeeDescription" placeholder="e.g. Term 1"></div><div class="field"><label>Amount due (₹)</label><input id="mfFeeDue" type="number" min="0" step="0.01"></div><div class="field"><label>Amount paid (₹)</label><input id="mfFeePaid" type="number" min="0" step="0.01"></div><div class="field"><label>Due date</label><input id="mfFeeDueDate" type="date"></div></div><button class="action-btn" id="mfFeeCreate">Add fee record</button><div id="mfFeeRecordsStatus" class="small-muted" style="margin:12px 0"></div><div id="mfAdminFeeRecords"></div></div></section>
+      <section class="page" id="page-admin-gate">
+        <div class="page-header"><div><h1>Late Entry & Early Departure</h1><p>Office-managed arrival logs and guardian departure requests.</p></div></div>
+        <div class="mf-addon-note">School begins at 9:45 AM by default. Record late arrivals here; verify guardian permission and school policy before approving an early departure.</div>
+        <div class="panel"><h3>Record a late arrival</h3>
+          <form id="mfGateLateForm" class="mf-addon-form"><div class="form-grid">
+            <div class="field"><label>Student admission number</label><input id="mfGateAdmission" required placeholder="e.g. 1762"></div>
+            <div class="field"><label>Date</label><input id="mfGateDate" type="date" required></div>
+            <div class="field"><label>School start time</label><input id="mfGateStart" type="time" value="09:45" required></div>
+            <div class="field"><label>Actual arrival time</label><input id="mfGateArrival" type="time" required></div>
+          </div><div class="field"><label>Reason / note (optional)</label><textarea id="mfGateReason" maxlength="500" placeholder="Reason given for late arrival"></textarea></div>
+          <button class="action-btn" type="submit">Save late arrival</button><div id="mfGateLateStatus" class="small-muted" aria-live="polite"></div></form>
+        </div>
+        <div class="panel" style="margin-top:16px"><h3>Recent late arrivals</h3><div id="mfGateLateList">Loading...</div></div>
+        <div class="panel" style="margin-top:16px"><h3>Early departure requests</h3><p class="small-muted">Confirm guardian authorization outside this demo before approval. Approval is not a record that the student has physically left.</p><div id="mfGateExitList">Loading...</div></div>
+      </section>
+      <section class="page" id="page-admin-transport"><div class="page-header"><div><h1>Bus Shifting Requests</h1><p>Review transport changes before they are approved.</p></div></div><div class="panel"><div id="mfAdminTransportList"></div></div></section>
+      <section class="page" id="page-admin-helpdesk"><div class="page-header"><div><h1>Helpdesk Requests</h1><p>Reply to student support tickets.</p></div></div><div class="panel"><div id="mfAdminHelpdeskList"></div></div></section>
+      <section class="page" id="page-admin-fees"><div class="page-header"><div><h1>Fee Enquiries</h1><p>Respond to questions about fees. No payments are processed here.</p></div></div><div class="panel"><div id="mfAdminFeesList"></div></div></section>
+      <!-- STUDENT DASHBOARD -->
+      <section class="page active" id="page-dashboard">
+        <div class="welcome">
+          <div>
+            <h1 id="welcomeTitle">Welcome back!</h1>
+            <p id="welcomeSubtitle">Here is what's happening at your school today.</p>
+          </div>
+          <div class="welcome-date" id="todayDate"></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-top"><span class="stat-icon">📚</span><small id="statOneLabel">Subjects</small></div>
+            <h3 id="statOne">08</h3><div class="stat-note">Your learning overview</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top"><span class="stat-icon">✓</span><small id="statTwoLabel">Attendance</small></div>
+            <h3 id="statTwo">96%</h3><div class="stat-note">Keep it consistent</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top"><span class="stat-icon">📝</span><small id="statThreeLabel">Assignments</small></div>
+            <h3 id="statThree">04</h3><div class="stat-note">Stay on top of your work</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top"><span class="stat-icon">🏆</span><small id="statFourLabel">Average score</small></div>
+            <h3 id="statFour">88%</h3><div class="stat-note">Your academic progress</div>
+          </div>
+        </div>
+
+        <div class="section-heading">
+          <div><h2 id="overviewHeading">Your school overview</h2><p>Important updates and activities at a glance.</p></div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-title"><h3 id="scheduleHeading">Today's timetable</h3><span>Sample schedule</span></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>TIME</th><th>SUBJECT</th><th>TEACHER</th><th>STATUS</th></tr></thead>
+                <tbody id="dashboardTimetable"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title"><h3>Upcoming events</h3><span>Campus calendar</span></div>
+            <div id="dashboardEvents"></div>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-top:17px">
+          <div class="panel">
+            <div class="panel-title"><h3>Recent announcements</h3><span>School updates</span></div>
+            <div id="dashboardAnnouncements"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-title"><h3 id="progressHeading">Academic progress</h3><span>Overview</span></div>
+            <div class="progress-row"><div class="progress-label"><span>Mathematics</span><span>90%</span></div><div class="progress"><div style="width:90%"></div></div></div>
+            <div class="progress-row"><div class="progress-label"><span>English</span><span>86%</span></div><div class="progress"><div style="width:86%"></div></div></div>
+            <div class="progress-row"><div class="progress-label"><span>Science</span><span>92%</span></div><div class="progress"><div style="width:92%"></div></div></div>
+            <div class="progress-row"><div class="progress-label"><span>Social Science</span><span>82%</span></div><div class="progress"><div style="width:82%"></div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TEACHER DASHBOARD -->
+      <section class="page" id="page-teacher-dashboard">
+        <div class="welcome">
+          <div>
+            <h1 id="teacherWelcomeTitle">Welcome, Teacher!</h1>
+            <p>Your teaching workspace is ready. Have a productive day.</p>
+          </div>
+          <div class="welcome-date" id="teacherTodayDate"></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-top"><span class="stat-icon">🏫</span><small>My Classes</small></div>
+            <h3>03</h3><div class="stat-note">Assigned classes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top"><span class="stat-icon">📚</span><small>My Subject</small></div>
+            <h3 id="teacherSubjectStat">Subject</h3><div class="stat-note">Teaching department</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top"><span class="stat-icon">📝</span><small>Assignments</small></div>
+            <h3 id="teacherAssignmentStat">04</h3><div class="stat-note">Total assignments</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-top"><span class="stat-icon">📢</span><small>Notices</small></div>	
+            <h3 id="teacherNoticeStat">03</h3><div class="stat-note">School updates</div>
+          </div>
+        </div>
+
+        <div class="section-heading">
+          <div><h2>Teaching overview</h2><p>Your daily teaching activities and quick access tools.</p></div>
+        </div>
+
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-title"><h3>Today's teaching schedule</h3><span>Sample schedule</span></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>TIME</th><th>CLASS</th><th>SUBJECT</th><th>STATUS</th></tr></thead>
+                <tbody id="teacherDashboardSchedule"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title"><h3>Quick actions</h3><span>Teacher tools</span></div>
+            <div class="action-row">
+              <button class="action-btn" onclick="navigate('teacher-attendance')">✓ Take attendance</button>
+              <button class="action-btn secondary" onclick="navigate('assignments')">+ Create assignment</button>
+              <button class="action-btn secondary" onclick="navigate('enter-marks')">Enter marks</button>
+              <button class="action-btn secondary" onclick="navigate('teacher-announcements')">View notices</button>
+            </div>
+            <p class="small-muted" style="margin-top:18px">Use your teacher workspace to manage classroom activities and academic tasks.</p>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:17px">
+          <div class="panel-title"><h3>Latest school announcements</h3><span>School updates</span></div>
+          <div id="teacherDashboardAnnouncements"></div>
+        </div>
+      </section>
+
+      <!-- STUDENT TIMETABLE -->
+      <section class="page" id="page-timetable">
+        <div class="page-header"><div><h1>Timetable</h1><p>Your weekly academic schedule.</p></div></div>
+        <div class="panel">
+          <div class="panel-title"><h3>Class schedule</h3><span>Monday – Friday</span></div>
+          <div class="table-wrap">
+            <table><thead><tr><th>DAY</th><th>9:00 AM</th><th>10:00 AM</th><th>11:30 AM</th><th>1:00 PM</th></tr></thead>
+            <tbody>
+              <tr><td>Monday</td><td>Mathematics</td><td>English</td><td>Science</td><td>Social Science</td></tr>
+              <tr><td>Tuesday</td><td>English</td><td>Mathematics</td><td>Malayalam</td><td>Science</td></tr>
+              <tr><td>Wednesday</td><td>Science</td><td>Social Science</td><td>Mathematics</td><td>English</td></tr>
+              <tr><td>Thursday</td><td>Malayalam</td><td>Science</td><td>English</td><td>Mathematics</td></tr>
+              <tr><td>Friday</td><td>Social Science</td><td>Mathematics</td><td>English</td><td>Library</td></tr>
+            </tbody></table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TEACHER TIMETABLE -->
+      <section class="page" id="page-teacher-timetable">
+        <div class="page-header"><div><h1>My Timetable</h1><p>Your teaching schedule and assigned classes.</p></div></div>
+        <div class="panel">
+          <div class="panel-title"><h3>Weekly teaching schedule</h3><span>Sample timetable</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>DAY</th><th>TIME</th><th>CLASS</th><th>SUBJECT</th><th>ROOM</th></tr></thead>
+              <tbody id="teacherTimetableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ASSIGNMENTS -->
+      <section class="page" id="page-assignments">
+        <div class="page-header">
+          <div><h1>Assignments</h1><p id="assignmentPageDescription">Manage academic tasks and submissions.</p></div>
+          <button class="action-btn" id="addAssignmentBtn" onclick="openAssignmentModal()">+ Add assignment</button>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><h3>Assignment list</h3><span id="assignmentCount">All tasks</span></div>
+          <div class="table-wrap">
+            <table><thead><tr><th>ASSIGNMENT</th><th>SUBJECT</th><th>DUE DATE</th><th>STATUS</th><th>ACTION</th></tr></thead>
+            <tbody id="assignmentTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- STUDENT ATTENDANCE -->
+      <section class="page" id="page-attendance">
+        <div class="page-header"><div><h1>Attendance</h1><p>Keep track of classroom attendance.</p></div></div>
+        <div class="stats">
+          <div class="stat-card"><div class="stat-top"><span class="stat-icon">📅</span><small>Working days</small></div><h3>180</h3><div class="stat-note">Academic year</div></div>
+          <div class="stat-card"><div class="stat-top"><span class="stat-icon">✓</span><small>Present days</small></div><h3>173</h3><div class="stat-note">Sample record</div></div>
+          <div class="stat-card"><div class="stat-top"><span class="stat-icon">—</span><small>Absent days</small></div><h3>07</h3><div class="stat-note">Sample record</div></div>
+          <div class="stat-card"><div class="stat-top"><span class="stat-icon">%</span><small>Attendance rate</small></div><h3>96%</h3><div class="stat-note">Good attendance</div></div>
+        </div>
+        <div class="panel" style="margin-top:18px">
+          <div class="panel-title"><h3>Recent attendance</h3><span>Sample data</span></div>
+          <div class="table-wrap"><table><thead><tr><th>DATE</th><th>DAY</th><th>STATUS</th></tr></thead>
+          <tbody>
+            <tr><td>06 Nov 2026</td><td>Friday</td><td><span class="status green">Present</span></td></tr>
+            <tr><td>05 Nov 2026</td><td>Thursday</td><td><span class="status green">Present</span></td></tr>
+            <tr><td>04 Nov 2026</td><td>Wednesday</td><td><span class="status green">Present</span></td></tr>
+            <tr><td>03 Nov 2026</td><td>Tuesday</td><td><span class="status red">Absent</span></td></tr>
+            <tr><td>02 Nov 2026</td><td>Monday</td><td><span class="status green">Present</span></td></tr>
+          </tbody></table></div>
+        </div>
+      </section>
+
+      <!-- TEACHER ATTENDANCE -->
+      <section class="page" id="page-teacher-attendance">
+        <div class="page-header">
+          <div><h1>Manage Attendance</h1><p>Mark and manage attendance for your assigned classes.</p></div>
+        </div>
+        <div class="panel">
+          <div class="form-grid">
+            <div class="field">
+              <label>Select class</label>
+              <select id="attendanceClass" onchange="renderAttendanceStudents()">
+                <option value="Class 8A">Class 8A</option>
+                <option value="Class 8B">Class 8B</option>
+                <option value="Class 8C">Class 8C</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Attendance date</label>
+              <input type="date" id="attendanceDate">
+            </div>
+          </div>
+          <div class="panel-title" style="margin-top:12px">
+            <h3>Student attendance list</h3>
+            <span id="attendanceSummary">0 present · 0 absent</span>
+          </div>
+          <div id="attendanceStudentList"></div>
+          <button class="action-btn" style="margin-top:17px" onclick="saveAttendance()">Save attendance</button>
+        </div>
+      </section>
+
+      <!-- RESULTS -->
+      <section class="page" id="page-results">
+        <div class="page-header"><div><h1>Results & Grades</h1><p>Review your academic performance.</p></div></div>
+        <div class="stats">
+          <div class="stat-card"><div class="stat-top"><span class="stat-icon">🏆</span><small>Overall average</small></div><h3>88%</h3><div class="stat-note">Sample result</div></div>
+          <div class="stat-card"><div class="stat-top"><span class="stat-icon">📘</span><small>Subjects</small></div><h3>08</h3><div class="stat-note">Academic subjects</div></div>
+          <div class="stat-card"><div class="stat-top"><span class="stat-icon">⭐</span><small>Best grade</small></div><h3>A+</h3><div class="stat-note">Excellent performance</div></div>
+          <div class="stat-card"><div class="stat-top"><span class="stat-icon">📈</span><small>Progress</small></div><h3>+6%</h3><div class="stat-note">Sample improvement</div></div>
+        </div>
+        <div class="panel" style="margin-top:18px">
+          <div class="panel-title"><h3>Subject-wise results</h3><span>Sample data</span></div>
+          <div class="table-wrap"><table><thead><tr><th>SUBJECT</th><th>MARKS</th><th>GRADE</th><th>PERFORMANCE</th></tr></thead>
+          <tbody>
+            <tr><td>Mathematics</td><td>90 / 100</td><td><span class="status green">A+</span></td><td>Excellent</td></tr>
+            <tr><td>English</td><td>86 / 100</td><td><span class="status blue">A</span></td><td>Very good</td></tr>
+            <tr><td>Science</td><td>92 / 100</td><td><span class="status green">A+</span></td><td>Excellent</td></tr>
+            <tr><td>Social Science</td><td>82 / 100</td><td><span class="status blue">A</span></td><td>Very good</td></tr>
+            <tr><td>Malayalam</td><td>88 / 100</td><td><span class="status blue">A</span></td><td>Very good</td></tr>
+          </tbody></table></div>
+        </div>
+      </section>
+
+      <!-- TEACHER ENTER MARKS -->
+      <section class="page" id="page-enter-marks">
+        <div class="page-header"><div><h1>Enter Marks</h1><p>Record examination marks for your students.</p></div></div>
+        <div class="panel">
+          <div class="form-grid">
+            <div class="field">
+              <label>Select class</label>
+              <select id="marksClass">
+                <option>Class 8A</option><option>Class 8B</option><option>Class 8C</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Examination</label>
+              <select id="marksExam">
+                <option>Unit Test 1</option><option>Mid-Term Examination</option><option>Unit Test 2</option><option>Final Examination</option>
+              </select>
+            </div>
+          </div>
+          <div class="panel-title" style="margin-top:12px">
+            <h3>Student marks</h3><span id="marksSubjectLabel">Your subject</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>STUDENT</th><th>ADMISSION NO.</th><th>MARKS / 100</th></tr></thead>
+              <tbody id="marksStudentList"></tbody>
+            </table>
+          </div>
+          <button class="action-btn" style="margin-top:17px" onclick="saveMarks()">Save marks</button>
+        </div>
+      </section>
+
+      <!-- MY CLASSES -->
+      <section class="page" id="page-my-classes">
+        <div class="page-header"><div><h1>My Classes</h1><p>View your assigned classes and classroom information.</p></div></div>
+        <div class="class-grid">
+          <div class="class-card">
+            <div class="class-icon">🏫</div><h3>Class 8A</h3><p>Assigned class · 35 students</p>
+            <button class="action-btn secondary" style="margin-top:14px" onclick="openClass('Class 8A')">View class</button>
+          </div>
+          <div class="class-card">
+            <div class="class-icon">🏫</div><h3>Class 8B</h3><p>Assigned class · 32 students</p>
+            <button class="action-btn secondary" style="margin-top:14px" onclick="openClass('Class 8B')">View class</button>
+          </div>
+          <div class="class-card">
+            <div class="class-icon">🏫</div><h3>Class 8C</h3><p>Assigned class · 34 students</p>
+            <button class="action-btn secondary" style="margin-top:14px" onclick="openClass('Class 8C')">View class</button>
+          </div>
+        </div>
+        <div class="panel" style="margin-top:18px">
+          <div class="panel-title"><h3 id="classDetailsTitle">Class information</h3><span>Sample class data</span></div>
+          <div id="classDetails" class="empty">Select a class above to view its student list.</div>
+        </div>
+      </section>
+
+      <!-- TEACHER ANNOUNCEMENTS -->
+      <section class="page" id="page-teacher-announcements">
+        <div class="page-header">
+          <div><h1>Announcements</h1><p>Stay updated with school notices and information.</p></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><h3>School announcements</h3><span>Latest updates</span></div>
+          <div id="teacherAnnouncementsList"></div>
+        </div>
+      </section>
+
+      <!-- TEACHER PROFILE -->
+      <section class="page" id="page-my-profile">
+        <div class="page-header"><div><h1>My Profile</h1><p>Your teacher account information.</p></div></div>
+        <div class="panel">
+          <div style="display:flex;align-items:center;gap:15px;margin-bottom:22px">
+            <div class="avatar" id="profileAvatar" style="width:58px;height:58px;font-size:20px">T</div>
+            <div><h2 id="profileName" style="font-family:Manrope;font-size:18px;color:var(--navy)">Teacher Name</h2><p id="profileSubject" class="small-muted">Teacher</p></div>
+          </div>
+          <div class="profile-row"><span>Full name</span><strong id="profileNameDetail">—</strong></div>
+          <div class="profile-row"><span>Teaching subject</span><strong id="profileSubjectDetail">—</strong></div>
+          <div class="profile-row"><span>School</span><strong id="profileSchoolDetail">—</strong></div>
+          <div class="profile-row"><span>Account type</span><strong>Teacher account</strong></div>
+          <p class="small-muted" style="margin-top:17px">This is a demo teacher profilne. Your account details are based on the information entered during login.</p>
+        </div>
+      </section>
+
+      <!-- STUDENT TEACHERS DIRECTORY -->
+      <section class="page" id="page-teachers">
+        <div class="page-header"><div><h1>Teachers</h1><p>Connect with your teaching team.</p></div><input class="search-box" id="teacherSearch" placeholder="Search teachers..." oninput="filterTeachers()"></div>
+        <div class="panel"><div class="panel-title"><h3>Teacher directory</h3><span>School faculty</span></div><div id="teacherList"></div></div>
+      </section>
+
+      <!-- EVENTS -->
+      <section class="page" id="page-events">
+        <div class="page-header"><div><h1>Campus Events</h1><p>Discover activities and upcoming events.</p></div></div>
+        <div class="panel"><div class="panel-title"><h3>Upcoming events</h3><span>School calendar</span></div><div id="eventsList"></div></div>
+      </section>
+
+      <!-- STUDENT ANNOUNCEMENTS -->
+      <section class="page" id="page-announcements">
+        <div class="page-header"><div><h1>Announcements</h1><p>Latest news and important school updates.</p></div></div>
+        <div class="panel"><div class="panel-title"><h3>All announcements</h3><span>School notices</span></div><div id="announcementsList"></div></div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ADD ASSIGNMENT MODAL -->
+<div class="modal-backdrop" id="assignmentModal">
+  <div class="modal">
+    <h3>Create an assignment</h3>
+    <div class="field"><label>Assignment title</label><input id="newAssignmentTitle" placeholder="e.g. Chapter 5 exercises"></div>
+    <div class="field"><label>Subject</label><input id="newAssignmentSubject" placeholder="e.g. Mathematics"></div>
+    <div class="field"><label>Due date</label><input id="newAssignmentDate" type="date"></div>
+    <div class="modal-actions">
+      <button class="action-btn secondary" onclick="closeAssignmentModal()">Cancel</button>
+      <button class="action-btn" onclick="saveAssignment()">Save assignment</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+/* -----------------------------------------
+   MFESCAMPUS - APPLICATION DATA
+----------------------------------------- */
+
+let selectedRole = "";
+let currentUser = null;
+
+let assignments = [
+  {title:"Chapter 5 exercises",subject:"Mathematics",due:"10 Nov 2026",status:"Pending"},
+  {title:"Reading comprehension",subject:"English",due:"12 Nov 2026",status:"Pending"},
+  {title:"Science project",subject:"Science",due:"15 Nov 2026",status:"Completed"},
+  {title:"History notes",subject:"Social Science",due:"18 Nov 2026",status:"Pending"}
+];
+
+const timetable = [
+  {time:"09:00 AM",subject:"Mathematics",teacher:"Nimmie George",status:"Completed"},
+  {time:"10:00 AM",subject:"English",teacher:"Rajila",status:"Ongoing"},
+  {time:"11:30 AM",subject:"Physics",teacher:"Shalu",status:"Upcoming"},
+  {time:"01:00 PM",subject:"History/Politics",teacher:"Akshaya Ashokan",status:"Upcoming"}
+];
+
+const teacherSchedule = [
+  {day:"Monday",time:"09:00 AM",className:"Class 8A",room:"Room 12"},
+  {day:"Tuesday",time:"10:00 AM",className:"Class 8B",room:"Room 14"},
+  {day:"Wednesday",time:"11:30 AM",className:"Class 8C",room:"Room 12"},
+  {day:"Thursday",time:"09:00 AM",className:"Class 8A",room:"Room 12"},
+  {day:"Friday",time:"01:00 PM",className:"Class 8B",room:"Room 14"}
+];
+
+const events = [
+  {day:"12",month:"NOV",title:"Science Exhibition",detail:"School auditorium · 10:00 AM"},
+  {day:"15",month:"NOV",title:"Inter-house Football",detail:"School ground · 02:00 PM"},
+  {day:"20",month:"NOV",title:"Parent-Teacher Meeting",detail:"Main block · 09:30 AM"},
+  {day:"25",month:"NOV",title:"Annual Arts Day",detail:"School auditorium · 10:00 AM"}
+];
+
+const announcements = [
+  {title:"School Science Exhibition",detail:"Students are invited to participate in the annual science exhibition.",date:"06 Nov 2026"},
+  {title:"Updated Examination Schedule",detail:"The examination timetable is available through the school office.",date:"05 Nov 2026"},
+  {title:"Sports Day Registration",detail:"Registrations for the annual sports meet are now open.",date:"03 Nov 2026"}
+];
+
+const teachers = [
+  { name: "Nimmie George", subject: "Mathematics" },
+  { name: "Rajila", subject: "English" },
+  { name: "Anagha", subject: "IT" },
+  { name: "Jisha", subject: "Biology" },
+  { name: "Shalu", subject: "Physics / Chemistry" },
+  { name: "Ashfak KP", subject: "Arabic" },
+  { name: "Roja", subject: "Hindi" },
+  { name: "Shani", subject: "Malayalam" },
+  { name: "Akshaya", subject: "History / Political Science" },
+  { name: "Aarathi", subject: "Geography / Economics" }
+];
+
+const demoStudents = [
+  {name:"Aarav Kumar",admission:"MF001"},
+  {name:"Aadhya Nair",admission:"MF002"},
+  {name:"Adil Rahman",admission:"MF003"},
+  {name:"Ananya Das",admission:"MF004"},
+  {name:"Arjun Raj",admission:"MF005"},
+  {name:"Diya Thomas",admission:"MF006"},
+  {name:"Ishan Varma",admission:"MF007"},
+  {name:"Meera Joseph",admission:"MF008"}
+];
+
+let attendanceRecords = {};
+let marksRecords = {};
+
+/* -----------------------------------------
+   LOGIN FLOW
+----------------------------------------- */
+
+function showLoginStep(step){
+  ["roleStep","detailsStep","studentLoginStep"].forEach(id=>{
+    document.getElementById(id).classList.add("hidden");
+  });
+  document.getElementById(step).classList.remove("hidden");
+}
+
+function chooseRole(role){
+  selectedRole = role;
+  document.getElementById("detailsLabel").textContent = role.toUpperCase()+" DETAILS";
+  document.getElementById("detailsTitle").textContent =
+    role === "Student" ? "Which school do you attend?" : "Tell us about yourself";
+  document.getElementById("detailsSubtitle").textContent =
+    role === "Student"
+    ? "Enter your school name. You will enter your login details in the next step."
+    : "Enter your school, name and the subject you teach.";
+  document.getElementById("teacherFields").classList.toggle("hidden",role !== "Teacher");
+  document.getElementById("detailsError").style.display="none";
+  showLoginStep("detailsStep");
+}
+
+function submitDetails(){
+  const school = document.getElementById("schoolInput").value.trim();
+  const error = document.getElementById("detailsError");
+
+  if(!school){
+    error.textContent="Please enter your school name.";
+    error.style.display="block";
+    return;
+  }
+
+  if(selectedRole === "Student"){
+    error.style.display="none";
+    showLoginStep("studentLoginStep");
+    document.getElementById("usernameInput").focus();
+  }else{
+    const name = document.getElementById("teacherNameInput").value.trim();
+    const subject = document.getElementById("subjectInput").value.trim();
+
+    if(!name || !subject){
+      error.textContent="Please enter your name and teaching subject.";
+      error.style.display="block";
+      return;
+    }
+
+    currentUser = {
+      role:"Teacher",
+      school:school,
+      name:name,
+      subject:subject,
+      username:name
+    };
+    enterApp();
+  }
+}
+
+function finishLogin(){
+  const username = document.getElementById("usernameInput").value.trim();
+  const password = document.getElementById("passwordInput").value;
+  const error = document.getElementById("studentError");
+
+  if(username.length < 4){
+    error.textContent="Username must be at least 4 characters long.";
+    error.style.display="block";
+    return;
+  }
+
+  if(!/^[0-9]{5}$/.test(password)){
+    error.textContent="Password must contain exactly 5 digits (numbers only).";
+    error.style.display="block";
+    return;
+  }
+
+  error.style.display="none";
+  currentUser = {
+    role:"Student",
+    school:document.getElementById("schoolInput").value.trim(),
+    name:username,
+    username:username,
+    password:password
+  };
+  enterApp();
+}
+
+function goBack(step){
+  if(step==="role") showLoginStep("roleStep");
+  if(step==="details") showLoginStep("detailsStep");
+}
+
+function enterApp(){
+  if(!currentUser) return;
+
+  try{
+    localStorage.setItem("mfescampus_profile",JSON.stringify({
+      role:currentUser.role,
+      school:currentUser.school,
+      name:currentUser.name,
+      username:currentUser.username,
+      subject:currentUser.subject || ""
+    }));
+  }catch(e){}
+
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+  setupUser();
+  renderAll();
+
+  if(currentUser.role==="Teacher"){
+    navigate("teacher-dashboard");
+  }else{
+    navigate("dashboard");
+  }
+}
+
+function logout(){
+  currentUser = null;
+  try{localStorage.removeItem("mfescampus_profile");}catch(e){}
+  document.getElementById("app").classList.add("hidden");
+  document.getElementById("loginScreen").classList.remove("hidden");
+  document.getElementById("schoolInput").value="";
+  document.getElementById("teacherNameInput").value="";
+  document.getElementById("subjectInput").value="";
+  document.getElementById("usernameInput").value="";
+  document.getElementById("passwordInput").value="";
+  selectedRole="";
+  showLoginStep("roleStep");
+  toggleSidebar(true);
+}
+
+function setupUser(){
+  const isTeacher = currentUser.role==="Teacher";
+  const displayName = currentUser.name;
+  const initial = displayName.charAt(0).toUpperCase();
+
+  document.getElementById("sideName").textContent=displayName;
+  document.getElementById("sideRole").textContent=isTeacher
+    ? "Teacher · "+currentUser.subject
+    : "Student account";
+  document.getElementById("sideAvatar").textContent=initial;
+  document.getElementById("topAvatar").textContent=initial;
+  document.getElementById("rolePill").textContent=currentUser.role.toUpperCase();
+  document.getElementById("topSchoolName").textContent=currentUser.school;
+
+  document.getElementById("studentNavigation").style.display=isTeacher?"none":"block";
+  document.getElementById("teacherNavigation").style.display=isTeacher?"block":"none";
+
+  document.getElementById("welcomeTitle").textContent="Welcome back, "+displayName+"!";
+  document.getElementById("welcomeSubtitle").textContent="Here is what's happening at your school today.";
+
+  const today = new Date().toLocaleDateString("en-IN",{
+    weekday:"long",day:"numeric",month:"long",year:"numeric"
+  });
+
+  document.getElementById("todayDate").textContent=today;
+  document.getElementById("teacherTodayDate").textContent=today;
+
+  if(isTeacher){
+    document.getElementById("teacherWelcomeTitle").textContent="Welcome, "+displayName+"!";
+    document.getElementById("teacherSubjectStat").textContent=currentUser.subject;
+    document.getElementById("teacherAssignmentStat").textContent=String(assignments.length).padStart(2,"0");
+    document.getElementById("teacherNoticeStat").textContent=String(announcements.length).padStart(2,"0");
+
+    document.getElementById("addAssignmentBtn").classList.remove("hidden");
+    document.getElementById("assignmentPageDescription").textContent="Create and manage assignments for your students.";
+
+    document.getElementById("profileAvatar").textContent=initial;
+    document.getElementById("profileName").textContent=displayName;
+    document.getElementById("profileSubject").textContent=currentUser.subject+" · Teacher";
+    document.getElementById("profileNameDetail").textContent=displayName;
+    document.getElementById("profileSubjectDetail").textContent=currentUser.subject;
+    document.getElementById("profileSchoolDetail").textContent=currentUser.school;
+
+    document.getElementById("marksSubjectLabel").textContent=currentUser.subject;
+    renderTeacherDashboard();
+    renderTeacherTimetable();
+    renderAttendanceStudents();
+    renderMarksStudents();
+    renderTeacherAnnouncements();
+  }else{
+    document.getElementById("statOneLabel").textContent="Subjects";
+    document.getElementById("statOne").textContent="08";
+    document.getElementById("statTwoLabel").textContent="Attendance";
+    document.getElementById("statTwo").textContent="96%";
+    document.getElementById("statThreeLabel").textContent="Assignments";
+    document.getElementById("statThree").textContent=String(assignments.filter(a=>a.status==="Pending").length).padStart(2,"0");
+    document.getElementById("statFourLabel").textContent="Average score";
+    document.getElementById("statFour").textContent="88%";
+    document.getElementById("overviewHeading").textContent="Your school overview";
+    document.getElementById("scheduleHeading").textContent="Today's timetable";
+    document.getElementById("progressHeading").textContent="Academic progress";
+    document.getElementById("addAssignmentBtn").classList.add("hidden");
+    document.getElementById("assignmentPageDescription").textContent="Manage academic tasks and submissions.";
+  }
+}
+
+/* -----------------------------------------
+   NAVIGATION
+----------------------------------------- */
+
+function navigate(page){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-link").forEach(b=>b.classList.remove("active"));
+
+  const pageElement=document.getElementById("page-"+page);
+  if(pageElement) pageElement.classList.add("active");
+
+  const nav=document.querySelector('.nav-link[data-page="'+page+'"]');
+  if(nav) nav.classList.add("active");
+
+  const titles={
+    dashboard:"Dashboard",
+    timetable:"Timetable",
+    assignments:"Assignments",
+    attendance:"Attendance",
+    results:"Results & Grades",
+    teachers:"Teachers",
+    events:"Campus Events",
+    announcements:"Announcements",
+    "teacher-dashboard":"Teacher Dashboard",
+    "teacher-timetable":"My Timetable",
+    "teacher-attendance":"Manage Attendance",
+    "enter-marks":"Enter Marks",
+    "my-classes":"My Classes",
+    "teacher-announcements":"Announcements",
+    "my-profile":"My Profile"
+  };
+
+  document.getElementById("topPageTitle").textContent=titles[page]||"MFESCAMPUS";
+  toggleSidebar(true);
+}
+
+function toggleSidebar(forceClose=false){
+  const sidebar=document.getElementById("sidebar");
+  const overlay=document.getElementById("mobileOverlay");
+  if(forceClose){
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+  }else{
+    sidebar.classList.toggle("open");
+    overlay.classList.toggle("show");
+  }
+}
+
+/* -----------------------------------------
+   RENDER CONTENT
+----------------------------------------- */
+
+function renderAll(){
+  renderDashboardTimetable();
+  renderEvents();
+  renderAnnouncements();
+  renderAssignments();
+  renderTeachers();
+}
+
+function renderDashboardTimetable(){
+  const body=document.getElementById("dashboardTimetable");
+  body.innerHTML=timetable.map(item=>{
+    let cls=item.status==="Completed"?"green":item.status==="Ongoing"?"orange":"blue";
+    return `<tr>
+      <td>${item.time}</td><td><strong>${item.subject}</strong></td>
+      <td>${item.teacher}</td><td><span class="status ${cls}">${item.status}</span></td>
+    </tr>`;
+  }).join("");
+}
+
+function eventHTML(item){
+  return `<div class="event-item">
+    <div class="event-date">${item.day}<br>${item.month}</div>
+    <div><strong>${item.title}</strong><small>${item.detail}</small></div>
+  </div>`;
+}
+
+function renderEvents(){
+  document.getElementById("dashboardEvents").innerHTML=events.slice(0,3).map(eventHTML).join("");
+  document.getElementById("eventsList").innerHTML=events.map(eventHTML).join("");
+}
+
+function announcementHTML(item){
+  return `<div class="notice-item">
+    <div class="notice-dot"></div>
+    <div><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.detail)}</small><small>${escapeHTML(item.date)}</small></div>
+  </div>`;
+}
+
+function renderAnnouncements(){
+  document.getElementById("dashboardAnnouncements").innerHTML=announcements.slice(0,2).map(announcementHTML).join("");
+  document.getElementById("announcementsList").innerHTML=announcements.map(announcementHTML).join("");
+}
+
+function renderAssignments(){
+  const body=document.getElementById("assignmentTable");
+  document.getElementById("assignmentCount").textContent=assignments.length+" assignments";
+
+  if(!assignments.length){
+    body.innerHTML='<tr><td colspan="5" class="empty">No assignments yet.</td></tr>';
+    return;
+  }
+
+  body.innerHTML=assignments.map((a,index)=>{
+    const done=a.status==="Completed";
+    return `<tr>
+      <td><strong>${escapeHTML(a.title)}</strong></td>
+      <td>${escapeHTML(a.subject)}</td>
+      <td>${escapeHTML(a.due)}</td>
+      <td><span class="status ${done?"green":"orange"}">${a.status}</span></td>
+      <td>${currentUser && currentUser.role==="Student"
+        ? `<button class="action-btn ${done?"secondary":""}" onclick="toggleAssignment(${index})">${done?"Undo":"Mark done"}</button>`
+        : `<span style="color:#9aa4b4;font-size:10px">Teacher view</span>`}
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+function renderTeachers(list=teachers){
+  document.getElementById("teacherList").innerHTML=list.map(t=>`
+    <div class="teacher-item">
+      <div class="avatar">${t.initials || t.name.split(" ").map(part=>part[0]).join("").slice(0,2).toUpperCase()}</div>
+      <div><strong>${escapeHTML(t.name)}</strong><small>${escapeHTML(t.subject)} · Faculty member</small></div>
+    </div>`).join("") || '<div class="empty">No teachers found.</div>';
+}
+
+function filterTeachers(){
+  const q=document.getElementById("teacherSearch").value.toLowerCase();
+  renderTeachers(teachers.filter(t=>(t.name+" "+t.subject).toLowerCase().includes(q)));
+}
+
+function toggleAssignment(index){
+  assignments[index].status=assignments[index].status==="Completed"?"Pending":"Completed";
+  renderAssignments();
+  showToast("Assignment status updated.");
+}
+
+/* -----------------------------------------
+   TEACHER DASHBOARD AND TIMETABLE
+----------------------------------------- */
+
+function renderTeacherDashboard(){
+  const scheduleBody=document.getElementById("teacherDashboardSchedule");
+  const mySubject=currentUser.subject.toLowerCase();
+
+  scheduleBody.innerHTML=teacherSchedule.map((item,index)=>{
+    const status=index===0?"Completed":index===1?"Upcoming":"Upcoming";
+    const statusClass=status==="Completed"?"green":"blue";
+    return `<tr>
+      <td>${item.time}</td>
+      <td><strong>${item.className}</strong></td>
+      <td>${escapeHTML(currentUser.subject)}</td>
+      <td><span class="status ${statusClass}">${status}</span></td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("teacherDashboardAnnouncements").innerHTML=
+    announcements.slice(0,3).map(announcementHTML).join("");
+
+  document.getElementById("teacherAssignmentStat").textContent=
+    String(assignments.length).padStart(2,"0");
+
+  document.getElementById("teacherNoticeStat").textContent=
+    String(announcements.length).padStart(2,"0");
+}
+
+function renderTeacherTimetable(){
+  document.getElementById("teacherTimetableBody").innerHTML=
+    teacherSchedule.map(item=>`
+      <tr>
+        <td>${item.day}</td>
+        <td>${item.time}</td>
+        <td><strong>${item.className}</strong></td>
+        <td>${escapeHTML(currentUser.subject)}</td>
+        <td>${item.room}</td>
+      </tr>
+    `).join("");
+}
+
+/* -----------------------------------------
+   TEACHER ATTENDANCE
+----------------------------------------- */
+
+function attendanceKey(){
+  return document.getElementById("attendanceClass").value+"_"+document.getElementById("attendanceDate").value;
+}
+
+function renderAttendanceStudents(){
+  const dateInput=document.getElementById("attendanceDate");
+  if(!dateInput.value){
+    dateInput.value=new Date().toISOString().slice(0,10);
+  }
+
+  const key=attendanceKey();
+  const saved=attendanceRecords[key]||{};
+
+  document.getElementById("attendanceStudentList").innerHTML=
+    demoStudents.map((student,index)=>{
+      const status=saved[student.admission]||"";
+      return `
+        <div class="student-row">
+          <div class="student-info">
+            <div class="avatar">${student.name.split(" ").map(p=>p[0]).join("")}</div>
+            <div><strong>${student.name}</strong><small>${student.admission}</small></div>
+          </div>
+          <div class="attendance-actions">
+            <button class="present-btn ${status==="Present"?"selected":""}" onclick="setAttendance('${student.admission}','Present')">Present</button>
+            <button class="absent-btn ${status==="Absent"?"selected":""}" onclick="setAttendance('${student.admission}','Absent')">Absent</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+  updateAttendanceSummary();
+}
+
+function setAttendance(admission,status){
+  const key=attendanceKey();
+  if(!attendanceRecords[key]) attendanceRecords[key]={};
+  attendanceRecords[key][admission]=status;
+  renderAttendanceStudents();
+}
+
+function updateAttendanceSummary(){
+  const key=attendanceKey();
+  const records=attendanceRecords[key]||{};
+  const present=Object.values(records).filter(v=>v==="Present").length;
+  const absent=Object.values(records).filter(v=>v==="Absent").length;
+  document.getElementById("attendanceSummary").textContent=
+    present+" present · "+absent+" absent";
+}
+
+function saveAttendance(){
+  const key=attendanceKey();
+  const records=attendanceRecords[key]||{};
+  if(Object.keys(records).length===0){
+    showToast("Please mark attendance before saving.");
+    return;
+  }
+  if(Object.keys(records).length<demoStudents.length){
+    showToast("Please mark every student before saving.");
+    return;
+  }
+  showToast("Attendance saved in this demo.");
+}
+
+/* -----------------------------------------
+   ENTER MARKS
+----------------------------------------- */
+
+function renderMarksStudents(){
+  const body=document.getElementById("marksStudentList");
+  body.innerHTML=demoStudents.map(student=>{
+    const key=marksKey();
+    const saved=marksRecords[key]||{};
+    const value=saved[student.admission]??"";
+    return `
+      <tr>
+        <td><strong>${student.name}</strong></td>
+        <td>${student.admission}</td>
+        <td><input class="mark-input" type="number" min="0" max="100" value="${value}" id="mark-${student.admission}" placeholder="0–100"></td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function marksKey(){
+  return document.getElementById("marksClass").value+"_"+document.getElementById("marksExam").value+"_"+(currentUser?.subject||"");
+}
+
+function saveMarks(){
+  const key=marksKey();
+  const values={};
+
+  for(const student of demoStudents){
+    const input=document.getElementById("mark-"+student.admission);
+    const value=input.value.trim();
+
+    if(value==="" || Number(value)<0 || Number(value)>100){
+      showToast("Enter marks between 0 and 100 for every student.");
+      return;
+    }
+    values[student.admission]=Number(value);
+  }
+
+  marksRecords[key]=values;
+  showToast("Marks saved in this demo.");
+}
+
+/* -----------------------------------------
+   MY CLASSES
+----------------------------------------- */
+
+function openClass(className){
+  document.getElementById("classDetailsTitle").textContent=className+" · Student list";
+  document.getElementById("classDetails").innerHTML=`
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>STUDENT NAME</th><th>ADMISSION NUMBER</th><th>CLASS</th></tr></thead>
+        <tbody>
+          ${demoStudents.map(student=>`
+            <tr><td><strong>${student.name}</strong></td><td>${student.admission}</td><td>${className}</td></tr>
+          `).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+/* -----------------------------------------
+   TEACHER ANNOUNCEMENTS
+----------------------------------------- */
+
+function renderTeacherAnnouncements(){
+  document.getElementById("teacherAnnouncementsList").innerHTML=
+    announcements.map(announcementHTML).join("");
+}
+
+/* -----------------------------------------
+   ADD ASSIGNMENT
+----------------------------------------- */
+
+function openAssignmentModal(){
+  if(!currentUser || currentUser.role!=="Teacher"){
+    showToast("Only teachers can add assignments.");
+    return;
+  }
+  document.getElementById("newAssignmentSubject").value=currentUser.subject;
+  document.getElementById("assignmentModal").classList.add("show");
+}
+
+function closeAssignmentModal(){
+  document.getElementById("assignmentModal").classList.remove("show");
+}
+
+function saveAssignment(){
+  const title=document.getElementById("newAssignmentTitle").value.trim();
+  const subject=document.getElementById("newAssignmentSubject").value.trim();
+  const date=document.getElementById("newAssignmentDate").value;
+
+  if(!title || !subject || !date){
+    showToast("Please complete all assignment fields.");
+    return;
+  }
+
+  const formatted=new Date(date+"T00:00:00").toLocaleDateString("en-IN",{
+    day:"2-digit",month:"short",year:"numeric"
+  });
+
+  assignments.unshift({title,subject,due:formatted,status:"Pending"});
+  renderAssignments();
+  closeAssignmentModal();
+
+  document.getElementById("newAssignmentTitle").value="";
+  document.getElementById("newAssignmentSubject").value="";
+  document.getElementById("newAssignmentDate").value="";
+
+  if(currentUser && currentUser.role==="Teacher"){
+    document.getElementById("teacherAssignmentStat").textContent=
+      String(assignments.length).padStart(2,"0");
+  }
+
+  showToast("Assignment created successfully.");
+}
+
+/* -----------------------------------------
+   HELPERS
+----------------------------------------- */
+
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g,char=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[char]));
+}
+
+let toastTimer;
+function showToast(message){
+  const toast=document.getElementById("toast");
+  toast.textContent=message;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>toast.classList.remove("show"),2600);
+}
+
+/* -----------------------------------------
+   STARTUP
+----------------------------------------- */
+
+showLoginStep("roleStep");
+</script>
+
+<!-- MFESCAMPUS ADD-ON MODULES: added without editing the original sections -->
+<style id="mfescampus-addons-style">
+  .mf-addon-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:18px}
+  .mf-addon-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:var(--shadow)}
+  .mf-addon-card small{display:block;color:var(--muted);font-size:10px;margin-bottom:8px}
+  .mf-addon-card strong{display:block;color:var(--navy);font:800 23px Manrope,sans-serif}
+  .mf-addon-card p{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5}
+  .mf-addon-icon{width:38px;height:38px;border-radius:11px;background:#eef3ff;display:grid;place-items:center;font-size:19px;margin-bottom:13px}
+  .mf-addon-list{display:grid;gap:12px}
+  .mf-addon-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0;border-bottom:1px solid #f0f2f6}
+  .mf-addon-row:last-child{border-bottom:0}
+  .mf-addon-row strong{display:block;color:var(--navy);font-size:12px}
+  .mf-addon-row small{display:block;color:var(--muted);font-size:10px;margin-top:5px}
+  .mf-addon-note{background:#f5f8ff;border:1px solid #e4ebfb;border-radius:11px;padding:13px;color:#60708c;font-size:11px;line-height:1.6;margin-bottom:16px}
+  .mf-addon-form{display:grid;gap:12px}
+  .mf-addon-form label{display:block;font-size:11px;font-weight:700;color:#52617a;margin-bottom:6px}
+  .mf-addon-form input,.mf-addon-form select,.mf-addon-form textarea{width:100%;border:1px solid var(--border);border-radius:9px;padding:11px 12px;background:#fbfcff;color:var(--text);font:12px 'DM Sans',sans-serif}
+  .mf-addon-form textarea{min-height:95px;resize:vertical}
+  .mf-addon-book{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:14px 0;border-bottom:1px solid #f0f2f6}
+  .mf-addon-book:last-child{border-bottom:0}
+  .mf-addon-book strong{display:block;font-size:12px;color:var(--navy)}
+  .mf-addon-book small{display:block;font-size:10px;color:var(--muted);margin-top:4px}
+  .mf-addon-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+  .mf-addon-day{min-height:62px;padding:7px 5px;border:1px solid var(--border);border-radius:8px;background:#fff;font-size:10px;color:#64728a}
+  .mf-addon-day strong{display:block;color:var(--navy);font-size:11px}
+  .mf-addon-day.has-event{background:#eef3ff;border-color:#cbd9ff}
+  .mf-addon-day.muted{opacity:.35}
+  .mf-addon-day-name{text-align:center;font-size:9px;color:var(--muted);font-weight:800;padding:5px 0}
+  .mf-addon-modal{position:fixed;inset:0;background:#101e36a8;z-index:70;display:none;align-items:center;justify-content:center;padding:18px}
+  .mf-addon-modal.show{display:flex}
+  .mf-addon-modal-inner{width:100%;max-width:420px;background:white;border-radius:16px;padding:23px;box-shadow:0 25px 70px #0002}
+  .mf-addon-modal-inner h3{font:800 17px Manrope,sans-serif;color:var(--navy);margin-bottom:16px}
+  @media(max-width:900px){.mf-addon-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:560px){.mf-addon-grid{grid-template-columns:1fr}.mf-addon-book{grid-template-columns:1fr}.mf-addon-calendar{gap:3px}.mf-addon-day{min-height:48px;padding:5px 3px}}
+  /* Leave application and approval page */
+  #page-leave .mf-leave-layout{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);gap:18px;align-items:start}
+  #page-leave .mf-leave-card{background:#fff;border:1px solid var(--border);border-radius:15px;padding:20px;box-shadow:var(--shadow);min-width:0}
+  #page-leave .mf-leave-card h2{font:800 15px Manrope,sans-serif;color:var(--navy);margin:0 0 6px}
+  #page-leave .mf-leave-card>p{font-size:10px;line-height:1.6;color:var(--muted);margin-bottom:16px}
+  #page-leave .mf-leave-list{display:grid;gap:12px}
+  #page-leave .mf-leave-item{border:1px solid var(--border);border-radius:12px;padding:15px;background:#fff}
+  #page-leave .mf-leave-item-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  #page-leave .mf-leave-item strong{display:block;color:var(--navy);font-size:12px}
+  #page-leave .mf-leave-meta{font-size:10px;color:var(--muted);line-height:1.6;margin-top:5px}
+  #page-leave .mf-leave-reason{font-size:11px;line-height:1.6;color:var(--text);background:#f7f9fc;border-radius:8px;padding:10px;margin-top:11px;white-space:pre-wrap;overflow-wrap:anywhere}
+  #page-leave .mf-leave-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  #page-leave .mf-leave-actions button{border:0;border-radius:8px;padding:9px 12px;font:700 10px 'DM Sans',sans-serif;cursor:pointer}
+  #page-leave .mf-leave-accept{background:#e8f7ef;color:#187747}
+  #page-leave .mf-leave-decline{background:#fff0f0;color:#b43b3b}
+  #page-leave .mf-leave-reset{background:#eef2ff;color:#3556b8}
+  #page-leave .mf-leave-status{display:inline-block;border-radius:20px;padding:6px 9px;font-size:9px;font-weight:800;white-space:nowrap}
+  #page-leave .mf-leave-pending{background:#fff5df;color:#9a6800}
+  #page-leave .mf-leave-approved{background:#e8f7ef;color:#187747}
+  #page-leave .mf-leave-declined{background:#fff0f0;color:#b43b3b}
+  #page-leave .mf-leave-empty{padding:22px;text-align:center;color:var(--muted);font-size:11px;border:1px dashed var(--border);border-radius:10px}
+  @media(max-width:850px){#page-leave .mf-leave-layout{grid-template-columns:1fr}}
+  /* Parent communication and behaviour report pages */
+  .mf-feature-layout{display:grid;grid-template-columns:minmax(280px,.9fr) minmax(0,1.1fr);gap:18px;align-items:start}
+  .mf-feature-card{background:#fff;border:1px solid var(--border);border-radius:15px;padding:20px;box-shadow:var(--shadow);min-width:0}
+  .mf-feature-card h2{font:800 15px Manrope,sans-serif;color:var(--navy);margin:0 0 6px}
+  .mf-feature-card>p{font-size:10px;line-height:1.6;color:var(--muted);margin-bottom:16px}
+  .mf-feature-list{display:grid;gap:11px}
+  .mf-feature-item{border:1px solid var(--border);border-radius:11px;padding:14px;background:#fff;min-width:0}
+  .mf-feature-item strong{display:block;color:var(--navy);font-size:12px;overflow-wrap:anywhere}
+  .mf-feature-meta{font-size:10px;color:var(--muted);line-height:1.6;margin-top:5px}
+  .mf-feature-message{font-size:11px;line-height:1.65;color:var(--text);background:#f7f9fc;border-radius:8px;padding:11px;margin-top:10px;white-space:pre-wrap;overflow-wrap:anywhere}
+  .mf-feature-status{font-size:11px;line-height:1.5;color:var(--green);min-height:16px}
+  .mf-feature-empty{padding:22px;text-align:center;color:var(--muted);font-size:11px;border:1px dashed var(--border);border-radius:10px}
+  .mf-feature-tag{display:inline-block;border-radius:20px;padding:5px 8px;font-size:9px;font-weight:800;background:#eef3ff;color:#31558d;margin-top:8px}
+  @media(max-width:850px){.mf-feature-layout{grid-template-columns:1fr}}
+  /* Transport page: clean, responsive layout */
+  #page-transport .mf-transport-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:18px;align-items:start}
+  #page-transport .mf-transport-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:21px;box-shadow:var(--shadow);min-width:0}
+  #page-transport .mf-transport-card+.mf-transport-card{margin-top:17px}
+  #page-transport .mf-transport-card-head{display:flex;align-items:center;gap:12px;margin-bottom:17px}
+  #page-transport .mf-transport-card-icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;background:#eef3ff;display:grid;place-items:center;font-size:20px}
+  #page-transport .mf-transport-card-head h2{font:800 15px Manrope,sans-serif;color:var(--navy);margin:0}
+  #page-transport .mf-transport-card-head p{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.5}
+  #page-transport .mf-transport-fields{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+  #page-transport .mf-transport-fields label{display:block;font-size:11px;font-weight:700;color:#52617a;margin-bottom:7px}
+  #page-transport .mf-transport-fields select{width:100%;min-width:0;padding:12px;border:1px solid var(--border);border-radius:10px;background:#fbfcff;color:var(--text);font:12px 'DM Sans',sans-serif;outline:none}
+  #page-transport .mf-transport-fields select:focus{border-color:#8ba7f4;box-shadow:0 0 0 3px #3767e817}
+  #page-transport .mf-transport-action{width:100%;margin-top:16px;justify-content:center}
+  #page-transport .mf-transport-current{background:linear-gradient(135deg,#172b4d,#2d548b);border-radius:16px;padding:22px;color:#fff;box-shadow:0 12px 28px #172b4d20}
+  #page-transport .mf-transport-current-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:19px}
+  #page-transport .mf-transport-current-label{font-size:11px;color:#d7e2f5;font-weight:700}
+  #page-transport .mf-transport-current-status{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;background:#ffffff20;color:#fff;padding:7px 10px;border-radius:20px}
+  #page-transport .mf-transport-current-bus{font:800 29px Manrope,sans-serif;letter-spacing:-.7px}
+  #page-transport .mf-transport-current-stop{font-size:12px;color:#e0e9f7;margin-top:7px}
+  #page-transport .mf-transport-current-foot{display:flex;align-items:center;gap:8px;border-top:1px solid #ffffff25;margin-top:19px;padding-top:14px;color:#e0e9f7;font-size:10px;line-height:1.5}
+  #page-transport .mf-transport-hint{font-size:10px;line-height:1.6;color:var(--muted);margin-top:12px}
+  #page-transport .mf-transport-status{font-size:11px;line-height:1.5;margin-top:12px;min-height:16px;color:var(--green)}
+  #page-transport .mf-transport-switchback{width:100%;margin-top:13px;justify-content:center}
+  @media(max-width:850px){#page-transport .mf-transport-layout{grid-template-columns:1fr}}
+  @media(max-width:560px){#page-transport .mf-transport-fields{grid-template-columns:1fr}#page-transport .mf-transport-card{padding:17px}}
+</style>
+
+<script id="mfescampus-addons-script">
+(function(){
+  const studentNav = document.getElementById("studentNavigation");
+  const content = document.querySelector(".content");
+  if(!studentNav || !content) return;
+
+  const addonNav = `
+    <div class="nav-label">STUDENT SERVICES</div>
+    <button class="nav-link" data-page="fees" onclick="navigate('fees')"><span class="ico">₹</span>Fee Management</button>
+    <button class="nav-link" data-page="administration" onclick="navigate('administration')"><span class="ico">🏢</span>Administration</button>
+    <button class="nav-link" data-page="library" onclick="navigate('library')"><span class="ico">📚</span>Library</button>
+    <button class="nav-link" data-page="transport" onclick="navigate('transport')"><span class="ico">🚌</span>Transport</button>
+    <button class="nav-link" data-page="calendar" onclick="navigate('calendar')"><span class="ico">🗓</span>Events & Calendar</button>
+    <button class="nav-link" data-page="helpdesk" onclick="navigate('helpdesk')"><span class="ico">🎧</span>Helpdesk</button>
+    <button class="nav-link" data-page="leave" onclick="navigate('leave')"><span class="ico">🗓</span>Leave Application</button>
+    <button class="nav-link" data-page="family-updates" onclick="navigate('family-updates')"><span class="ico">✉️</span>Family Updates</button>
+    <button class="nav-link" data-page="my-behaviour" onclick="navigate('my-behaviour')"><span class="ico">📋</span>My Behaviour Reports</button>
+  `;
+  studentNav.insertAdjacentHTML("beforeend", addonNav);
+  document.getElementById("teacherNavigation").insertAdjacentHTML("beforeend", `
+    <div class="nav-label">STUDENT SUPPORT</div>
+    <button class="nav-link" data-page="parent-communication" onclick="navigate('parent-communication')"><span class="ico">✉️</span>Parent Communication</button>
+    <button class="nav-link" data-page="behaviour-reports" onclick="navigate('behaviour-reports')"><span class="ico">📋</span>Behaviour Reports</button>
+  `);
+
+  const addonPages = `
+    <section class="page" id="page-leave">
+      <div class="page-header"><div><h1 id="mfLeavePageTitle">Leave Application</h1><p id="mfLeavePageSubtitle">Apply for leave and follow the approval status.</p></div></div>
+      <div class="mf-addon-note">Leave requests are saved securely to Supabase and can be reviewed by teachers assigned to your class.</div>
+      <div class="mf-leave-layout">
+        <div class="mf-leave-card" id="mfLeaveApplyCard">
+          <h2>Apply for Leave</h2><p>Fill in the dates and explain why you need leave.</p>
+          <form class="mf-addon-form" id="mfLeaveForm" novalidate>
+            <div><label for="mfLeaveType">Leave type</label><select id="mfLeaveType" required><option value="">Choose leave type</option><option>Full day</option><option>Half day</option></select></div>
+            <div><label for="mfLeaveFrom">From date</label><input id="mfLeaveFrom" type="date" required></div>
+            <div><label for="mfLeaveTo">To date</label><input id="mfLeaveTo" type="date" required></div>
+            <div><label for="mfLeaveReason">Reason for leave</label><textarea id="mfLeaveReason" maxlength="500" placeholder="Write your reason clearly..." required></textarea></div>
+            <button class="action-btn" type="submit">Submit Leave Application</button>
+            <div id="mfLeaveFormStatus" class="mf-transport-status" aria-live="polite"></div>
+          </form>
+        </div>
+        <div class="mf-leave-card">
+          <h2 id="mfLeaveListTitle">My Leave Applications</h2><p id="mfLeaveListSubtitle">Check the status of the leave requests you have submitted.</p>
+          <div id="mfLeaveList" class="mf-leave-list"></div>
+        </div>
+      </div>
+    </section>
+    <section class="page" id="page-family-updates">
+      <div class="page-header"><div><h1>Family Updates</h1><p>Send a message to your teacher and read replies from school.</p></div></div>
+      <div class="mf-feature-layout">
+        <div class="mf-feature-card">
+          <h2>Message your teacher</h2><p>Messages are sent from your student account. A separate parent login is not available yet.</p>
+          <form class="mf-addon-form" id="mfFamilyReplyForm" novalidate>
+            <div><label for="mfFamilySubject">Subject</label><input id="mfFamilySubject" maxlength="100" required placeholder="e.g. Question about homework"></div>
+            <div><label for="mfFamilyMessage">Message</label><textarea id="mfFamilyMessage" maxlength="1000" required placeholder="Write your message..."></textarea></div>
+            <button class="action-btn" type="submit">Send Message</button>
+            <div id="mfFamilyReplyStatus" class="mf-feature-status" aria-live="polite"></div>
+          </form>
+        </div>
+        <div class="mf-feature-card">
+          <h2>Conversation</h2><p id="mfFamilyUpdateCount">0 messages</p>
+          <div id="mfFamilyUpdatesList" class="mf-feature-list"></div>
+        </div>
+      </div>
+    </section>
+    <section class="page" id="page-parent-communication">
+      <div class="page-header"><div><h1>Parent Communication</h1><p>Exchange messages with students and their families.</p></div></div>
+      <div class="mf-feature-layout">
+        <div class="mf-feature-card">
+          <h2>Compose a message</h2><p>Enter the student's admission number. Only students in your assigned classes can receive your messages.</p>
+          <form class="mf-addon-form" id="mfParentMessageForm" novalidate>
+            <div><label for="mfParentRecipient">Student admission number</label><input id="mfParentRecipient" maxlength="30" placeholder="e.g. 1762" required></div>
+            <div><label for="mfParentSubject">Subject</label><input id="mfParentSubject" maxlength="100" required placeholder="e.g. Progress update"></div>
+            <div><label for="mfParentMessage">Message</label><textarea id="mfParentMessage" maxlength="1000" required placeholder="Write your message..."></textarea></div>
+            <button class="action-btn" type="submit">Send Message</button>
+            <div id="mfParentMessageStatus" class="mf-feature-status" aria-live="polite"></div>
+          </form>
+        </div>
+        <div class="mf-feature-card">
+          <h2>Student conversations</h2><p>Messages from your assigned classes, newest first.</p>
+          <div id="mfParentSentList" class="mf-feature-list"></div>
+        </div>
+      </div>
+    </section>
+    <section class="page" id="page-my-behaviour"><div class="page-header"><div><h1>My Behaviour Reports</h1><p>Reports shared with you by your teachers.</p></div></div><div class="panel"><div id="mfStudentBehaviourList" class="mf-feature-list"></div></div></section>
+    <section class="page" id="page-behaviour-reports">
+      <div class="page-header"><div><h1>Student Behaviour Reports</h1><p>Record positive achievements, classroom incidents and private follow-up notes.</p></div></div>
+      <div class="mf-addon-note">Reports are saved securely. Private follow-up notes are visible only to authorised teachers.</div>
+      <div class="mf-feature-layout">
+        <div class="mf-feature-card">
+          <h2>Create a behaviour report</h2><p>Use factual, respectful language and record only information relevant to student support.</p>
+          <form class="mf-addon-form" id="mfBehaviourForm" novalidate >
+            <div><label for="mfBehaviourStudent">Student admission number</label><input id="mfBehaviourStudent" maxlength="80" placeholder="e.g. 1042" required></div>
+            <div><label for="mfBehaviourType">Report category</label><select id="mfBehaviourType" required><option value="">Choose category</option><option>Positive achievement</option><option>Classroom incident</option><option>Private follow-up note</option></select></div>
+            <div><label for="mfBehaviourDetails">Report details</label><textarea id="mfBehaviourDetails" maxlength="1000" placeholder="Describe what happened factually..." required></textarea></div>
+            <button class="action-btn" type="submit">Save Behaviour Report</button>
+            <div id="mfBehaviourStatus" class="mf-feature-status" aria-live="polite"></div>
+          </form>
+        </div>
+        <div class="mf-feature-card">
+          <h2>Recorded reports</h2><p>Reports created by teachers at this school.</p>
+          <div id="mfBehaviourList" class="mf-feature-list"></div>
+        </div>
+      </div>
+    </section>
+    <section class="page" id="page-student-gate">
+      <div class="page-header"><div><h1>Early Departure</h1><p>Request permission for a student to leave before the normal school closing time.</p></div></div>
+      <div class="mf-addon-note">A parent or guardian should submit this request through the student's account. The school office must independently verify authorization before the student is released. This form alone is not permission to leave.</div>
+      <div class="panel"><h3>Send request to Administration</h3><form id="mfGateExitForm" class="mf-addon-form">
+        <div class="form-grid"><div class="field"><label>Requested date</label><input id="mfGateExitDate" type="date" required></div><div class="field"><label>Requested leaving time</label><input id="mfGateExitTime" type="time" required></div></div>
+        <div class="field"><label>Parent / guardian name</label><input id="mfGateGuardian" maxlength="120" required placeholder="Name of requesting guardian"></div>
+        <div class="field"><label>Reason</label><textarea id="mfGateExitReason" maxlength="600" required placeholder="Explain why early departure is needed"></textarea></div>
+        <button class="action-btn" type="submit">Send departure request</button><div id="mfGateExitStatus" class="small-muted" aria-live="polite"></div>
+      </form></div>
+      <div class="panel" style="margin-top:16px"><h3>My departure requests</h3><div id="mfGateMyExits">Loading...</div></div>
+      <div class="panel" style="margin-top:16px"><h3>My late arrival records</h3><div id="mfGateMyLates">Loading...</div></div>
+    </section>
+    <section class="page" id="page-fees">
+      <div class="page-header"><div><h1>Fee Management</h1><p>View your fee summary, payment status and payment history.</p></div></div>
+      <div class="mf-addon-note">The sample figures below are illustrative. Official fee records appear in the database-connected section. No payments are processed here.</div><div class="panel"><h3>My official fee records</h3><div id="mfStudentFeeRecords" style="margin-top:12px">Loading...</div></div>
+      <div class="mf-addon-grid">
+        <div class="mf-addon-card"><div class="mf-addon-icon">₹</div><small>Total academic fee</small><strong>₹15,000</strong><p>Illustrative annual fee</p></div>
+        <div class="mf-addon-card"><div class="mf-addon-icon">✓</div><small>Amount paid</small><strong>₹10,000</strong><p>Illustrative payment record</p></div>
+        <div class="mf-addon-card"><div class="mf-addon-icon">⌛</div><small>Pending amount</small><strong>₹5,000</strong><p>Illustrative outstanding balance</p></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h3>Fee payment history</h3><span>Sample records</span></div>
+        <div class="table-wrap"><table><thead><tr><th>DESCRIPTION</th><th>DATE</th><th>AMOUNT</th><th>STATUS</th></tr></thead>
+        <tbody>
+          <tr><td>Term 1 fee</td><td>10 Jun 2026</td><td>₹5,000</td><td><span class="status green">Paid</span></td></tr>
+          <tr><td>Term 2 fee</td><td>10 Sep 2026</td><td>₹5,000</td><td><span class="status green">Paid</span></td></tr>
+          <tr><td>Term 3 fee</td><td>Due date not configured</td><td>₹5,000</td><td><span class="status orange">Pending</span></td></tr>
+        </tbody></table></div>
+        <p class="small-muted" style="margin-top:14px">The amounts above are illustrative. The office confirms actual balances.</p><form id="mfFeeEnquiryForm" class="mf-addon-form"><div><label>Fee question</label><textarea id="mfFeeEnquiryText" required maxlength="600" placeholder="Ask the administration about fees or receipts"></textarea></div><button class="action-btn" type="submit">Send to Administration</button></form><div id="mfFeeEnquiryList" style="margin-top:15px"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-administration">
+      <div class="page-header"><div><h1>Administration</h1><p>School office information and administrative services.</p></div></div>
+      <div class="mf-addon-grid">
+        <div class="mf-addon-card"><div class="mf-addon-icon">🏢</div><strong style="font-size:15px">School Office</strong><p>For general enquiries, records and official information, contact the school office directly.</p></div>
+        <div class="mf-addon-card"><div class="mf-addon-icon">📄</div><strong style="font-size:15px">Certificates</strong><p>Ask the school office about bonafide, study and other certificate requests.</p></div>
+        <div class="mf-addon-card"><div class="mf-addon-icon">📋</div><strong style="font-size:15px">School Policies</strong><p>Refer to the official school handbook for attendance, conduct and academic policies.</p></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h3>Administrative information</h3><span>Student services</span></div>
+        <div class="mf-addon-list">
+          <div class="mf-addon-row"><div><strong>Student records</strong><small>For corrections to personal or admission records, contact the school office.</small></div><span class="status blue">Office service</span></div>
+          <div class="mf-addon-row"><div><strong>Bonafide / study certificate</strong><small>Ask the office about the application process and collection date.</small></div><span class="status blue">On request</span></div>
+          <div class="mf-addon-row"><div><strong>General enquiries</strong><small>Use the Helpdesk section to prepare a demo request.</small></div><button class="action-btn secondary" onclick="navigate('helpdesk')">Open Helpdesk</button></div>
+        </div>
+        <p class="small-muted" style="margin-top:12px">Official staff names, phone numbers, office hours and policy documents have not been supplied, so they are not invented here.</p>
+      </div>
+    </section>
+
+    <section class="page" id="page-library">
+      <div class="page-header"><div><h1>Library</h1><p>Explore books, borrow a free book and keep track of its return date.</p></div></div>
+      <div class="mf-addon-note"><strong>Library books are free.</strong> This demo does not charge borrowing fees. Please return borrowed books by the due date shown below.</div>
+      <div class="mf-addon-grid">
+        <div class="mf-addon-card"><div class="mf-addon-icon">📚</div><small>Library collection</small><strong>05</strong><p>Sample books in this demo</p></div>
+        <div class="mf-addon-card"><div class="mf-addon-icon">₹</div><small>Borrowing fee</small><strong>FREE</strong><p>No charge for borrowing</p></div>
+        <div class="mf-addon-card"><div class="mf-addon-icon">📅</div><small>Your borrowed books</small><strong id="mfLibraryBorrowedCount">0</strong><p>Books currently checked out</p></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title"><h3>Available books</h3><span>Free borrowing</span></div>
+        <div id="mfLibraryBookList" class="mf-addon-list"></div>
+      </div>
+      <div class="panel" style="margin-top:17px">
+        <div class="panel-title"><h3>My borrowed books</h3><span>Track return dates</span></div>
+        <div id="mfLibraryLoans"></div>
+      </div>
+      <div class="mf-addon-modal" id="mfLibraryModal">
+        <div class="mf-addon-modal-inner">
+          <h3>Borrow this book</h3>
+          <p id="mfLibraryModalBook" class="small-muted" style="margin-bottom:14px"></p>
+          <div class="mf-addon-form">
+            <div><label for="mfLibraryDueDate">Return / due date</label><input id="mfLibraryDueDate" type="date"></div>
+            <div class="action-row"><button class="action-btn secondary" onclick="mfCloseLibraryModal()">Cancel</button><button class="action-btn" onclick="mfConfirmBorrow()">Confirm borrowing</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-transport">
+      <div class="page-header"><div><h1>Transport</h1><p>Manage your regular bus and boarding place.</p></div></div>
+      <div class="mf-addon-note">These are sample route groupings for the MFESCAMPUS demo. The school must verify the actual bus routes and stops.</div>
+
+      <div class="panel"><h3>Administration-approved bus assignment</h3><div id="mfApprovedTransport" style="margin-top:10px">Loading...</div><div id="mfStudentTransportRequests" style="margin-top:12px"></div></div>
+      <div class="mf-transport-layout">
+        <div>
+          <div class="mf-transport-card">
+            <div class="mf-transport-card-head">
+              <div class="mf-transport-card-icon">🏠</div>
+              <div><h2>My Regular Transport</h2><p>Choose your normal bus and boarding place.</p></div>
+            </div>
+            <div class="mf-transport-fields">
+              <div><label for="mfTransportRegularBus">Regular Bus Number</label><select id="mfTransportRegularBus"></select></div>
+              <div><label for="mfTransportRegularStop">Regular Boarding Place</label><select id="mfTransportRegularStop"></select></div>
+            </div>
+            <button class="action-btn mf-transport-action" type="button" onclick="mfSaveRegularTransport()">Save Regular Transport</button>
+            <div class="mf-transport-status" id="mfTransportRegularStatus" aria-live="polite"></div>
+          </div>
+
+          <div class="mf-transport-card">
+            <div class="mf-transport-card-head">
+              <div class="mf-transport-card-icon">🔁</div>
+              <div><h2>Change Bus / Bus Shift</h2><p>Choose another bus and boarding place for a temporary shift.</p></div>
+            </div>
+            <div class="mf-transport-fields">
+              <div><label for="mfTransportShiftBus">New Bus Number</label><select id="mfTransportShiftBus"></select></div>
+              <div><label for="mfTransportShiftStop">New Boarding Place</label><select id="mfTransportShiftStop"></select></div>
+            </div>
+            <button class="action-btn mf-transport-action" type="button" onclick="mfRequestTransportShift()">Request Bus Shift</button>
+            <div class="mf-transport-status" id="mfTransportShiftStatus" aria-live="polite"></div>
+            <p class="mf-transport-hint">Your request will be reviewed by Administration. The bus change is not active until approved.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="mf-transport-current" aria-live="polite">
+            <div class="mf-transport-current-top"><span class="mf-transport-current-label">CURRENT BUS</span><span class="mf-transport-current-status" id="mfTransportCurrentStatus">Regular Route</span></div>
+            <div class="mf-transport-current-bus" id="mfTransportCurrentBus">Bus 11</div>
+            <div class="mf-transport-current-stop" id="mfTransportCurrentStop">Boarding at Kodenchery</div>
+            <div class="mf-transport-current-foot"><span>🚌</span><span id="mfTransportCurrentMessage">You are currently using your regular bus.</span></div>
+          </div>
+          <button class="action-btn secondary mf-transport-switchback" id="mfTransportSwitchBack" type="button" onclick="mfSwitchBackTransport()" style="display:none">Switch Back to Regular Bus</button>
+          <p class="mf-transport-hint">Transport selections are saved in this browser as demo data. They are not sent to the school or bus staff.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-calendar">
+      <div class="page-header"><div><h1>Events & Calendar</h1><p>Keep track of upcoming school activities.</p></div></div>
+      <div class="panel">
+        <div class="panel-title"><h3 id="mfCalendarMonthTitle">School calendar</h3><span>Sample events</span></div>
+        <div class="mf-addon-calendar" id="mfCalendarGrid"></div>
+      </div>
+      <div class="panel" style="margin-top:17px">
+        <div class="panel-title"><h3>Upcoming events</h3><span>School activities</span></div>
+        <div id="mfCalendarEvents"></div>
+      </div>
+    </section>
+
+    <section class="page" id="page-helpdesk">
+      <div class="page-header"><div><h1>Helpdesk</h1><p>Submit a request or question to the school support team.</p></div></div>
+      <div class="mf-addon-note">Requests are sent to the Administration portal for review.</div>
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-title"><h3>Create a support request</h3><span>Student support</span></div>
+          <form class="mf-addon-form" id="mfHelpdeskForm">
+            <div><label for="mfHelpCategory">Request category</label><select id="mfHelpCategory" required><option value="">Choose a category</option><option>Academic enquiry</option><option>Fee enquiry</option><option>Library assistance</option><option>Transport enquiry</option><option>Technical support</option><option>Other</option></select></div>
+            <div><label for="mfHelpSubject">Subject</label><input id="mfHelpSubject" maxlength="80" placeholder="Briefly describe your request" required></div>
+            <div><label for="mfHelpMessage">Message</label><textarea id="mfHelpMessage" maxlength="600" placeholder="Write your question or request..." required></textarea></div>
+            <button class="action-btn" type="submit">Submit request</button>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><h3>My requests</h3><span>Saved requests</span></div>
+          <div id="mfHelpdeskRequests"></div>
+        </div>
+      </div>
+    </section>
+  `;
+  content.insertAdjacentHTML("beforeend", addonPages);
+
+  const addonTitles = {
+    fees:"Fee Management",
+    administration:"Administration",
+    library:"Library",
+    transport:"Transport",
+    calendar:"Events & Calendar",
+    helpdesk:"Helpdesk",
+    leave:"Leave Application",
+    "family-updates":"Family Updates",
+    "parent-communication":"Parent Communication",
+    "behaviour-reports":"Behaviour Reports",
+    "my-behaviour":"My Behaviour Reports"
+  };
+  const originalNavigate = window.navigate;
+  window.navigate = function(page){
+    originalNavigate(page);
+    if(addonTitles[page]){
+      document.getElementById("topPageTitle").textContent = addonTitles[page];
+      if(page==="library") mfRenderLibrary();
+      if(page==="transport") mfRenderTransport();
+      if(page==="calendar") mfRenderCalendar();
+      if(page==="helpdesk") mfRenderHelpdeskRequests();
+      if(page==="family-updates") mfRenderFamilyUpdates();
+      if(page==="parent-communication") mfRenderParentCommunication();
+      if(page==="behaviour-reports") mfRenderBehaviourReports();
+      if(page==="my-behaviour") mfRenderStudentBehaviour();
+    }
+    if(page==="leave") mfRenderLeave();
+  };
+
+  const libraryBooks = [
+    {id:"book-science-8",title:"Science – Class 8",author:"School textbook collection"},
+    {id:"book-maths-8",title:"Mathematics – Class 8",author:"School textbook collection"},
+    {id:"book-english-8",title:"English Reader",author:"Reading collection"},
+    {id:"book-malayalam-8",title:"Malayalam Reader",author:"Reading collection"},
+    {id:"book-atlas",title:"School Atlas",author:"Reference collection"}
+  ];
+  const loanStorageKey = "mfescampus_library_loans";
+  const helpStorageKey = "mfescampus_helpdesk_requests";
+  let selectedLibraryBook = "";
+
+  function mfReadStorage(key){
+    try{return JSON.parse(localStorage.getItem(key)||"{}");}catch(e){return {};}
+  }
+  function mfWriteStorage(key,value){
+    try{localStorage.setItem(key,JSON.stringify(value));}catch(e){showToast("Could not save this demo record on this device.");}
+  }
+  function mfFormatDate(value){
+    if(!value) return "Not set";
+    return new Date(value+"T00:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+  }
+  function mfRenderLibrary(){
+    const loans = mfReadStorage(loanStorageKey);
+    const bookList = document.getElementById("mfLibraryBookList");
+    const loanList = document.getElementById("mfLibraryLoans");
+    if(!bookList || !loanList) return;
+    bookList.innerHTML = libraryBooks.map(book=>{
+      const loan = loans[book.id];
+      const isMine = loan && loan.borrower === (currentUser?.username || currentUser?.name || "");
+      const state = loan ? (isMine ? "Borrowed by you" : "Currently borrowed") : "Available";
+      const action = loan
+        ? (isMine ? `<button class="action-btn secondary" onclick="mfReturnBook('${book.id}')">Return book</button>` : `<span class="status orange">Unavailable</span>`)
+        : `<button class="action-btn" onclick="mfOpenLibraryModal('${book.id}')">Borrow free</button>`;
+      return `<div class="mf-addon-book"><div><strong>${escapeHTML(book.title)}</strong><small>${escapeHTML(book.author)} · FREE · ${state}${isMine ? " · Due "+mfFormatDate(loan.dueDate) : ""}</small></div>${action}</div>`;
+    }).join("");
+    const mine = Object.entries(loans).filter(([id,loan])=>loan.borrower === (currentUser?.username || currentUser?.name || ""));
+    document.getElementById("mfLibraryBorrowedCount").textContent = mine.length;
+    loanList.innerHTML = mine.length ? mine.map(([id,loan])=>{
+      const book = libraryBooks.find(item=>item.id===id);
+      const overdue = loan.dueDate < new Date().toISOString().slice(0,10);
+      return `<div class="mf-addon-row"><div><strong>${escapeHTML(book ? book.title : "Library book")}</strong><small>Due date: ${mfFormatDate(loan.dueDate)}</small></div><span class="status ${overdue?"red":"green"}">${overdue?"Due date passed":"On loan"}</span></div>`;
+    }).join("") : `<div class="empty">You have no borrowed books. All library books are free to borrow.</div>`;
+  }
+  window.mfOpenLibraryModal = function(bookId){
+    selectedLibraryBook = bookId;
+    const book = libraryBooks.find(item=>item.id===bookId);
+    if(!book) return;
+    document.getElementById("mfLibraryModalBook").textContent = book.title+" · Free borrowing";
+    const due = new Date(); due.setDate(due.getDate()+14);
+    document.getElementById("mfLibraryDueDate").value = due.toISOString().slice(0,10);
+    document.getElementById("mfLibraryDueDate").min = new Date().toISOString().slice(0,10);
+    document.getElementById("mfLibraryModal").classList.add("show");
+  };
+  window.mfCloseLibraryModal = function(){
+    document.getElementById("mfLibraryModal").classList.remove("show");
+  };
+  window.mfConfirmBorrow = function(){
+    const dueDate = document.getElementById("mfLibraryDueDate").value;
+    if(!selectedLibraryBook || !dueDate){showToast("Please choose a return date.");return;}
+    const today = new Date().toISOString().slice(0,10);
+    if(dueDate < today){showToast("The due date cannot be in the past.");return;}
+    const loans = mfReadStorage(loanStorageKey);
+    if(loans[selectedLibraryBook]){showToast("This book is already borrowed.");return;}
+    loans[selectedLibraryBook] = {
+      borrower:currentUser?.username || currentUser?.name || "Demo student",
+      borrowerName:currentUser?.name || "Demo student",
+      dueDate:dueDate
+    };
+    mfWriteStorage(loanStorageKey,loans);
+    window.mfCloseLibraryModal();
+    mfRenderLibrary();
+    showToast("Book borrowed for free. Due date saved.");
+  };
+  window.mfReturnBook = function(bookId){
+    const loans = mfReadStorage(loanStorageKey);
+    const borrower = currentUser?.username || currentUser?.name || "";
+    if(!loans[bookId] || loans[bookId].borrower!==borrower) return;
+    delete loans[bookId];
+    mfWriteStorage(loanStorageKey,loans);
+    mfRenderLibrary();
+    showToast("Book marked as returned.");
+  };
+
+  function mfRenderCalendar(){
+    const grid = document.getElementById("mfCalendarGrid");
+    const list = document.getElementById("mfCalendarEvents");
+    if(!grid || !list) return;
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    document.getElementById("mfCalendarMonthTitle").textContent = now.toLocaleDateString("en-IN",{month:"long",year:"numeric"});
+    const monthNames = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+    const eventDates = (events || []).map(item=>({day:Number(item.day),month:monthNames.indexOf(item.month),title:item.title,detail:item.detail}));
+    const firstDay = new Date(year,month,1).getDay();
+    const daysInMonth = new Date(year,month+1,0).getDate();
+    const headers = ["SUN","MON","TUE","WED","THU","FRI","SAT"].map(day=>`<div class="mf-addon-day-name">${day}</div>`).join("");
+    let cells = "";
+    for(let i=0;i<firstDay;i++) cells += `<div class="mf-addon-day muted"></div>`;
+    for(let day=1;day<=daysInMonth;day++){
+      const hasEvent = eventDates.some(item=>item.day===day && item.month===month);
+      cells += `<div class="mf-addon-day ${hasEvent?"has-event":""}"><strong>${day}</strong>${hasEvent?"<span style='font-size:8px;color:#3767e8'>Event</span>":""}</div>`;
+    }
+    grid.innerHTML = headers + cells;
+    const upcoming = eventDates.filter(item=>item.month>=0).sort((a,b)=>a.month-b.month || a.day-b.day);
+    list.innerHTML = upcoming.length ? upcoming.map(item=>`
+      <div class="event-item"><div class="event-date">${String(item.day).padStart(2,"0")}<br>${monthNames[item.month]}</div><div><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.detail)}</small></div></div>
+    `).join("") : `<div class="empty">No events have been added yet.</div>`;
+  }
+
+  function mfRenderHelpdeskRequests(){
+    const box = document.getElementById("mfHelpdeskRequests");
+    if(!box) return;
+    const all = mfReadStorage(helpStorageKey);
+    const userKey = currentUser?.username || currentUser?.name || "";
+    const mine = Array.isArray(all[userKey]) ? all[userKey] : [];
+    box.innerHTML = mine.length ? mine.slice().reverse().map(item=>`
+      <div class="mf-addon-row"><div><strong>${escapeHTML(item.subject)}</strong><small>${escapeHTML(item.category)} · ${escapeHTML(item.date)}</small><small>${escapeHTML(item.message)}</small></div><span class="status blue">Saved</span></div>
+    `).join("") : `<div class="empty">No support requests submitted yet.</div>`;
+  }
+  document.getElementById("mfHelpdeskForm").addEventListener("submit",function(event){
+    event.preventDefault();
+    const category = document.getElementById("mfHelpCategory").value;
+    const subject = document.getElementById("mfHelpSubject").value.trim();
+    const message = document.getElementById("mfHelpMessage").value.trim();
+    if(!category || !subject || !message){showToast("Please complete all request fields.");return;}
+    const all = mfReadStorage(helpStorageKey);
+    const userKey = currentUser?.username || currentUser?.name || "demo-student";
+    if(!Array.isArray(all[userKey])) all[userKey] = [];
+    all[userKey].push({category,subject,message,date:new Date().toLocaleDateString("en-IN")});
+    mfWriteStorage(helpStorageKey,all);
+    this.reset();
+    mfRenderHelpdeskRequests();
+    showToast("Request saved on this device as demo data.");
+  });
+
+  // Transport demo: regular assignment and persistent temporary bus shift.
+  const mfTransportRoutes = {
+    "Bus 01":["Kannur","Chirakkal","Azhikode","Valapattanam","Pappinisseri","Kalliasseri","Pariyaram","Payyannur"],
+    "Bus 02":["Thalassery","Dharmadam","Muzhappilangad","Edakkad","New Mahe","Azhiyur","Vadakara","Kadirur"],
+    "Bus 03":["Mattannur","Anjarakandy","Koodali","Kuthuparamba","Koothuparamba","Pinarayi","Peringathur","Chokli"],
+    "Bus 04":["Iritty","Chavassery","Peravoor","Kelakam","Ulikkal","Irikkur","Sreekandapuram","Cherupuzha"],
+    "Bus 05":["Taliparamba","Mayyil","Naduvil","Alakode","Sreekandapuram","Pariyaram","Payyannur"],
+    "Bus 06":["Panoor","Peringathur","Chokli","Kadirur","Pinarayi","Thalassery","New Mahe","Azhiyur"],
+    "Bus 07":["Kozhikode","Feroke","Ramanattukara","Beypore","Kadalundi","Cheruvannur","Olavanna","Mukkam"],
+    "Bus 08":["Vadakara","Koyilandy","Payyoli","Moodadi","Thikkodi","Chemancheri","Azhiyur","Perambra"],
+    "Bus 09":["Balussery","Ulliyeri","Naduvannur","Perambra","Kuttiady","Atholi","Kakkur","Nanminda"],
+    "Bus 10":["Kunnamangalam","Mavoor","Kakkodi","Chelannur","Narikkuni","Koduvally","Thamarassery","Kozhikode"],
+    "Bus 11":["Mukkam","Thiruvambady","Kodenchery","Thamarassery","Koduvally","Balussery","Kunnamangalam","Mavoor"],
+    "Bus 12":["Kannur","Edakkad","Dharmadam","Muzhappilangad","Thalassery","Kadirur","Pinarayi","Kuthuparamba"],
+    "Bus 13":["Mattannur","Anjarakandy","Koodali","Irikkur","Mayyil","Sreekandapuram","Ulikkal","Iritty"],
+    "Bus 14":["Payyannur","Pariyaram","Kalliasseri","Pappinisseri","Valapattanam","Chirakkal","Kannur","Taliparamba"],
+    "Bus 15":["Peravoor","Kelakam","Chavassery","Iritty","Ulikkal","Alakode","Naduvil","Cherupuzha"],
+    "Bus 16":["Kozhikode","Kunnamangalam","Kakkodi","Chelannur","Kakkur","Nanminda","Atholi","Ulliyeri"],
+    "Bus 17":["Vadakara","Azhiyur","Panoor","Peringathur","Chokli","Thikkodi","Chemancheri","Payyoli"]
+  };
+  const mfTransportStorageKey = "mfescampus_transport_assignment_v2";
+  function mfTransportRead(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(mfTransportStorageKey)||"null")||{};
+      const regularBus=mfTransportRoutes[saved.regularBus]?saved.regularBus:"Bus 11";
+      const regularStop=mfTransportRoutes[regularBus].includes(saved.regularStop)?saved.regularStop:mfTransportRoutes[regularBus][2]||mfTransportRoutes[regularBus][0];
+      const shiftBus=mfTransportRoutes[saved.shiftBus]?saved.shiftBus:"";
+      const shiftStop=shiftBus&&mfTransportRoutes[shiftBus].includes(saved.shiftStop)?saved.shiftStop:"";
+      const shiftActive=!!saved.shiftActive&&!!shiftBus&&!!shiftStop&&shiftBus!==regularBus;
+      return {regularBus,regularStop,shiftBus,shiftStop,shiftActive};
+    }catch(error){return {regularBus:"Bus 11",regularStop:"Kodenchery",shiftBus:"",shiftStop:"",shiftActive:false};}
+  }
+  function mfTransportWrite(data){
+    try{localStorage.setItem(mfTransportStorageKey,JSON.stringify(data));return true;}
+    catch(error){showToast("Could not save transport details in this browser.");return false;}
+  }
+  function mfTransportFillStops(busSelect,stopSelect,selectedStop){
+    const bus=busSelect.value;
+    const stops=mfTransportRoutes[bus]||[];
+    stopSelect.innerHTML=stops.map(stop=>`<option value="${escapeHTML(stop)}">${escapeHTML(stop)}</option>`).join("");
+    if(stops.includes(selectedStop)) stopSelect.value=selectedStop;
+  }
+  function mfRenderTransport(){
+    const regularBus=document.getElementById("mfTransportRegularBus");
+    const regularStop=document.getElementById("mfTransportRegularStop");
+    const shiftBus=document.getElementById("mfTransportShiftBus");
+    const shiftStop=document.getElementById("mfTransportShiftStop");
+    if(!regularBus||!regularStop||!shiftBus||!shiftStop)return;
+    const data=mfTransportRead();
+    const buses=Object.keys(mfTransportRoutes);
+    const options=buses.map(bus=>`<option value="${bus}">${bus}</option>`).join("");
+    regularBus.innerHTML=options;
+    shiftBus.innerHTML=options;
+    regularBus.value=data.regularBus;
+    mfTransportFillStops(regularBus,regularStop,data.regularStop);
+    shiftBus.value=data.shiftBus&&data.shiftBus!==data.regularBus?data.shiftBus:(buses.find(bus=>bus!==data.regularBus)||buses[0]);
+    mfTransportFillStops(shiftBus,shiftStop,data.shiftStop&&data.shiftBus===shiftBus.value?data.shiftStop:"");
+    regularBus.onchange=()=>mfTransportFillStops(regularBus,regularStop,"");
+    shiftBus.onchange=()=>mfTransportFillStops(shiftBus,shiftStop,"");
+    document.getElementById("mfTransportCurrentBus").textContent=data.shiftActive?data.shiftBus:data.regularBus;
+    document.getElementById("mfTransportCurrentStop").textContent="Boarding at "+(data.shiftActive?data.shiftStop:data.regularStop);
+    document.getElementById("mfTransportCurrentStatus").textContent=data.shiftActive?"Temporary Shift":"Regular Route";
+    document.getElementById("mfTransportCurrentMessage").textContent=data.shiftActive?"Your temporary bus shift is active.":"You are currently using your regular bus.";
+    document.getElementById("mfTransportSwitchBack").style.display=data.shiftActive?"flex":"none";
+  }
+  function mfSaveRegularTransport(){
+    const data=mfTransportRead();
+    const bus=document.getElementById("mfTransportRegularBus").value;
+    const stop=document.getElementById("mfTransportRegularStop").value;
+    if(!mfTransportRoutes[bus]?.includes(stop)){showToast("Choose a valid regular bus and boarding place.");return;}
+    data.regularBus=bus;data.regularStop=stop;
+    if(data.shiftActive&&data.shiftBus===bus){data.shiftActive=false;data.shiftBus="";data.shiftStop="";}
+    if(mfTransportWrite(data)){mfRenderTransport();document.getElementById("mfTransportRegularStatus").textContent="Regular transport saved successfully.";}
+  }
+  function mfSaveTransportShift(){
+    const data=mfTransportRead();
+    const bus=document.getElementById("mfTransportShiftBus").value;
+    const stop=document.getElementById("mfTransportShiftStop").value;
+    if(!mfTransportRoutes[bus]?.includes(stop)){showToast("Choose a valid bus and boarding place for the shift.");return;}
+    if(bus===data.regularBus){document.getElementById("mfTransportShiftStatus").textContent="Choose a bus different from your regular bus.";return;}
+    data.shiftBus=bus;data.shiftStop=stop;data.shiftActive=true;
+    if(mfTransportWrite(data)){mfRenderTransport();document.getElementById("mfTransportShiftStatus").textContent="Bus shift saved. It will stay active until you switch back.";}
+  }
+  function mfSwitchBackTransport(){
+    const data=mfTransportRead();data.shiftActive=false;data.shiftBus="";data.shiftStop="";
+    if(mfTransportWrite(data)){mfRenderTransport();showToast("Switched back to your regular bus.");}
+  }
+  window.mfRenderTransport=mfRenderTransport;
+  window.mfSaveRegularTransport=mfSaveRegularTransport;
+  window.mfSaveTransportShift=mfSaveTransportShift;
+  window.mfSwitchBackTransport=mfSwitchBackTransport;
+
+  // Parent communication and behaviour reports: local browser demo storage.
+  const MF_PARENT_MESSAGES_KEY = "mfescampus_parent_messages_v1";
+  const MF_BEHAVIOUR_KEY = "mfescampus_behaviour_reports_v1";
+  function mfReadArray(key){
+    try{const value=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(value)?value:[];}catch(e){return [];}
+  }
+  function mfWriteArray(key,items){
+    try{localStorage.setItem(key,JSON.stringify(items));return true;}catch(e){showToast("Could not save this demo record in browser storage.");return false;}
+  }
+  function mfFeatureDate(value){
+    return new Date(value||Date.now()).toLocaleString("en-IN",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"});
+  }
+  function mfMessagingConnection(){
+    if(!window.mfesLeaveDb || !currentUser || !currentUser.id)throw Error('Please sign in again.');
+    return window.mfesLeaveDb;
+  }
+  function mfMessageCard(item,studentLabel){
+    const sender=item.sender_profile_id===currentUser.id?'You':(currentUser.role==='Teacher'?'Student / family':'Teacher');
+    const recipient=studentLabel?`<div class="mf-feature-meta">Student: ${escapeHTML(studentLabel)}</div>`:'';
+    return `<article class="mf-feature-item"><strong>${escapeHTML(item.subject)}</strong><div class="mf-feature-meta">${escapeHTML(sender)} · ${mfFeatureDate(item.created_at)}</div>${recipient}<div class="mf-feature-message">${escapeHTML(item.message)}</div></article>`;
+  }
+  async function mfRenderFamilyUpdates(){
+    const list=document.getElementById('mfFamilyUpdatesList');
+    if(!list || currentUser?.role!=='Student')return;
+    list.textContent='Loading messages...';
+    try{
+      const db=mfMessagingConnection();
+      const {data,error}=await db.from('family_messages').select('id,student_id,sender_profile_id,subject,message,created_at').order('created_at',{ascending:false});
+      if(error)throw error;
+      document.getElementById('mfFamilyUpdateCount').textContent=data.length+' messages';
+      list.innerHTML=data.length?data.map(x=>mfMessageCard(x,'')).join(''):'<div class="mf-feature-empty">No messages yet.</div>';
+    }catch(e){list.textContent='Could not load messages: '+e.message;}
+  }
+  async function mfSendFamilyMessage(event){
+    event.preventDefault();
+    const status=document.getElementById('mfFamilyReplyStatus');
+    const subject=document.getElementById('mfFamilySubject').value.trim();
+    const message=document.getElementById('mfFamilyMessage').value.trim();
+    if(!subject||!message){status.textContent='Please complete all fields.';return;}
+    status.textContent='Sending...';
+    try{
+      const db=mfMessagingConnection();
+      if(currentUser.role!=='Student'||!window.mfesLeaveStudentId)throw Error('Student account required.');
+      const {error}=await db.from('family_messages').insert({student_id:window.mfesLeaveStudentId,sender_profile_id:currentUser.id,subject,message});
+      if(error)throw error;
+      document.getElementById('mfFamilyReplyForm').reset();
+      status.textContent='Message sent successfully.';
+      await mfRenderFamilyUpdates();
+    }catch(e){status.textContent='Message not sent: '+e.message;}
+  }
+  async function mfSendParentMessage(event){
+    event.preventDefault();
+    const status=document.getElementById('mfParentMessageStatus');
+    const admission=document.getElementById('mfParentRecipient').value.trim();
+    const subject=document.getElementById('mfParentSubject').value.trim();
+    const message=document.getElementById('mfParentMessage').value.trim();
+    if(!admission||!subject||!message){status.textContent='Please complete all fields.';return;}
+    status.textContent='Sending...';
+    try{
+      const db=mfMessagingConnection();
+      if(currentUser.role!=='Teacher')throw Error('Teacher account required.');
+      const {data:student,error:lookupError}=await db.from('students').select('id,admission_no').eq('admission_no',admission).maybeSingle();
+      if(lookupError)throw lookupError;
+      if(!student)throw Error('Student not found or not in your assigned classes.');
+      const {error}=await db.from('family_messages').insert({student_id:student.id,sender_profile_id:currentUser.id,subject,message});
+      if(error)throw error;
+      document.getElementById('mfParentMessageForm').reset();
+      status.textContent='Message sent successfully.';
+      await mfRenderParentCommunication();
+    }catch(e){status.textContent='Message not sent: '+e.message;}
+  }
+  async function mfRenderParentCommunication(){
+    const list=document.getElementById('mfParentSentList');
+    if(!list||currentUser?.role!=='Teacher')return;
+    list.textContent='Loading messages...';
+    try{
+      const db=mfMessagingConnection();
+      const {data,error}=await db.from('family_messages').select('id,student_id,sender_profile_id,subject,message,created_at').order('created_at',{ascending:false});
+      if(error)throw error;
+      const ids=[...new Set(data.map(x=>x.student_id))];
+      const names={};
+      if(ids.length){const {data:students,error:se}=await db.from('students').select('id,full_name,admission_no').in('id',ids);if(se)throw se;students.forEach(x=>names[x.id]=x.full_name+' ('+x.admission_no+')');}
+      list.innerHTML=data.length?data.map(x=>mfMessageCard(x,names[x.student_id]||'Student')).join(''):'<div class="mf-feature-empty">No messages yet.</div>';
+    }catch(e){list.textContent='Could not load messages: '+e.message;}
+  }
+  async function mfSaveBehaviourReport(event){
+    event.preventDefault();
+    const status=document.getElementById('mfBehaviourStatus');
+    if(currentUser?.role!=='Teacher'){status.textContent='Please sign in as a teacher.';return;}
+    const admission=document.getElementById('mfBehaviourStudent').value.trim();
+    const category=document.getElementById('mfBehaviourType').value;
+    const details=document.getElementById('mfBehaviourDetails').value.trim();
+    if(!admission||!category||!details){status.textContent='Complete all fields.';return;}
+    status.textContent='Saving report...';
+    try{
+      const db=mfMessagingConnection();
+      const {data:student,error:se}=await db.from('students').select('id').eq('admission_no',admission).single();
+      if(se||!student)throw Error('Student not found or not in your assigned classes.');
+      const {error}=await db.from('behaviour_reports').insert({student_id:student.id,teacher_profile_id:currentUser.id,category,details,visibility:category==='Private follow-up note'?'teacher':'student'});
+      if(error)throw error;
+      document.getElementById('mfBehaviourForm').reset();
+      status.textContent='Behaviour report saved successfully.';
+      await mfRenderBehaviourReports();
+    }catch(e){status.textContent='Could not save report: '+e.message;}
+  }
+  function mfBehaviourCard(item,studentLabel){
+    const who=studentLabel?`<div class="mf-feature-meta">Student: ${escapeHTML(studentLabel)}</div>`:'';
+    const priv=item.visibility==='teacher'?'<span class="mf-feature-tag">Private teacher note</span>':'';
+    return `<article class="mf-feature-item"><strong>${escapeHTML(item.category)}</strong>${priv}${who}<div class="mf-feature-meta">${mfFeatureDate(item.created_at)}</div><div class="mf-feature-message">${escapeHTML(item.details)}</div></article>`;
+  }
+  async function mfRenderBehaviourReports(){
+    const list=document.getElementById('mfBehaviourList');
+    if(!list||currentUser?.role!=='Teacher')return;
+    list.textContent='Loading reports...';
+    try{
+      const db=mfMessagingConnection();
+      const {data,error}=await db.from('behaviour_reports').select('id,student_id,category,details,visibility,created_at').order('created_at',{ascending:false});
+      if(error)throw error;
+      const ids=[...new Set(data.map(x=>x.student_id))],names={};
+      if(ids.length){const {data:students,error:se}=await db.from('students').select('id,full_name,admission_no').in('id',ids);if(se)throw se;students.forEach(x=>names[x.id]=x.full_name+' ('+x.admission_no+')');}
+      list.innerHTML=data.length?data.map(x=>mfBehaviourCard(x,names[x.student_id]||'Student')).join(''):'<div class="mf-feature-empty">No reports yet.</div>';
+    }catch(e){list.textContent='Could not load reports: '+e.message;}
+  }
+  async function mfRenderStudentBehaviour(){
+    const list=document.getElementById('mfStudentBehaviourList');
+    if(!list||currentUser?.role!=='Student')return;
+    list.textContent='Loading reports...';
+    try{
+      const db=mfMessagingConnection();
+      const {data,error}=await db.from('behaviour_reports').select('id,category,details,visibility,created_at').order('created_at',{ascending:false});
+      if(error)throw error;
+      const visible=data.filter(x=>x.visibility==='student');
+      list.innerHTML=visible.length?visible.map(x=>mfBehaviourCard(x,'')).join(''):'<div class="mf-feature-empty">No behaviour reports shared with you yet.</div>';
+    }catch(e){list.textContent='Could not load reports: '+e.message;}
+  }
+  window.mfRenderFamilyUpdates=mfRenderFamilyUpdates;
+  window.mfSendFamilyMessage=mfSendFamilyMessage;
+  window.mfSendParentMessage=mfSendParentMessage;
+  window.mfRenderParentCommunication=mfRenderParentCommunication;
+  window.mfSaveBehaviourReport=mfSaveBehaviourReport;
+  window.mfRenderBehaviourReports=mfRenderBehaviourReports;
+  window.mfRenderStudentBehaviour=mfRenderStudentBehaviour;
+  // Form submit handlers are attached directly at the end of this file.
+  // This avoids relying on delegated events while pages are dynamically shown.
+
+
+  // Supabase-backed leave requests. The database enforces per-account access with RLS.
+  function mfLeaveDate(value){if(!value)return '—';return new Date(value+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});}
+  function mfLeaveStatus(status){const cls=status==='Approved'?'approved':status==='Declined'?'declined':'pending';return `<span class="mf-leave-status mf-leave-${cls}">${status||'Pending'}</span>`;}
+  async function mfRenderLeave(){
+    const list=document.getElementById('mfLeaveList');
+    if(!list||!currentUser)return;
+    const teacher=currentUser.role==='Teacher';
+    document.getElementById('mfLeavePageTitle').textContent=teacher?'Leave Requests':'Leave Application';
+    document.getElementById('mfLeavePageSubtitle').textContent=teacher?'Review requests from your assigned classes.':'Apply for leave and follow its approval status.';
+    document.getElementById('mfLeaveApplyCard').style.display=teacher?'none':'block';
+    document.getElementById('mfLeaveListTitle').textContent=teacher?'Student Leave Requests':'My Leave Applications';
+    document.getElementById('mfLeaveListSubtitle').textContent=teacher?'Approve, decline or reset a request.':'Your submitted leave requests and their status.';
+    list.textContent='Loading leave applications...';
+    try{
+      if(!window.mfesLeaveDb)throw Error('Sign in again to connect to Supabase.');
+      const {data,error}=await window.mfesLeaveDb.from('leave_requests').select('id,student_id,leave_type,from_date,to_date,reason,status,created_at').order('created_at',{ascending:false});
+      if(error)throw error;
+      let names={};
+      if(teacher && data.length){
+        const ids=[...new Set(data.map(x=>x.student_id))];
+        const {data:students,error:studentError}=await window.mfesLeaveDb.from('students').select('id,full_name,admission_no').in('id',ids);
+        if(studentError)throw studentError;
+        names=Object.fromEntries((students||[]).map(x=>[x.id,x.full_name+' ('+x.admission_no+')']));
+      }
+      if(!data.length){list.innerHTML='<div class="mf-leave-empty">'+(teacher?'No leave requests from your assigned classes yet.':'You have not submitted a leave application yet.')+'</div>';return;}
+      list.innerHTML=data.map(item=>{
+        const studentName=teacher?(names[item.student_id]||'Student #'+item.student_id):currentUser.name;
+        const actions=teacher?(item.status==='Pending'?`<div class="mf-leave-actions"><button class="mf-leave-accept" onclick="mfUpdateLeave('${item.id}','Approved')">✓ Accept</button><button class="mf-leave-decline" onclick="mfUpdateLeave('${item.id}','Declined')">✕ Decline</button></div>`:`<div class="mf-leave-actions"><button class="mf-leave-reset" onclick="mfUpdateLeave('${item.id}','Pending')">↺ Reset to Pending</button></div>`):'';
+        return `<article class="mf-leave-item"><div class="mf-leave-item-top"><div><strong>${escapeHTML(studentName)}</strong><div class="mf-leave-meta">${escapeHTML(item.leave_type)} · ${mfLeaveDate(item.from_date)} to ${mfLeaveDate(item.to_date)}</div></div>${mfLeaveStatus(item.status)}</div><div class="mf-leave-reason">${escapeHTML(item.reason)}</div><div class="mf-leave-meta">Submitted ${new Date(item.created_at).toLocaleDateString('en-IN')}</div>${actions}</article>`;
+      }).join('');
+    }catch(e){console.error('Leave loading:',e);list.textContent='Could not load leave requests: '+e.message;}
+  }
+  async function mfSubmitLeave(event){
+    event.preventDefault();
+    const status=document.getElementById('mfLeaveFormStatus');
+    if(!currentUser||currentUser.role!=='Student'||!window.mfesLeaveStudentId){status.textContent='Sign in with a student account first.';return;}
+    const type=document.getElementById('mfLeaveType').value,from=document.getElementById('mfLeaveFrom').value,to=document.getElementById('mfLeaveTo').value,reason=document.getElementById('mfLeaveReason').value.trim();
+    if(!type||!from||!to||!reason){status.textContent='Complete all fields.';return;}
+    if(to<from){status.textContent='End date cannot be before start date.';return;}
+    status.textContent='Submitting...';
+    try{
+      const {error}=await window.mfesLeaveDb.from('leave_requests').insert({student_id:window.mfesLeaveStudentId,leave_type:type,from_date:from,to_date:to,reason});
+      if(error)throw error;
+      document.getElementById('mfLeaveForm').reset();
+      status.textContent='Leave application submitted successfully.';
+      await mfRenderLeave();
+    }catch(e){console.error('Leave submission:',e);status.textContent='Submission failed: '+e.message;}
+  }
+  async function mfUpdateLeave(id,status){
+    if(!currentUser||currentUser.role!=='Teacher'||!['Approved','Declined','Pending'].includes(status))return;
+    try{
+      const {error}=await window.mfesLeaveDb.from('leave_requests').update({status,reviewed_at:status==='Pending'?null:new Date().toISOString()}).eq('id',id);
+      if(error)throw error;
+      await mfRenderLeave();
+    }catch(e){console.error('Leave review:',e);alert('Could not update leave: '+e.message);}
+  }
+  window.mfRenderLeave=mfRenderLeave;
+  window.mfSubmitLeave=mfSubmitLeave;
+  window.mfUpdateLeave=mfUpdateLeave;
+
+  // Expose only the page renderers needed by the navigation wrapper.
+  window.mfRenderLibrary = mfRenderLibrary;
+  window.mfRenderCalendar = mfRenderCalendar;
+  window.mfRenderHelpdeskRequests = mfRenderHelpdeskRequests;
+})();
+
+// Keep the existing PWA setup available when this file is placed in the PWA folder.
+// These are additive checks: existing manifest and icon links are not replaced.
+if(location.protocol!=="file:" && !document.querySelector('link[rel="manifest"]')){
+  const mfManifestLink=document.createElement("link");
+  mfManifestLink.rel="manifest";
+  mfManifestLink.href="./manifest.json";
+  document.head.appendChild(mfManifestLink);
+}
+if(!document.querySelector('link[rel="apple-touch-icon"]')){
+  const mfAppleIcon=document.createElement("link");
+  mfAppleIcon.rel="apple-touch-icon";
+  mfAppleIcon.href="./icons/apple-touch-icon.png";
+  document.head.appendChild(mfAppleIcon);
+}
+if(!document.querySelector('meta[name="theme-color"]')){
+  const mfTheme=document.createElement("meta");
+  mfTheme.name="theme-color";
+  mfTheme.content="#142b4a";
+  document.head.appendChild(mfTheme);
+}
+if(location.protocol!=="file:" && "serviceWorker" in navigator){
+  window.addEventListener("load",function(){
+    navigator.serviceWorker.register("./service-worker.js")
+      .catch(error=>console.error("MFESCAMPUS service worker registration failed:",error));
+  });
+}
+</script>
+
+
+
+
+<script>
+// Reliable direct form wiring for the three MFESCAMPUS save forms.
+// The handlers themselves validate, write to localStorage and refresh their tables.
+(function mfAttachDirectSaveHandlers(){
+  function attach(formId, handlerName, statusId, listId){
+    const form=document.getElementById(formId);
+    if(!form || typeof window[handlerName]!=="function")return;
+    // Remove any previous copy of this listener if this setup is run again.
+    if(form.__mfDirectSubmitHandler){
+      form.removeEventListener("submit",form.__mfDirectSubmitHandler);
+    }
+    const handler=window[handlerName];
+    const listener=function(event){
+      event.preventDefault();
+      try{
+        handler(event);
+        const status=document.getElementById(statusId);
+        if(status && /successfully/i.test(status.textContent||"")){
+          const list=document.getElementById(listId);
+          if(list){list.scrollIntoView({behavior:"smooth",block:"nearest"});}
+        }
+      }catch(error){
+        console.error("MFESCAMPUS save error:",error);
+        const status=document.getElementById(statusId);
+        if(status)status.textContent="Save failed. Please check the fields and try again.";
+      }
+    };
+    form.__mfDirectSubmitHandler=listener;
+    form.addEventListener("submit",listener);
+  }
+  attach("mfParentMessageForm","mfSendParentMessage","mfParentMessageStatus","mfParentSentList");
+  attach("mfFamilyReplyForm","mfSendFamilyMessage","mfFamilyReplyStatus","mfFamilyUpdatesList");
+  attach("mfBehaviourForm","mfSaveBehaviourReport","mfBehaviourStatus","mfBehaviourList");
+  attach("mfLeaveForm","mfSubmitLeave","mfLeaveFormStatus","mfLeaveList");
+})();
+
+</script>
+
+<script>
+window.mfSetCurrentUser = function(user){ currentUser = user; };
+window.mfGetCurrentUser = function(){ return currentUser; };
+window.mfEscape = function(value){ return escapeHTML(String(value ?? "")); };
+</script>
+
+
+<script>
+/* MFESCAMPUS Supabase integration — demo read-only stage.
+   Publishable key is safe in the browser with correctly tested RLS.
+   NEVER add a secret/service_role key here. */
+const MFES_SUPABASE_URL = "https://pzkjjqblnkfdrcscjdbp.supabase.co";
+const MFES_SUPABASE_KEY = "sb_publishable_VcDHhXB3WVwW05aXAFIwtw_d9z_cZMn";
+(function(){
+  let db, activeProfile, records={};
+  const $=id=>document.getElementById(id);
+  const safe=v=>window.mfEscape(v??'');
+  const err=(message)=>{const el=$('studentError');el.textContent=message;el.style.display='block';};
+  const clear=()=>{$('studentError').style.display='none';};
+  function client(){
+    if(!window.supabase?.createClient)throw Error('Supabase library could not load. Check your connection.');
+    return db ||= window.supabase.createClient(MFES_SUPABASE_URL,MFES_SUPABASE_KEY);
+  }
+  window.chooseRole=function(role){
+    selectedRole=role==='Administration'?'Administration':role==='Teacher'?'Teacher':'Student';
+    $('detailsLabel').textContent=selectedRole.toUpperCase()+' SIGN IN';
+    $('studentLoginStep').querySelector('.step-label').textContent=selectedRole.toUpperCase()+' ACCOUNT';
+    const student=selectedRole==='Student';
+    $('studentLoginStep').querySelector('.login-sub').textContent=student
+      ? 'Enter your admission number and school account password.'
+      : 'Enter your staff account email and password.';
+    $('studentLoginStep').querySelector('label').textContent=student?'Admission number':'Staff account email';
+    $('usernameInput').type=student?'text':'email';
+    $('usernameInput').inputMode=student?'numeric':'email';
+    $('usernameInput').placeholder=student?'e.g. 1762':selectedRole==='Administration'?'adminoffice@gmail.com':'Enter your teacher account email';
+    $('usernameInput').autocomplete=student?'off':'username';
+    $('usernameInput').value='';
+    $('passwordInput').value='';
+    $('detailsTitle').textContent='School account sign in';
+    $('detailsSubtitle').textContent='Your account type is verified securely by the database.';
+    $('teacherFields').classList.add('hidden');
+    $('schoolInput').value='MOUNT FLOWER ENGLISH SCHOOL, ULIYIL';
+    showLoginStep('detailsStep');
+  };
+  window.submitDetails=function(){
+    if(!$('schoolInput').value.trim()){$('detailsError').textContent='Enter your school name.';$('detailsError').style.display='block';return;}
+    $('detailsError').style.display='none';showLoginStep('studentLoginStep');
+  };
+  async function query(table,columns='*'){
+    const {data,error}=await db.from(table).select(columns);
+    if(error)throw Error(table+': '+error.message);
+    return data||[];
+  }
+  async function loadProfile(user){
+    const {data:p,error}=await db.from('profiles').select('id,role,student_id,teacher_id').eq('id',user.id).single();
+    if(error||!p)throw Error('No linked school profile was found for this account.');
+    const role=p.role==='teacher'?'Teacher':p.role==='student'?'Student':p.role==='admin'?'Administration':null;
+    if(!role)throw Error('Unknown account role.');
+    if(role!==selectedRole)throw Error('This is a '+role+' account. Choose '+role+' on the login screen.');
+    let person,classes=[];
+    if(role==='Administration'){person={full_name:'School Administration',subject:'School Office',teacher_code:'ADMIN'};}
+    else if(role==='Student'){
+      const {data,error}=await db.from('students').select('id,full_name,admission_no,class_id').eq('id',p.student_id).single();
+      if(error||!data)throw Error('Your student record is not linked correctly.');
+      person=data;
+    }else{
+      const {data,error}=await db.from('teachers').select('id,full_name,subject,teacher_code').eq('id',p.teacher_id).single();
+      if(error||!data)throw Error('Your teacher record is not linked correctly.');
+      person=data;
+      classes=(await query('teacher_classes','teacher_id,class_id')).filter(x=>x.teacher_id===p.teacher_id).map(x=>x.class_id);
+    }
+    return {role,person,classes,profile:p};
+  }
+  async function loadRecords(){
+    const role=activeProfile.role,person=activeProfile.person;
+    if(role==='Administration'){records={classes:[],subjects:[],teachers:[],assignments:[],timetable:[],announcements:[],marks:[],attendance:[],students:[]};return;}
+    const [allClasses,subjects,teachers,allAssignments,allTimetable,allAnnouncements,allMarks,allAttendance,allStudents]=await Promise.all([
+      query('classes','id,class_name'),query('subjects','id,subject_name,teacher_id'),query('teachers','id,full_name,subject'),
+      query('assignments','id,title,description,subject_id,class_id,due_date,teacher_id'),
+      query('timetable','id,class_id,day,period,subject_id,teacher_id,start_time,end_time'),
+      role==='Student'?query('announcements','id,title,message,target_class,created_date'):Promise.resolve([]),
+      query('marks','id,student_id,exam_name,subject_id,max_marks,marks_obtained,exam_date'),
+      query('attendance','id,student_id,attendance_date,status'),
+      role==='Teacher'?query('students','id,full_name,admission_no,class_id'):Promise.resolve([])
+    ]);
+    const allowed=role==='Student'?[person.class_id]:activeProfile.classes;
+    records={classes:allClasses,subjects,teachers,assignments:allAssignments.filter(x=>allowed.includes(x.class_id)),
+      timetable:allTimetable.filter(x=>allowed.includes(x.class_id)),announcements:allAnnouncements,
+      marks:allMarks.filter(x=>role==='Teacher'?allStudents.some(s=>s.id===x.student_id&&allowed.includes(s.class_id)):x.student_id===person.id),attendance:allAttendance.filter(x=>role==='Teacher'?allStudents.some(s=>s.id===x.student_id&&allowed.includes(s.class_id)):x.student_id===person.id),students:allStudents.filter(x=>allowed.includes(x.class_id))};
+    // The previous version called mfSetCloudData(), which was never defined.
+    // Database records are rendered directly by display() below.
+  }
+  function subject(id){return records.subjects?.find(s=>s.id===id)?.subject_name||'—';}
+  function teacher(id){return records.teachers?.find(t=>t.id===id)?.full_name||'—';}
+  function rows(id,html,empty='No records available.'){$(id).innerHTML=html||'<tr><td colspan="6" class="empty">'+safe(empty)+'</td></tr>';}
+  function display(){
+    const u=activeProfile,person=u.person;
+    window.mfesLeaveDb=db;
+    window.mfesLeaveStudentId=u.role==='Student'?person.id:null;
+    window.mfSetCurrentUser({role:u.role,id:u.profile.id,name:person.full_name,username:person.admission_no||person.teacher_code,
+      school:'MOUNT FLOWER ENGLISH SCHOOL, ULIYIL',subject:person.subject||'',classId:person.class_id||null});
+    window.enterApp();
+    if(u.role==='Administration'){document.getElementById('studentNavigation').style.display='none';document.getElementById('teacherNavigation').style.display='none';document.getElementById('adminNavigation').style.display='block';window.navigate('admin-dashboard');return;}
+    document.getElementById('adminNavigation').style.display='none';
+    const days=['Monday','Tuesday','Wednesday','Thursday','Friday'];
+    const tt=[...records.timetable].sort((a,b)=>days.indexOf(a.day)-days.indexOf(b.day)||a.period-b.period);
+    const today=new Intl.DateTimeFormat('en-US',{weekday:'long'}).format(new Date());
+    rows('dashboardTimetable',tt.filter(t=>t.day===today).map(t=>`<tr><td>${safe(t.start_time)}</td><td>${safe(subject(t.subject_id))}</td><td>${safe(teacher(t.teacher_id))}</td><td><span class="status blue">Scheduled</span></td></tr>`).join(''),'No classes scheduled today.');
+    const timetablePage=$('page-timetable').querySelector('table');
+    if(u.role==='Student') timetablePage.innerHTML='<thead><tr><th>DAY</th><th>PERIOD</th><th>TIME</th><th>SUBJECT</th><th>TEACHER</th></tr></thead><tbody>'+tt.map(t=>`<tr><td>${safe(t.day)}</td><td>${safe(t.period)}</td><td>${safe(t.start_time)}–${safe(t.end_time)}</td><td>${safe(subject(t.subject_id))}</td><td>${safe(teacher(t.teacher_id))}</td></tr>`).join('')+'</tbody>';
+    rows('assignmentTable',records.assignments.map(a=>`<tr><td><strong>${safe(a.title)}</strong></td><td>${safe(subject(a.subject_id))}</td><td>${safe(a.due_date)}</td><td><span class="status blue">Published</span></td><td>View only</td></tr>`).join(''));
+    $('assignmentCount').textContent=records.assignments.length+' assignments';
+    if(u.role==='Student'){
+      const attendance=records.attendance,marks=records.marks;
+      const present=attendance.filter(a=>a.status==='Present').length;
+      const average=marks.length?Math.round(marks.reduce((sum,m)=>sum+(Number(m.marks_obtained)/Number(m.max_marks))*100,0)/marks.length):null;
+      $('statOne').textContent=new Set(tt.map(t=>t.subject_id)).size;
+      $('statTwo').textContent=attendance.length?Math.round(present/attendance.length*100)+'%':'—';
+      $('statThree').textContent=records.assignments.length;
+      $('statFour').textContent=average===null?'—':average+'%';
+      const at=$('page-attendance');at.querySelectorAll('.stat-card h3').forEach((el,i)=>el.textContent=[attendance.length,present,attendance.filter(a=>a.status==='Absent').length,attendance.length?Math.round(present/attendance.length*100)+'%':'—'][i]);
+      at.querySelector('tbody').innerHTML=attendance.map(a=>`<tr><td>${safe(a.attendance_date)}</td><td>${safe(new Date(a.attendance_date+'T12:00:00').toLocaleDateString('en-US',{weekday:'long'}))}</td><td><span class="status ${a.status==='Present'?'green':'red'}">${safe(a.status)}</span></td></tr>`).join('');
+      const res=$('page-results');res.querySelectorAll('.stat-card h3')[0].textContent=average===null?'—':average+'%';
+      res.querySelectorAll('.stat-card h3')[1].textContent=new Set(marks.map(m=>m.subject_id)).size;
+      res.querySelectorAll('.stat-card h3')[2].textContent=marks.length?Math.round(Math.max(...marks.map(m=>100*Number(m.marks_obtained)/Number(m.max_marks))))+'%':'—';
+      res.querySelectorAll('.stat-card h3')[3].textContent='—';
+      res.querySelector('tbody').innerHTML=marks.map(m=>`<tr><td>${safe(subject(m.subject_id))}</td><td>${safe(m.marks_obtained)} / ${safe(m.max_marks)}</td><td>${safe(m.exam_name)}</td><td>${safe(m.exam_date)}</td></tr>`).join('');
+      $('dashboardAnnouncements').innerHTML=records.announcements.map(a=>`<div class="notice-item"><div><strong>${safe(a.title)}</strong><small>${safe(a.message)}</small></div></div>`).join('');
+      $('announcementsList').innerHTML=$('dashboardAnnouncements').innerHTML;
+      const progress=$('page-dashboard').querySelector('.two-col:last-child .panel:last-child');
+      if(progress){const heading=progress.querySelector('.panel-title');progress.innerHTML='';if(heading)progress.appendChild(heading);progress.insertAdjacentHTML('beforeend',marks.map(m=>`<div class="progress-row"><div class="progress-label"><span>${safe(subject(m.subject_id))}</span><span>${Math.round(100*Number(m.marks_obtained)/Number(m.max_marks))}%</span></div><div class="progress"><div style="width:${Math.min(100,Math.max(0,100*Number(m.marks_obtained)/Number(m.max_marks)))}%"></div></div></div>`).join('')||'<p class="small-muted">No marks published yet.</p>');}
+    }else{
+      $('teacherDashboardSchedule').innerHTML=tt.filter(t=>t.teacher_id===person.id).map(t=>`<tr><td>${safe(t.start_time)}</td><td>${safe(records.classes.find(c=>c.id===t.class_id)?.class_name)}</td><td>${safe(subject(t.subject_id))}</td><td>Scheduled</td></tr>`).join('');
+      rows('teacherTimetableBody',tt.filter(t=>t.teacher_id===person.id).map(t=>`<tr><td>${safe(t.day)}</td><td>${safe(t.start_time)}</td><td>${safe(records.classes.find(c=>c.id===t.class_id)?.class_name)}</td><td>${safe(subject(t.subject_id))}</td><td>—</td></tr>`).join(''));
+      $('page-my-classes').querySelector('.class-grid').innerHTML=u.classes.map(id=>{const c=records.classes.find(c=>c.id===id);return `<div class="class-card"><h3>${safe(c?.class_name)}</h3><p>${records.students.filter(s=>s.class_id===id).length} students</p></div>`;}).join('');
+      $('classDetails').innerHTML=records.students.map(s=>`<div class="student-row"><strong>${safe(s.full_name)}</strong><small>${safe(s.admission_no)}</small></div>`).join('');
+      $('attendanceClass').innerHTML=u.classes.map(id=>`<option value="${id}">${safe(records.classes.find(c=>c.id===id)?.class_name)}</option>`).join('');
+      $('marksClass').innerHTML=$('attendanceClass').innerHTML;
+      $('page-teacher-attendance').querySelector('button[onclick="saveAttendance()"]').disabled=false;
+      $('page-enter-marks').querySelector('button[onclick="saveMarks()"]').disabled=false;
+      $('addAssignmentBtn').disabled=false;
+      $('addAssignmentBtn').title='';
+      $('newAssignmentSubject').value=person.subject||'';
+      renderCloudAttendance();
+      renderCloudMarks();
+      $('teacherAssignmentStat').textContent=records.assignments.length;
+      $('teacherNoticeStat').textContent='—';
+      $('teacherDashboardAnnouncements').innerHTML='<p class="small-muted">Teacher announcement access has not yet been configured.</p>';
+      $('teacherAnnouncementsList').innerHTML=$('teacherDashboardAnnouncements').innerHTML;
+    }
+  }
+  window.finishLogin=async function(){
+    clear();
+    const loginId=$('usernameInput').value.trim(),password=$('passwordInput').value;
+    if(!loginId||!password){err('Enter your login details and password.');return;}
+    // Competition demo accounts only. A production school needs a protected
+    // server-side admission-number resolver rather than a public email convention.
+    let email=loginId;
+    if(selectedRole==='Student'){
+      if(!/^(1762|1763|1764|1765)$/.test(loginId)){
+        err('This demo currently supports admission numbers 1762–1765.');return;
+      }
+      email='student'+loginId+'@gmail.com';
+    }else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginId)){
+      err('Enter a valid staff email address.');return;
+    }
+    const btn=$('studentLoginStep').querySelector('.primary-btn');btn.disabled=true;btn.textContent='Signing in...';
+    try{
+      client();const {data,error}=await db.auth.signInWithPassword({email,password});if(error)throw error;
+      if(!data.user)throw Error('Authentication failed.');
+      activeProfile=await loadProfile(data.user);
+      if(selectedRole==='Student' && String(activeProfile.person.admission_no)!==loginId)
+        throw Error('This account is not linked to that admission number.');
+      await loadRecords();display();
+    }catch(e){console.error(e);err(e.message||'Sign-in failed.');if(db){try{await db.auth.signOut();}catch(_){}}}
+    finally{btn.disabled=false;btn.textContent='Done → Open MFESCAMPUS';}
+  };
+  const oldLogout=window.logout;
+  window.logout=async function(){if(db)await db.auth.signOut();activeProfile=null;records={};window.mfesLeaveDb=null;window.mfesLeaveStudentId=null;oldLogout();};
+  // Read the signed-in student's attendance directly, including after navigation.
+  // The database's row-level security must allow only their own records.
+  async function refreshStudentAttendance(){
+    if(activeProfile?.role!=='Student')return;
+    const studentId=activeProfile.person.id;
+    try{
+      const {data,error}=await db.from('attendance')
+        .select('id,student_id,attendance_date,status')
+        .eq('student_id',studentId)
+        .order('attendance_date',{ascending:false});
+      if(error)throw error;
+      const attendance=data||[];
+      records.attendance=attendance;
+      const present=attendance.filter(a=>a.status==='Present').length;
+      const absent=attendance.filter(a=>a.status==='Absent').length;
+      const rate=attendance.length?Math.round(present/attendance.length*100)+'%':'—';
+      const page=$('page-attendance');
+      page.querySelectorAll('.stat-card h3').forEach((el,i)=>{
+        el.textContent=[attendance.length,present,absent,rate][i];
+      });
+      const body=page.querySelector('tbody');
+      body.innerHTML=attendance.length?attendance.map(a=>
+        `<tr><td>${safe(a.attendance_date)}</td><td>${safe(new Date(a.attendance_date+'T12:00:00').toLocaleDateString('en-US',{weekday:'long'}))}</td><td><span class="status ${a.status==='Present'?'green':a.status==='Absent'?'red':'orange'}">${safe(a.status)}</span></td></tr>`
+      ).join(''):'<tr><td colspan="3">No attendance records yet.</td></tr>';
+      $('statTwo').textContent=rate;
+    }catch(e){
+      console.error('Student attendance could not load:',e);
+      showToast('Could not load attendance: '+e.message);
+    }
+  }
+  const oldNavigate=window.navigate;
+  const teacherPages=new Set(['teacher-dashboard','teacher-timetable','teacher-attendance','enter-marks','my-classes','teacher-announcements','my-profile','behaviour-reports','parent-communication']);
+  const studentPages=new Set(['dashboard','timetable','attendance','results','teachers','events','announcements','my-behaviour','family-updates']);
+  window.navigate=function(page){
+    if(!activeProfile)return;
+    if(activeProfile.role==='Student'&&teacherPages.has(page))return;
+    if(activeProfile.role==='Teacher'&&studentPages.has(page))return;
+    oldNavigate(page);
+    if(page==='attendance' && activeProfile.role==='Student')refreshStudentAttendance();
+  };
+  const teacherReady=()=>activeProfile?.role==='Teacher'&&activeProfile.classes.length>0;
+  const selectedClass=id=>Number($(id).value);
+  const currentSubject=()=>records.subjects.find(s=>s.teacher_id===activeProfile?.person.id || s.subject_name.toLowerCase()===String(activeProfile?.person.subject||'').toLowerCase());
+  const getClassStudents=id=>records.students.filter(s=>s.class_id===id);
+  const localDate=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');};
+  function renderCloudAttendance(){
+    if(!teacherReady())return;
+    const id=selectedClass('attendanceClass'),date=$('attendanceDate').value||localDate();
+    $('attendanceDate').value=date;
+    const students=getClassStudents(id);
+    $('attendanceStudentList').innerHTML=students.map(s=>{
+      const saved=records.attendance.find(a=>a.student_id===s.id&&a.attendance_date===date)?.status||'';
+      const current=attendanceRecords[`${id}_${date}`]?.[s.id]||saved;
+      return `<div class="student-row"><div class="student-info"><div class="avatar">${safe(s.full_name.slice(0,1))}</div><div><strong>${safe(s.full_name)}</strong><small>${safe(s.admission_no)}</small></div></div><div class="attendance-actions"><button class="present-btn ${current==='Present'?'selected':''}" onclick="setAttendance(${s.id},'Present')">Present</button><button class="absent-btn ${current==='Absent'?'selected':''}" onclick="setAttendance(${s.id},'Absent')">Absent</button></div></div>`;
+    }).join('')||'<p class="small-muted">No students in this assigned class.</p>';
+    const statuses=students.map(s=>attendanceRecords[`${id}_${date}`]?.[s.id]||records.attendance.find(a=>a.student_id===s.id&&a.attendance_date===date)?.status);
+    $('attendanceSummary').textContent=statuses.filter(x=>x==='Present').length+' present · '+statuses.filter(x=>x==='Absent').length+' absent';
+  }
+  window.renderAttendanceStudents=renderCloudAttendance;
+  window.setAttendance=function(studentId,status){
+    if(!teacherReady())return;
+    const id=selectedClass('attendanceClass'),date=$('attendanceDate').value;
+    if(!getClassStudents(id).some(s=>s.id===studentId))return;
+    const key=`${id}_${date}`;attendanceRecords[key]??={};attendanceRecords[key][studentId]=status;
+    renderCloudAttendance();
+  };
+  function renderCloudMarks(){
+    if(!teacherReady())return;
+    const id=selectedClass('marksClass'),exam=$('marksExam').value,sub=currentSubject();
+    $('marksSubjectLabel').textContent=sub?.subject_name||'No linked subject';
+    $('marksStudentList').innerHTML=getClassStudents(id).map(s=>{
+      const existing=records.marks.find(m=>m.student_id===s.id&&m.subject_id===sub?.id&&m.exam_name===exam);
+      return `<tr><td><strong>${safe(s.full_name)}</strong></td><td>${safe(s.admission_no)}</td><td><input class="mark-input" type="number" min="0" max="100" step="0.01" id="cloud-mark-${s.id}" value="${existing?.marks_obtained??''}" placeholder="0–100"></td></tr>`;
+    }).join('')||'<tr><td colspan="3">No students in this class.</td></tr>';
+  }
+  window.renderMarksStudents=renderCloudMarks;
+  async function saveRows(table,rows,conflict){
+    const {error}=await db.from(table).upsert(rows,{onConflict:conflict});
+    if(error)throw error;
+    await loadRecords();
+    display();
+    showToast('Saved successfully.');
+  }
+  window.saveAttendance=async function(){
+    if(!teacherReady())return showToast('No assigned class.');
+    const id=selectedClass('attendanceClass'),date=$('attendanceDate').value,students=getClassStudents(id);
+    if(!students.length)return showToast('No students in this class.');
+    const rows=students.map(s=>({id:records.attendance.find(a=>a.student_id===s.id&&a.attendance_date===date)?.id||crypto.randomUUID(),student_id:s.id,attendance_date:date,status:attendanceRecords[`${id}_${date}`]?.[s.id]||records.attendance.find(a=>a.student_id===s.id&&a.attendance_date===date)?.status}));
+    if(rows.some(r=>!r.status))return showToast('Mark every student before saving.');
+    try{await saveRows('attendance',rows,'student_id,attendance_date');}catch(e){console.error(e);showToast('Attendance not saved: '+e.message);}
+  };
+  window.saveMarks=async function(){
+    if(!teacherReady())return showToast('No assigned class.');
+    const sub=currentSubject(),students=getClassStudents(selectedClass('marksClass')),exam=$('marksExam').value;
+    if(!sub)return showToast('No subject linked to this teacher.');
+    if(!students.length)return showToast('No students in this class.');
+    const rows=[];
+    for(const s of students){
+      const value=$(`cloud-mark-${s.id}`).value.trim();
+      if(value==='')continue;
+      if(!Number.isFinite(Number(value))||Number(value)<0||Number(value)>100)return showToast('Marks must be between 0 and 100.');
+      const existing=records.marks.find(m=>m.student_id===s.id&&m.subject_id===sub.id&&m.exam_name===exam);
+      rows.push({id:existing?.id||crypto.randomUUID(),student_id:s.id,exam_name:exam,subject_id:sub.id,max_marks:100,marks_obtained:Number(value),exam_date:localDate()});
+    }
+    if(!rows.length)return showToast('Enter at least one mark.');
+    try{const {error}=await db.from('marks').upsert(rows,{onConflict:'id'});if(error)throw error;await loadRecords();display();showToast('Marks saved successfully.');}catch(e){console.error(e);showToast('Marks not saved: '+e.message);}
+  };
+  window.openAssignmentModal=function(){
+    if(!teacherReady())return showToast('No assigned class.');
+    $('newAssignmentSubject').value=currentSubject()?.subject_name||activeProfile.person.subject||'';
+    if(!$('assignmentClassCloud')){
+      const wrap=document.createElement('div');wrap.className='field';wrap.innerHTML='<label>Assign to class</label><select id="assignmentClassCloud"></select>';
+      $('newAssignmentTitle').closest('.field').before(wrap);
+    }
+    $('assignmentClassCloud').innerHTML=activeProfile.classes.map(id=>`<option value="${id}">${safe(records.classes.find(c=>c.id===id)?.class_name)}</option>`).join('');
+    $('assignmentModal').classList.add('show');
+  };
+  window.saveAssignment=async function(){
+    if(!teacherReady())return showToast('No assigned class.');
+    const title=$('newAssignmentTitle').value.trim(),due=$('newAssignmentDate').value,sub=currentSubject();
+    if(!title||!due||!sub)return showToast('Enter a title and date; teacher must have a linked subject.');
+    const row={id:crypto.randomUUID(),title,subject_id:sub.id,class_id:Number($('assignmentClassCloud').value),teacher_id:activeProfile.person.id,assigned_date:localDate(),due_date:due,description:''};
+    try{
+      const {error}=await db.from('assignments').insert(row);if(error)throw error;
+      await loadRecords();display();closeAssignmentModal();$('newAssignmentTitle').value='';$('newAssignmentDate').value='';
+      showToast('Assignment published successfully.');
+    }catch(e){console.error(e);showToast('Assignment not saved: '+e.message);}
+  };
+  $('attendanceClass').addEventListener('change',renderCloudAttendance);
+  $('attendanceDate').addEventListener('change',renderCloudAttendance);
+  $('marksClass').addEventListener('change',renderCloudMarks);
+  $('marksExam').addEventListener('change',renderCloudMarks);
+  // Clear the previous demo-only session; Supabase authentication is authoritative.
+  try{localStorage.removeItem('mfescampus_profile');}catch(e){}
+})();
+</script>
+
+<script id="mfescampus-admin-database">
+(function(){
+  const esc=x=>window.mfEscape(String(x??''));
+  const db=()=>{if(!window.mfesLeaveDb||!window.mfGetCurrentUser())throw Error('Please sign in first.');return window.mfesLeaveDb;};
+  const me=()=>window.mfGetCurrentUser();
+  const msg=(id,text)=>{const el=document.getElementById(id);if(el)el.textContent=text;};
+  const fmt=x=>new Date(x).toLocaleString('en-IN');
+  const card=x=>`<div class="student-row"><div><strong>${esc(x.title||x.category||x.request_type)}</strong><div class="small-muted">${esc(x.student_name||'Student')} · ${esc(x.admission_no||'')} · ${esc(x.status)} · ${esc(fmt(x.created_at))}</div><div style="margin-top:8px;font-size:12px;white-space:pre-wrap">${esc(x.message||x.details||'')}</div>${x.admin_reply?`<p class="small-muted" style="margin-top:8px"><b>Administration:</b> ${esc(x.admin_reply)}</p>`:''}</div></div>`;
+  async function studentId(){const {data,error}=await db().from('profiles').select('student_id').eq('id',me().id).single();if(error||!data?.student_id)throw Error('Student profile not found.');return data.student_id;}
+  async function createRequest(type,title,details){const sid=await studentId();const {error}=await db().from('admin_requests').insert({student_id:sid,request_type:type,title,details});if(error)throw error;}
+  window.mfRequestTransportShift=async function(){
+    const el=document.getElementById('mfTransportShiftStatus');
+    try{const bus=document.getElementById('mfTransportShiftBus').value,stop=document.getElementById('mfTransportShiftStop').value;
+      if(!bus||!stop)throw Error('Select a bus and boarding place.');
+      await createRequest('transport','Bus shifting request',JSON.stringify({bus,stop}));el.textContent='Bus shift request submitted successfully. Await administration approval.';
+    }catch(e){el.textContent='Request failed: '+e.message;}
+  };
+  // Keep the existing student helpdesk form but store its submissions in Supabase.
+  const help=document.getElementById('mfHelpdeskForm');
+  if(help){help.addEventListener('submit',async e=>{e.preventDefault();e.stopImmediatePropagation();try{
+    const cat=document.getElementById('mfHelpCategory').value,title=document.getElementById('mfHelpSubject').value.trim(),body=document.getElementById('mfHelpMessage').value.trim();
+    if(!cat||!title||!body)throw Error('Complete all fields.');
+    await createRequest('helpdesk',cat+' — '+title,body);help.reset();window.showToast?.('Request submitted successfully.');await renderStudent('helpdesk');
+  }catch(err){window.showToast?.('Request failed: '+err.message);}},true);}
+  const fee=document.getElementById('mfFeeEnquiryForm');
+  if(fee)fee.addEventListener('submit',async e=>{e.preventDefault();try{const v=document.getElementById('mfFeeEnquiryText').value.trim();if(!v)throw Error('Enter a question.');await createRequest('fees','Fee enquiry',v);fee.reset();window.showToast?.('Fee enquiry submitted successfully.');await renderStudent('fees');}catch(err){window.showToast?.('Request failed: '+err.message);}});
+  async function renderStudent(type){if(me()?.role!=='Student')return;const target=type==='fees'?'mfFeeEnquiryList':'mfHelpdeskRequests';const el=document.getElementById(target);if(!el)return;el.textContent='Loading requests...';try{const {data,error}=await db().from('admin_requests').select('id,request_type,title,details,status,admin_reply,created_at').eq('request_type',type).order('created_at',{ascending:false});if(error)throw error;el.innerHTML=data.length?data.map(x=>card({...x,message:x.details})).join(''):'<p class="small-muted">No requests yet.</p>';}catch(e){el.textContent='Unable to load requests: '+e.message;}}
+  async function renderAdmin(type){if(me()?.role!=='Administration')return;const el=document.getElementById(type==='transport'?'mfAdminTransportList':type==='fees'?'mfAdminFeesList':type==='helpdesk'?'mfAdminHelpdeskList':'mfAdminSummary');if(!el)return;el.textContent='Loading requests...';try{
+    const {data,error}=await db().from('admin_requests').select('id,student_id,request_type,title,details,status,admin_reply,created_at').order('created_at',{ascending:false});if(error)throw error;
+    const ids=[...new Set(data.map(x=>x.student_id))];let students=[];if(ids.length){const res=await db().from('students').select('id,admission_no,full_name').in('id',ids);if(res.error)throw res.error;students=res.data||[];}
+    const rows=data.filter(x=>type==='all'||x.request_type===type).map(x=>({...x,student_name:students.find(s=>s.id===x.student_id)?.full_name,admission_no:students.find(s=>s.id===x.student_id)?.admission_no}));
+    el.innerHTML=rows.length?rows.map(x=>`<div class="panel" style="margin:10px 0">${card({...x,message:x.details})}<div class="form-grid"><div class="field"><label>Status</label><select id="admin-status-${x.id}"><option ${x.status==='Pending'?'selected':''}>Pending</option><option ${x.status==='Approved'?'selected':''}>Approved</option><option ${x.status==='Declined'?'selected':''}>Declined</option><option ${x.status==='Resolved'?'selected':''}>Resolved</option></select></div><div class="field"><label>Reply</label><input id="admin-reply-${x.id}" maxlength="600" value="${esc(x.admin_reply||'')}" placeholder="Reply to student"></div></div><button class="action-btn" data-admin-save="${x.id}">Save response</button></div>`).join(''):'<p class="small-muted">No requests found.</p>';
+    el.querySelectorAll('[data-admin-save]').forEach(btn=>btn.addEventListener('click',()=>saveAdmin(btn.dataset.adminSave,type)));
+  }catch(e){el.textContent='Unable to load administration requests: '+e.message;}}
+  async function saveAdmin(id,type){try{const status=document.getElementById('admin-status-'+id).value,reply=document.getElementById('admin-reply-'+id).value.trim();if(type==='transport' && status==='Approved' && window.mfApplyApprovedTransport)await window.mfApplyApprovedTransport(id);const {error}=await db().from('admin_requests').update({status,admin_reply:reply,updated_at:new Date().toISOString()}).eq('id',id);if(error)throw error;window.showToast?.('Response saved successfully.');renderAdmin(type);}catch(e){window.showToast?.('Save failed: '+e.message);}}
+  const original=window.navigate;window.navigate=function(page){original(page);if(page==='admin-dashboard')renderAdmin('all');if(page==='admin-transport')renderAdmin('transport');if(page==='admin-helpdesk')renderAdmin('helpdesk');if(page==='admin-fees')renderAdmin('fees');if(page==='fees')renderStudent('fees');if(page==='helpdesk')renderStudent('helpdesk');};
+})();
+</script>
+<script id="mfescampus-management-upgrade">
+(function(){
+'use strict';
+const db=()=>window.mfesLeaveDb;
+const me=()=>window.mfGetCurrentUser?.();
+const esc=x=>window.mfEscape(String(x??''));
+const money=x=>'₹'+Number(x||0).toLocaleString('en-IN',{maximumFractionDigits:2});
+const set=(id,html)=>{const e=document.getElementById(id);if(e)e.innerHTML=html;};
+const notify=x=>window.showToast?.(x);
+const req=async(q)=>{const {data,error}=await q;if(error)throw error;return data||[];};
+const error=(id,e)=>set(id,'<p class="small-muted">'+esc(e.message||e)+'</p>');
+let students=[],feeRows=[];
+async function loadStudents(){students=await req(db().from('students').select('id,admission_no,full_name,class_id').order('admission_no'));return students;}
+async function loadDashboard(){
+ try{
+ const [ss,ts,requests,attendance]=await Promise.all([
+ req(db().from('students').select('id')),
+ req(db().from('teachers').select('id')),
+ req(db().from('admin_requests').select('id,request_type,status,created_at').order('created_at',{ascending:false})),
+ req(db().from('attendance').select('student_id,status,attendance_date').order('attendance_date',{ascending:false}).limit(2000)).catch(()=>[])
+ ]);
+ const pending=requests.filter(x=>x.status==='Pending').length;
+ const types=['transport','helpdesk','fees'];
+ set('mfAdminKpis','<div class="mf-addon-grid">'+[['Students',ss.length],['Teachers',ts.length],['Pending requests',pending],['Bus requests',requests.filter(x=>x.request_type==='transport').length],['Fee enquiries',requests.filter(x=>x.request_type==='fees').length],['Attendance entries',attendance.length]].map(([a,b])=>'<div class="mf-addon-card"><small>'+esc(a)+'</small><strong>'+esc(b)+'</strong></div>').join('')+'</div>');
+ const max=Math.max(1,...types.map(t=>requests.filter(x=>x.request_type===t).length));
+ set('mfAdminCharts',types.map(t=>{const n=requests.filter(x=>x.request_type===t).length;return '<div style="margin:12px 0"><div class="small-muted">'+esc(t.toUpperCase())+' · '+n+'</div><div style="background:#e8edf7;border-radius:12px;overflow:hidden;height:13px"><div style="background:#3767e8;width:'+n/max*100+'%;height:100%"></div></div></div>';}).join('')+'<p class="small-muted">Counts reflect saved records. Attendance entry count is limited to the most recent 2,000 entries.</p>');
+ }catch(e){error('mfAdminKpis',e);}
+}
+async function directory(){try{
+ await loadStudents();
+ const [classes,attendance]=await Promise.all([req(db().from('classes').select('id,class_name')),req(db().from('attendance').select('student_id,status')).catch(()=>[])]);
+ const input=document.getElementById('mfStudentSearch'),out=document.getElementById('mfStudentDirectory');
+ const draw=()=>{const term=input.value.trim().toLowerCase(),rows=students.filter(s=>[s.admission_no,s.full_name].some(x=>String(x||'').toLowerCase().includes(term))).slice(0,60);
+ out.innerHTML='<p class="small-muted">'+rows.length+' matching students (showing up to 60)</p>'+rows.map(s=>{const a=attendance.filter(x=>x.student_id===s.id),present=a.filter(x=>x.status==='Present').length;return '<div class="student-row"><div><strong>'+esc(s.full_name)+'</strong><div class="small-muted">Admission '+esc(s.admission_no)+' · '+esc(classes.find(c=>c.id===s.class_id)?.class_name||'Class not set')+'</div><div class="small-muted">Attendance: '+present+' present / '+a.length+' entries'+(a.length?' ('+Math.round(present/a.length*100)+'%)':'')+'</div></div></div>';}).join('');};
+ input.oninput=draw;draw();
+ }catch(e){error('mfStudentDirectory',e);}}
+async function feeAdmin(){try{
+ await loadStudents();feeRows=await req(db().from('student_fee_records').select('*').order('created_at',{ascending:false}));
+ const select=document.getElementById('mfFeeStudent');select.innerHTML=students.map(s=>'<option value="'+s.id+'">'+esc(s.admission_no)+' · '+esc(s.full_name)+'</option>').join('');
+ drawFees();
+ }catch(e){error('mfAdminFeeRecords',e);}}
+function drawFees(){set('mfAdminFeeRecords',feeRows.length?feeRows.map(f=>{const s=students.find(x=>x.id===f.student_id);return '<div class="panel" style="margin:12px 0"><strong>'+esc(s?.full_name||f.student_id)+' · '+esc(f.description)+'</strong><p class="small-muted">Admission '+esc(s?.admission_no||'')+' · Due '+money(f.amount_due)+' · Paid '+money(f.amount_paid)+' · Balance '+money(Math.max(0,f.amount_due-f.amount_paid))+' · Due date '+esc(f.due_date||'Not set')+'</p><div class="form-grid"><div class="field"><label>Paid amount (₹)</label><input type="number" min="0" step="0.01" id="mf-paid-'+f.id+'" value="'+Number(f.amount_paid)+'"></div><div class="field"><label>Record status</label><select id="mf-feestatus-'+f.id+'">'+['Pending','Partially Paid','Paid'].map(v=>'<option '+(v===f.status?'selected':'')+'>'+v+'</option>').join('')+'</select></div></div><button class="action-btn" data-fee-save="'+f.id+'">Update fee record</button></div>';}).join(''):'<p class="small-muted">No official fee records yet. Add one above.</p>');
+ document.querySelectorAll('[data-fee-save]').forEach(b=>b.onclick=async()=>{try{const f=feeRows.find(x=>x.id===b.dataset.feeSave),paid=Number(document.getElementById('mf-paid-'+f.id).value),status=document.getElementById('mf-feestatus-'+f.id).value;if(!Number.isFinite(paid)||paid<0||paid>f.amount_due)throw Error('Paid amount must be between zero and the amount due.');await req(db().from('student_fee_records').update({amount_paid:paid,status}).eq('id',f.id).select());notify('Fee record updated.');await feeAdmin();}catch(e){notify('Unable to update: '+e.message);}});
+}
+document.getElementById('mfFeeCreate').onclick=async()=>{const status=document.getElementById('mfFeeRecordsStatus');try{
+ const student_id=Number(document.getElementById('mfFeeStudent').value),description=document.getElementById('mfFeeDescription').value.trim(),amount_due=Number(document.getElementById('mfFeeDue').value),amount_paid=Number(document.getElementById('mfFeePaid').value||0),due_date=document.getElementById('mfFeeDueDate').value||null;
+ if(!student_id||!description||!Number.isFinite(amount_due)||amount_due<0||!Number.isFinite(amount_paid)||amount_paid<0||amount_paid>amount_due)throw Error('Enter a student, description and valid amounts.');
+ const statusName=amount_paid===amount_due?'Paid':amount_paid>0?'Partially Paid':'Pending';
+ await req(db().from('student_fee_records').insert({student_id,description,amount_due,amount_paid,due_date,status:statusName}).select());status.textContent='Fee record added.';await feeAdmin();
+ }catch(e){status.textContent='Could not add fee: '+e.message;}};
+async function studentFees(){try{const profile=await req(db().from('profiles').select('student_id').eq('id',me().id));const sid=profile[0]?.student_id;if(!sid)throw Error('Student profile not found');const rows=await req(db().from('student_fee_records').select('*').eq('student_id',sid).order('created_at',{ascending:false}));set('mfStudentFeeRecords',rows.length?rows.map(f=>'<div class="student-row"><div><strong>'+esc(f.description)+'</strong><div class="small-muted">Due '+money(f.amount_due)+' · Paid '+money(f.amount_paid)+' · Balance '+money(Math.max(0,f.amount_due-f.amount_paid))+' · '+esc(f.status)+'</div></div></div>').join(''):'<p class="small-muted">No official fee records have been added for your account yet. Sample amounts below are not official.</p>');}catch(e){error('mfStudentFeeRecords',e);}}
+async function studentTransport(){try{const profile=await req(db().from('profiles').select('student_id').eq('id',me().id));const sid=profile[0]?.student_id;if(!sid)throw Error('Student profile not found');const [rows,requests]=await Promise.all([req(db().from('student_transport_assignments').select('*').eq('student_id',sid)),req(db().from('admin_requests').select('title,details,status,created_at').eq('request_type','transport').eq('student_id',sid).order('created_at',{ascending:false}).limit(5))]);const r=rows[0];set('mfApprovedTransport',r?'<strong>'+esc(r.bus_number)+'</strong> · Boarding at '+esc(r.boarding_stop)+'<p class="small-muted">Last approved '+esc(new Date(r.updated_at).toLocaleString('en-IN'))+'</p>':'<p class="small-muted">No approved bus shift is on record. Your local demo transport choices are not official.</p>');set('mfStudentTransportRequests','<h3 style="margin:12px 0">Recent shift requests</h3>'+(requests.length?requests.map(x=>'<div class="student-row"><div><strong>'+esc(x.status)+'</strong><div class="small-muted">'+esc(x.details)+' · '+esc(new Date(x.created_at).toLocaleDateString('en-IN'))+'</div></div></div>').join(''):'<p class="small-muted">No shift requests submitted.</p>'));}catch(e){error('mfApprovedTransport',e);}}
+window.mfApplyApprovedTransport=async function(id){const rows=await req(db().from('admin_requests').select('id,student_id,details,request_type').eq('id',id));const r=rows[0];if(!r||r.request_type!=='transport')throw Error('Transport request not found');let info;try{info=JSON.parse(r.details);}catch{throw Error('Transport request details are not valid JSON.');}if(!/^Bus (0[1-9]|1[0-7])$/.test(info.bus)||typeof info.stop!=='string'||!info.stop.trim())throw Error('Invalid bus or stop on this request.');await req(db().from('student_transport_assignments').upsert({student_id:r.student_id,bus_number:info.bus,boarding_stop:info.stop,approved_request_id:r.id,updated_at:new Date().toISOString()},{onConflict:'student_id'}).select());};
+const previous=window.navigate;
+window.navigate=function(page){previous(page);const role=me()?.role;if(role==='Administration'){
+ if(page==='admin-dashboard')loadDashboard();if(page==='admin-students')directory();if(page==='admin-fee-records')feeAdmin();
+ }else if(role==='Student'){
+ if(page==='fees')studentFees();if(page==='transport')studentTransport();
+ }};
+})();
+</script>
+<script id="mfescampus-gate-management">
+(function(){
+'use strict';
+const db=()=>window.mfesLeaveDb;
+const me=()=>window.mfGetCurrentUser?.();
+const esc=x=>window.mfEscape(String(x??''));
+const el=id=>document.getElementById(id);
+const put=(id,html)=>{if(el(id))el(id).innerHTML=html;};
+const msg=(id,value)=>{if(el(id))el(id).textContent=value;};
+const query=async q=>{const {data,error}=await q;if(error)throw error;return data||[];};
+const today=()=>{const d=new Date();return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');};
+const timeToMinutes=t=>{const [h,m]=String(t).slice(0,5).split(':').map(Number);return h*60+m;};
+const niceTime=t=>String(t||'').slice(0,5);
+const niceDate=d=>String(d||'');
+const card=(content)=>'<div class="student-row" style="margin:10px 0"><div>'+content+'</div></div>';
+const sid=async()=>{const rows=await query(db().from('profiles').select('student_id').eq('id',me().id).limit(1));if(!rows[0]?.student_id)throw Error('Linked student profile not found.');return rows[0].student_id;};
+async function studentsFor(rows){const ids=[...new Set(rows.map(x=>x.student_id))];if(!ids.length)return {};const data=await query(db().from('students').select('id,full_name,admission_no').in('id',ids));return Object.fromEntries(data.map(s=>[s.id,s]));}
+async function loadAdmin(){if(me()?.role!=='Administration')return;try{
+ const [lates,exits]=await Promise.all([
+ query(db().from('student_late_arrivals').select('*').order('arrival_date',{ascending:false}).limit(100)),
+ query(db().from('student_early_departures').select('*').order('created_at',{ascending:false}).limit(100))]);
+ const names=await studentsFor([...lates,...exits]);
+ put('mfGateLateList',lates.length?lates.map(r=>card('<strong>'+esc(names[r.student_id]?.full_name||'Student')+' · '+esc(names[r.student_id]?.admission_no||'')+'</strong><div class="small-muted">'+esc(r.arrival_date)+' · Start '+esc(niceTime(r.school_start_time))+' · Arrived '+esc(niceTime(r.arrival_time))+' · '+esc(r.minutes_late)+' minutes late</div><div class="small-muted">'+esc(r.reason||'No reason supplied')+'</div>')).join(''):'<p class="small-muted">No late arrivals recorded.</p>');
+ put('mfGateExitList',exits.length?exits.map(r=>'<div class="panel" style="margin:12px 0"><strong>'+esc(names[r.student_id]?.full_name||'Student')+' · '+esc(names[r.student_id]?.admission_no||'')+'</strong><p class="small-muted">Requested: '+esc(niceDate(r.departure_date))+' at '+esc(niceTime(r.requested_time))+' · Guardian: '+esc(r.guardian_name)+'</p><p>'+esc(r.reason)+'</p><div class="form-grid"><div class="field"><label>Decision</label><select id="mf-gate-status-'+r.id+'">'+['Pending','Approved','Declined'].map(v=>'<option value="'+v+'" '+(r.status===v?'selected':'')+'>'+v+'</option>').join('')+'</select></div><div class="field"><label>Actual exit time (only after leaving)</label><input type="time" id="mf-gate-actual-'+r.id+'" value="'+esc(niceTime(r.actual_exit_time))+'"></div></div><div class="field"><label>Office note</label><input maxlength="600" id="mf-gate-note-'+r.id+'" value="'+esc(r.admin_note||'')+'" placeholder="Guardian verified by office, etc."></div><button class="action-btn" type="button" data-gate-save="'+r.id+'">Save decision</button></div>').join(''):'<p class="small-muted">No early departure requests.</p>');
+ el('mfGateExitList').querySelectorAll('[data-gate-save]').forEach(b=>b.onclick=async()=>{const id=b.dataset.gateSave;try{const status=el('mf-gate-status-'+id).value,actual=el('mf-gate-actual-'+id).value||null,note=el('mf-gate-note-'+id).value.trim();if(actual&&status!=='Approved')throw Error('Only approved requests may have an actual exit time.');if(status==='Approved'&&!note)throw Error('Record how the guardian was verified in the office note before approval.');await query(db().from('student_early_departures').update({status,actual_exit_time:actual,admin_note:note,reviewed_by:me().id,reviewed_at:new Date().toISOString()}).eq('id',id).select('id'));window.showToast?.('Departure decision saved.');await loadAdmin();}catch(e){window.showToast?.('Could not save: '+e.message);}});
+ }catch(e){msg('mfGateLateList','Could not load late arrivals: '+e.message);msg('mfGateExitList','Could not load requests: '+e.message);}}
+async function loadStudent(){if(me()?.role!=='Student')return;try{const studentId=await sid();const [lates,exits]=await Promise.all([
+ query(db().from('student_late_arrivals').select('*').eq('student_id',studentId).order('arrival_date',{ascending:false}).limit(40)),
+ query(db().from('student_early_departures').select('*').eq('student_id',studentId).order('created_at',{ascending:false}).limit(40))]);
+ put('mfGateMyLates',lates.length?lates.map(r=>card('<strong>'+esc(r.arrival_date)+'</strong><div class="small-muted">Arrived '+esc(niceTime(r.arrival_time))+' · '+esc(r.minutes_late)+' minutes late</div><div class="small-muted">'+esc(r.reason||'No reason noted')+'</div>')).join(''):'<p class="small-muted">No late arrivals recorded.</p>');
+ put('mfGateMyExits',exits.length?exits.map(r=>card('<strong>'+esc(r.departure_date)+' at '+esc(niceTime(r.requested_time))+'</strong><div class="small-muted">Status: '+esc(r.status)+' · Guardian: '+esc(r.guardian_name)+'</div><div>'+esc(r.reason)+'</div><div class="small-muted">Office note: '+esc(r.admin_note||'Not reviewed yet')+(r.actual_exit_time?' · Actual exit: '+esc(niceTime(r.actual_exit_time)):'')+'</div>')).join(''):'<p class="small-muted">No early departure requests yet.</p>');
+ }catch(e){msg('mfGateMyExits','Unable to load requests: '+e.message);msg('mfGateMyLates','Unable to load late arrivals: '+e.message);}}
+if(el('mfGateLateForm'))el('mfGateLateForm').addEventListener('submit',async e=>{e.preventDefault();try{if(me()?.role!=='Administration')throw Error('Administration login required.');const admission=el('mfGateAdmission').value.trim(),date=el('mfGateDate').value,start=el('mfGateStart').value,arrival=el('mfGateArrival').value,reason=el('mfGateReason').value.trim();if(!admission||!date||!start||!arrival)throw Error('Fill in all required fields.');const minutes=timeToMinutes(arrival)-timeToMinutes(start);if(minutes<=0)throw Error('Arrival must be later than school start time.');const matches=await query(db().from('students').select('id,admission_no').eq('admission_no',admission).limit(1));if(!matches.length)throw Error('Admission number not found.');await query(db().from('student_late_arrivals').upsert({student_id:matches[0].id,arrival_date:date,school_start_time:start,arrival_time:arrival,minutes_late:minutes,reason,recorded_by:me().id},{onConflict:'student_id,arrival_date'}).select('id'));msg('mfGateLateStatus','Late arrival saved: '+minutes+' minutes late.');await loadAdmin();}catch(err){msg('mfGateLateStatus','Could not save: '+err.message);}});
+if(el('mfGateExitForm'))el('mfGateExitForm').addEventListener('submit',async e=>{e.preventDefault();try{if(me()?.role!=='Student')throw Error('Student login required.');const date=el('mfGateExitDate').value,time=el('mfGateExitTime').value,guardian=el('mfGateGuardian').value.trim(),reason=el('mfGateExitReason').value.trim();if(!date||!time||!guardian||!reason)throw Error('Complete all fields.');if(date<today())throw Error('Choose today or a future date.');await query(db().from('student_early_departures').insert({student_id:await sid(),departure_date:date,requested_time:time,guardian_name:guardian,reason}).select('id'));el('mfGateExitForm').reset();msg('mfGateExitStatus','Request sent. Administration must verify guardian permission before any departure.');await loadStudent();}catch(err){msg('mfGateExitStatus','Could not send request: '+err.message);}});
+if(el('mfGateDate'))el('mfGateDate').value=today();
+if(el('mfGateExitDate')){el('mfGateExitDate').min=today();el('mfGateExitDate').value=today();}
+const prev=window.navigate;
+window.navigate=function(page){prev(page);if(page==='admin-gate'&&me()?.role==='Administration')loadAdmin();if(page==='student-gate'&&me()?.role==='Student')loadStudent();};
+})();
+</script>
+</body>
+</html>
