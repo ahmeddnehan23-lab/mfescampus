@@ -392,7 +392,11 @@ tr:last-child td{border-bottom:0}
       <button class="nav-link" data-page="teachers" onclick="navigate('teachers')"><span class="ico">♙</span>Teachers</button>
       <button class="nav-link" data-page="events" onclick="navigate('events')"><span class="ico">▣</span>Events</button>
       <button class="nav-link" data-page="announcements" onclick="navigate('announcements')"><span class="ico">◉</span>Announcements</button>
-    </div>
+    
+      <button class="nav-link" data-page="lost-found" onclick="navigate('lost-found')">🔎 Lost & Found</button>
+      <button class="nav-link" data-page="clubs" onclick="navigate('clubs')">⚽ Clubs & Activities</button>
+      <button class="nav-link" data-page="canteen" onclick="navigate('canteen')">🍔 Canteen Pre-Order</button>
+</div>
 
     <!-- TEACHER NAVIGATION -->
     <div id="teacherNavigation" class="teacher-navigation">
@@ -408,7 +412,10 @@ tr:last-child td{border-bottom:0}
        <button class="nav-link" data-page="teacher-maintenance" onclick="navigate('teacher-maintenance')">🛠 &nbsp; Maintenance Requests</button>
        <button class="nav-link" data-page="my-profile" onclick="navigate('my-profile')"><span class="ico">♙</span>My Profile</button>
       <button class="nav-link" data-page="leave" onclick="navigate('leave')"><span class="ico">🗓</span>Leave Requests</button>
-    </div>
+    
+      <button class="nav-link" data-page="lost-found" onclick="navigate('lost-found')">🔎 Lost & Found</button>
+      <button class="nav-link" data-page="clubs" onclick="navigate('clubs')">⚽ Clubs & Activities</button>
+</div>
 
     <div id="adminNavigation" class="teacher-navigation">
       <div class="nav-label">ADMINISTRATION PORTAL</div>
@@ -421,7 +428,11 @@ tr:last-child td{border-bottom:0}
        <button class="nav-link" data-page="admin-transport" onclick="navigate('admin-transport')">🚌 &nbsp; Bus Shifting</button>
       <button class="nav-link" data-page="admin-helpdesk" onclick="navigate('admin-helpdesk')">🎧 &nbsp; Helpdesk</button>
       <button class="nav-link" data-page="admin-fees" onclick="navigate('admin-fees')">₹ &nbsp; Fee Enquiries</button>
-    </div>
+    
+      <button class="nav-link" data-page="lost-found" onclick="navigate('lost-found')">🔎 Lost & Found</button>
+      <button class="nav-link" data-page="clubs" onclick="navigate('clubs')">⚽ Clubs & Activities</button>
+      <button class="nav-link" data-page="canteen" onclick="navigate('canteen')">🍔 Canteen Pre-Order</button>
+</div>
     <div class="side-bottom">
       <div class="user-mini">
         <div class="avatar" id="sideAvatar">S</div>
@@ -486,6 +497,20 @@ tr:last-child td{border-bottom:0}
 <div class="panel"><form id="mfMaintenanceForm"><div class="form-grid"><div class="field"><label>Location</label><input id="mfMaintLocation" maxlength="120" placeholder="e.g. Class 8A, Computer Lab" required></div><div class="field"><label>Issue category</label><select id="mfMaintCategory"><option>Electrical</option><option>Furniture</option><option>Computer / IT</option><option>Plumbing</option><option>Other</option></select></div><div class="field"><label>Priority</label><select id="mfMaintPriority"><option>Normal</option><option>Urgent</option></select></div></div><div class="field"><label>Describe the problem</label><textarea id="mfMaintDescription" maxlength="1000" required placeholder="What needs to be repaired?"></textarea></div><button class="action-btn" type="submit">Send maintenance request</button><p id="mfMaintStatus" class="small-muted" aria-live="polite"></p></form></div>
 <div class="panel" style="margin-top:16px"><h3>My requests and status</h3><div id="mfTeacherMaintList">Open this page to load records.</div></div></section>
 <section class="page" id="page-admin-maintenance"><div class="page-header"><div><h1>Maintenance Desk</h1><p>Review teacher reports and track repair progress.</p></div></div><div class="panel"><div id="mfAdminMaintList">Open this page to load records.</div></div></section>
+
+
+<!-- MFESCAMPUS STATE-LEVEL: THREE DATABASE MODULES -->
+<section class="page" id="page-lost-found"><div class="page-header"><div><h1>🔎 Digital Lost &amp; Found</h1><p>Report and recover belongings through the school office.</p></div></div>
+<div class="panel" id="mfLostReportPanel"><h3>Report an item</h3><form id="mfLostForm"><div class="form-grid"><div class="field"><label>Item name</label><input id="mfLostName" required maxlength="120" placeholder="e.g. Blue water bottle"></div><div class="field"><label>Report type</label><select id="mfLostType"><option value="lost">Lost</option><option value="found">Found</option></select></div><div class="field"><label>Category</label><select id="mfLostCategory"><option>Stationery</option><option>Books</option><option>Clothing</option><option>Electronics</option><option>Other</option></select></div><div class="field"><label>Location</label><input id="mfLostLocation" maxlength="120" placeholder="e.g. School library"></div><div class="field"><label>Date (optional)</label><input id="mfLostDate" type="date"></div></div><div class="field"><label>Description</label><textarea id="mfLostDescription" maxlength="1000" placeholder="Describe the item without sharing personal contact information"></textarea></div><button class="action-btn" type="submit">Submit report</button><p class="small-muted" id="mfLostMsg" aria-live="polite"></p></form></div>
+<div class="panel" style="margin-top:16px"><h3>Reported items</h3><div id="mfLostList">Open this page to load items.</div></div><div class="panel" style="margin-top:16px"><h3 id="mfClaimsTitle">My claims</h3><div id="mfClaimsList">Open this page to load claims.</div></div></section>
+<section class="page" id="page-clubs"><div class="page-header"><div><h1>⚽ Clubs &amp; Activities</h1><p>Discover school activities and manage memberships.</p></div></div>
+<div class="panel" id="mfClubAdminPanel" style="display:none"><h3>Create a club</h3><form id="mfClubForm"><div class="form-grid"><div class="field"><label>Club name</label><input id="mfClubName" required maxlength="120"></div><div class="field"><label>Category</label><select id="mfClubCategory"><option>Sports</option><option>Science</option><option>Technology</option><option>Arts</option><option>General</option></select></div><div class="field"><label>Meeting schedule</label><input id="mfClubSchedule" maxlength="150" placeholder="e.g. Fridays after school"></div><div class="field"><label>Maximum members (optional)</label><input id="mfClubCapacity" type="number" min="1"></div></div><div class="field"><label>Description</label><textarea id="mfClubDescription" maxlength="1000"></textarea></div><button class="action-btn" type="submit">Create club</button><p class="small-muted" id="mfClubMsg" aria-live="polite"></p></form></div>
+<p id="mfClubActionStatus" class="small-muted" role="status" aria-live="polite" style="margin:12px 0"></p><div class="panel" style="margin-top:16px"><h3>Available clubs</h3><div id="mfClubList">Open this page to load clubs.</div></div><div class="panel" style="margin-top:16px"><h3 id="mfMembershipTitle">Membership requests</h3><div id="mfMembershipList">Open this page to load memberships.</div></div></section>
+<section class="page" id="page-canteen"><div class="page-header"><div><h1>🍛 School Lunch Pre-Order</h1><p>Choose today or a future school day. One lunch per student per date. Demo orders only; no online payments.</p></div></div>
+<div class="panel"><h3>Weekly school lunch menu</h3><div id="mfWeeklyMenu"></div></div>
+<div class="panel" id="mfLunchBookingPanel" style="margin-top:16px"><h3>Book your lunch</h3><div class="field" style="margin-top:12px"><label>Lunch date</label><input type="date" id="mfLunchDate" required></div><div id="mfLunchSelection" class="small-muted"></div><div class="field" style="margin-top:12px"><label>Note (optional)</label><input id="mfLunchNote" maxlength="500" placeholder="Optional note for the school office"></div><button type="button" class="action-btn" id="mfLunchBook">Confirm pre-order</button><p id="mfLunchMessage" class="small-muted" aria-live="polite"></p></div>
+<div class="panel" id="mfLunchAdminPanel" style="margin-top:16px;display:none"><h3>Administration · Daily lunch orders</h3><div class="field" style="margin-top:12px"><label>View orders for date</label><input type="date" id="mfLunchAdminDate"></div><div id="mfLunchSummary"></div></div>
+<div class="panel" style="margin-top:16px"><h3 id="mfOrdersTitle">My lunch orders</h3><div id="mfOrdersList">Open this page to load orders.</div></div></section>
 
       <!-- STUDENT DASHBOARD -->
       <section class="page active" id="page-dashboard">
@@ -2938,5 +2963,161 @@ window.navigate=function(page){previous(page);const role=me()?.role;
 };
 })();
 </script>
+
+<script>
+/* MFESCAMPUS state-level add-on. Existing functions and pages are left intact. */
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const me=()=>window.mfGetCurrentUser?.();
+const db=()=>window.mfesLeaveDb;
+const admin=()=>me()?.role==='Administration';
+const student=()=>me()?.role==='Student';
+const esc=v=>window.mfEscape?.(String(v??''))??String(v??'');
+const message=(id,t)=>{if($(id))$(id).textContent=t;};
+const fmt=v=>new Date(v).toLocaleDateString('en-IN');
+const money=p=>'₹'+(p/100).toFixed(2);
+let menu=[],cart={};
+async function run(query){const {data,error}=await query;if(error)throw Error(error.message);return data||[];}
+function requireDb(){if(!db()||!me()?.id)throw Error('Please sign in to your school account first.');return db();}
+function row(title,detail,actions=''){return `<div class="student-row"><div style="flex:1;min-width:0"><strong>${esc(title)}</strong><div class="small-muted" style="white-space:pre-wrap">${esc(detail)}</div></div><div class="action-row">${actions}</div></div>`;}
+const btn=(label,action,id,kind='secondary')=>`<button type="button" class="action-btn ${kind}" data-action="${esc(action)}" data-id="${esc(id)}">${esc(label)}</button>`;
+function bind(container,fn){$(container)?.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>fn(b.dataset.action,b.dataset.id)));}
+async function lost(){
+ try{
+  const d=requireDb();$('mfLostReportPanel').style.display=admin()?'none':'';
+  $('mfClaimsTitle').textContent=admin()?'All ownership claims':'My ownership claims';
+  const [items,claims]=await Promise.all([
+   run(d.from('lost_found_items').select('*').order('created_at',{ascending:false}).limit(100)),
+   run(d.from('lost_found_claims').select('*').order('created_at',{ascending:false}).limit(100))]);
+  $('mfLostList').innerHTML=items.length?items.map(i=>row(`${i.report_type==='lost'?'🔎 Lost':'📦 Found'}: ${i.item_name}`,`${i.category} · ${i.location||'Location not specified'} · ${i.status}\n${i.description||''}`, (student()&&i.report_type==='found'&&i.status==='open'&&i.reported_by!==me().id&&!claims.some(c=>c.item_id===i.id&&c.claimant_id===me().id))?btn('Claim item','claim',i.id):admin()&&i.status!=='returned'?btn('Mark returned','returned',i.id):'')).join(''):'<p class="empty">No reported items yet.</p>';
+  $('mfClaimsList').innerHTML=claims.length?claims.map(c=>row(`Claim for ${items.find(i=>i.id===c.item_id)?.item_name||'item'}`,`${c.status} · ${c.claim_note||'No note'}`,admin()&&c.status==='pending'?btn('Approve','approve-claim',c.id)+btn('Reject','reject-claim',c.id,'danger'):'' )).join(''):'<p class="empty">No claims yet.</p>';
+  bind('mfLostList',async(a,id)=>{try{if(a==='claim') {const note=prompt('Describe how you can identify this item (do not include passwords or contact details):');if(note===null)return;await run(d.from('lost_found_claims').insert({item_id:id,claimant_id:me().id,claim_note:note.slice(0,1000)}).select('id'));}else if(a==='returned'){await run(d.from('lost_found_items').update({status:'returned'}).eq('id',id).select('id'));}await lost();}catch(e){alert(e.message);}});
+  bind('mfClaimsList',async(a,id)=>{try{const status=a==='approve-claim'?'approved':'rejected';await run(d.from('lost_found_claims').update({status}).eq('id',id).select('id'));if(status==='approved'){const claim=claims.find(c=>c.id===id);if(claim)await run(d.from('lost_found_items').update({status:'claimed'}).eq('id',claim.item_id).select('id'));}await lost();}catch(e){alert(e.message);}});
+ }catch(e){message('mfLostList','Could not load Lost & Found: '+e.message);}
+}
+$('mfLostForm')?.addEventListener('submit',async e=>{e.preventDefault();try{await run(requireDb().from('lost_found_items').insert({item_name:$('mfLostName').value.trim(),report_type:$('mfLostType').value,category:$('mfLostCategory').value,location:$('mfLostLocation').value.trim(),event_date:$('mfLostDate').value||null,description:$('mfLostDescription').value.trim(),reported_by:me().id}).select('id'));$('mfLostForm').reset();message('mfLostMsg','Report saved successfully.');await lost();}catch(err){message('mfLostMsg','Could not save: '+err.message);}});
+async function clubs(){
+ try{
+  const d=requireDb();
+  $('mfClubAdminPanel').style.display=admin()?'':'none';
+  $('mfMembershipTitle').textContent=admin()?'All membership requests':'My memberships';
+  const [clubRows,members]=await Promise.all([
+    run(d.from('school_clubs').select('*').order('club_name')),
+    run(admin()?d.from('club_memberships').select('*').order('joined_at',{ascending:false}).limit(200):d.from('club_memberships').select('*').eq('student_user_id',me().id).order('joined_at',{ascending:false}))
+  ]);
+  const statusText={pending:'Pending administration approval',approved:'Approved member',rejected:'Request rejected',cancelled:'Membership cancelled'};
+  $('mfClubList').innerHTML=clubRows.length?clubRows.map(c=>{
+    const mine=members.find(m=>m.club_id===c.id&&m.student_user_id===me().id);
+    const actions=student()&&c.active&&(!mine||['cancelled','rejected'].includes(mine.status))
+      ?btn(mine?'Request to rejoin':'Request to join','join',c.id)
+      :mine?`<span class="status ${mine.status==='approved'?'green':'blue'}">${esc(statusText[mine.status]||mine.status)}</span>`
+      :admin()?btn(c.active?'Deactivate':'Activate','toggle-club',c.id):'';
+    return row(`${c.club_name}${c.active?'':' (Inactive)'}`,`${c.category} · ${c.meeting_schedule||'Schedule TBA'} · ${c.description||''} · ${c.capacity?'Capacity '+c.capacity:'No capacity specified'}`,actions);
+  }).join(''):'<p class="empty">No clubs yet. Administration can create one.</p>';
+  $('mfMembershipList').innerHTML=members.length?members.map(m=>row(
+    `${clubRows.find(c=>c.id===m.club_id)?.club_name||'Club'} · ${statusText[m.status]||m.status}`,
+    admin()?`Student account: ${m.student_user_id}`:`Requested ${fmt(m.joined_at)}`,
+    admin()&&m.status==='pending'?btn('Approve','approve',m.id)+btn('Reject','reject',m.id,'danger')
+    :student()&&['pending','approved'].includes(m.status)?btn('Cancel membership','cancel',m.id,'danger'):''
+  )).join(''):'<p class="empty">No membership requests.</p>';
+  bind('mfClubList',async(a,id)=>{
+    const statusBox=$('mfClubMsg');
+    try{
+      if(a==='join'){
+        const existing=await run(d.from('club_memberships').select('id,status').eq('club_id',id).eq('student_user_id',me().id).limit(1));
+        if(existing.length){
+          if(['cancelled','rejected'].includes(existing[0].status)){
+            await run(d.from('club_memberships').update({status:'pending'}).eq('id',existing[0].id).eq('student_user_id',me().id).select('id'));
+            message('mfClubActionStatus','Your request has been sent to Administration for approval.');
+          }else{
+            message('mfClubActionStatus',statusText[existing[0].status]||'Membership already exists.');
+          }
+        }else{
+          const {error}=await d.from('club_memberships').insert({club_id:id,student_user_id:me().id});
+          if(error && error.code!=='23505')throw Error(error.message);
+          message('mfClubActionStatus',error?'Your existing membership will be shown below.':'Your request has been sent to Administration for approval.');
+        }
+      }else if(a==='toggle-club'){
+        const c=clubRows.find(c=>c.id===id);
+        if(c)await run(d.from('school_clubs').update({active:!c.active}).eq('id',id).select('id'));
+      }
+      await clubs();
+    }catch(e){message('mfClubActionStatus','Club action failed: '+e.message);}
+  });
+  bind('mfMembershipList',async(a,id)=>{
+    try{
+      const status={approve:'approved',reject:'rejected',cancel:'cancelled'}[a];
+      if(!status)return;
+      const changed=await run(d.from('club_memberships').update({status}).eq('id',id).select('id'));
+      if(!changed.length)throw Error('No membership was updated. Check account permissions.');
+      message('mfClubActionStatus',status==='approved'?'Membership approved.':status==='rejected'?'Membership rejected.':'Membership cancelled.');
+      await clubs();
+    }catch(e){message('mfClubActionStatus','Could not update membership: '+e.message);}
+  });
+ }catch(e){message('mfClubList','Could not load clubs: '+e.message);}
+}
+$('mfClubForm')?.addEventListener('submit',async e=>{e.preventDefault();try{await run(requireDb().from('school_clubs').insert({club_name:$('mfClubName').value.trim(),category:$('mfClubCategory').value,description:$('mfClubDescription').value.trim(),meeting_schedule:$('mfClubSchedule').value.trim(),capacity:$('mfClubCapacity').value?Number($('mfClubCapacity').value):null}).select('id'));$('mfClubForm').reset();message('mfClubMsg','Club created.');await clubs();}catch(err){message('mfClubMsg','Could not create club: '+err.message);}});
+const WEEKLY_LUNCH = [
+  null,
+  {name:'Monday School Lunch',meal:'Rice, Veg Curry, Pickle',price:4000},
+  {name:'Tuesday School Lunch',meal:'Rice, Fish Curry, Veg Curry, Pickles',price:4000},
+  {name:'Wednesday School Lunch',meal:'Rice, Sambar, Pappadam, Pickles',price:4000},
+  {name:'Thursday School Lunch',meal:'Rice, Veg Curry, Kootu Curry, Pickles',price:4000},
+  {name:'Friday School Lunch',meal:'Rice, Chicken Curry, Salad',price:6000}
+];
+function lunchToday(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());}
+function lunchDay(date){if(!/^\d{4}-\d{2}-\d{2}$/.test(date))return 0;const d=new Date(date+'T12:00:00Z');return Number.isNaN(d.getTime())?0:d.getUTCDay();}
+function lunchLabel(date){const day=lunchDay(date);return day?new Date(date+'T12:00:00Z').toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}):date;}
+function lunchNextSchoolDate(date){let d=new Date(date+'T12:00:00Z');while([0,6].includes(d.getUTCDay()))d.setUTCDate(d.getUTCDate()+1);return d.toISOString().slice(0,10);}
+function renderWeeklyLunch(){const box=$('mfWeeklyMenu');if(!box)return;box.innerHTML=WEEKLY_LUNCH.slice(1).map((m,i)=>row(['Monday','Tuesday','Wednesday','Thursday','Friday'][i],`${m.meal} · ${money(m.price)}`)).join('')+'<p class="small-muted" style="margin-top:10px">No lunch orders on Saturday or Sunday. The menu and price are fixed by the school for each weekday.</p>';}
+function updateLunchSelection(){const date=$('mfLunchDate')?.value||'';const m=WEEKLY_LUNCH[lunchDay(date)];const valid=date>=lunchToday()&&!!m;$('mfLunchSelection').textContent=!date?'Choose a date.':date<lunchToday()?'Past dates are unavailable.':!m?'No lunch on Saturday or Sunday.':`${lunchLabel(date)} · ${m.meal} · ${money(m.price)}`;$('mfLunchBook').disabled=!valid;}
+async function canteen(){
+ try{
+  const d=requireDb();renderWeeklyLunch();
+  $('mfLunchBookingPanel').style.display=student()?'':'none';
+  $('mfLunchAdminPanel').style.display=admin()?'':'none';
+  $('mfOrdersTitle').textContent=admin()?'Orders for selected date':'My lunch orders';
+  const today=lunchToday();
+  const dateInput=$('mfLunchDate');dateInput.min=today;
+  if(!dateInput.value||dateInput.value<today)dateInput.value=lunchNextSchoolDate(today);
+  updateLunchSelection();
+  const adminDate=$('mfLunchAdminDate');if(!adminDate.value)adminDate.value=lunchNextSchoolDate(today);
+  const selectedDate=adminDate.value;
+  let query=d.from('canteen_orders').select('id,student_user_id,order_status,pickup_date,note,created_at,canteen_order_items(quantity,unit_price_paise,menu_item_id)').order('pickup_date',{ascending:true}).limit(500);
+  if(admin())query=query.eq('pickup_date',selectedDate);
+  const orders=await run(query);
+  if(admin()){
+   const active=orders.filter(o=>o.order_status!=='cancelled');
+   const total=active.reduce((sum,o)=>sum+(o.canteen_order_items||[]).reduce((n,i)=>n+i.quantity*i.unit_price_paise,0),0);
+   $('mfLunchSummary').innerHTML=`<div class="stats" style="margin-top:12px"><div class="stat-card"><small>Lunch date</small><h3 style="font-size:16px">${esc(lunchLabel(selectedDate))}</h3></div><div class="stat-card"><small>Active meals</small><h3>${active.length}</h3></div><div class="stat-card"><small>Expected amount</small><h3>${money(total)}</h3></div><div class="stat-card"><small>Cancelled</small><h3>${orders.length-active.length}</h3></div></div><p class="small-muted" style="margin-top:12px">Expected amount is a demo total, not a payment receipt.</p>`;
+  }
+  $('mfOrdersList').innerHTML=orders.length?orders.map(o=>{
+   const total=(o.canteen_order_items||[]).reduce((n,i)=>n+i.quantity*i.unit_price_paise,0);
+   const actions=admin()&&!['collected','cancelled'].includes(o.order_status)?btn('Next status','next',o.id):student()&&o.order_status==='pending'&&o.pickup_date>=today?btn('Cancel order','cancel',o.id,'danger'):'';
+   return row(`${lunchLabel(o.pickup_date)} · ${money(total)}`,`${o.order_status} · ${WEEKLY_LUNCH[lunchDay(o.pickup_date)]?.meal||'Lunch'}${admin()?' · Student account: '+o.student_user_id:''}${o.note?' · Note: '+o.note:''}`,actions);
+  }).join(''):'<p class="empty">No lunch orders for this selection.</p>';
+  bind('mfOrdersList',async(a,id)=>{try{const o=orders.find(x=>x.id===id);if(!o)return;const next={pending:'preparing',preparing:'ready',ready:'collected'}[o.order_status];const status=a==='cancel'?'cancelled':next;if(!status)return;await run(d.from('canteen_orders').update({order_status:status}).eq('id',id).select('id'));await canteen();}catch(e){alert(e.message);}});
+ }catch(e){message('mfOrdersList','Could not load canteen orders: '+e.message);}
+}
+$('mfLunchDate')?.addEventListener('change',updateLunchSelection);
+$('mfLunchAdminDate')?.addEventListener('change',canteen);
+$('mfLunchBook')?.addEventListener('click',async()=>{
+ const b=$('mfLunchBook');b.disabled=true;
+ try{
+  const date=$('mfLunchDate').value;
+  if(date<lunchToday()||!WEEKLY_LUNCH[lunchDay(date)])throw Error('Choose today or a future Monday–Friday.');
+  const d=requireDb();
+  const {data,error}=await d.rpc('mfes_book_school_lunch',{p_date:date,p_note:$('mfLunchNote').value.trim()});
+  if(error)throw Error(error.message);
+  message('mfLunchMessage','Lunch booked successfully! Order '+String(data).slice(0,8));
+  await canteen();
+ }catch(e){message('mfLunchMessage','Could not book lunch: '+e.message);}finally{updateLunchSelection();}
+});
+const previous=window.navigate;
+window.navigate=function(page){previous(page);if(page==='lost-found')lost();if(page==='clubs')clubs();if(page==='canteen')canteen();};
+})();
+</script>
+
 </body>
 </html>
