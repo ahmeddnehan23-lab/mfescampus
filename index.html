@@ -8,6 +8,44 @@
 
     <link rel="icon" type="image/png" href="favicon.png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+<style id="mf-parent-design-refresh">
+/* Parent portal visual refresh; scoped to new pages, leaving legacy modules intact. */
+.mf-parent-page{--mf-accent:#3767e8;--mf-ink:#172b4d;--mf-border:#e6ebf3}
+.mf-parent-page .page-header{margin-bottom:22px}
+.mf-parent-page .page-header h1{font-size:clamp(23px,2.6vw,31px);letter-spacing:-.7px;margin:4px 0 6px}
+.mf-parent-page .page-header p{max-width:650px;line-height:1.55}
+.mf-eyebrow{font-size:11px;letter-spacing:1.5px;font-weight:800;color:#5175c9}
+.mf-parent-banner{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 30px;margin-bottom:22px;border-radius:18px;color:#fff;background:linear-gradient(115deg,#172b4d 0%,#315bc1 100%);box-shadow:0 15px 32px rgba(23,43,77,.13)}
+.mf-parent-banner h2{font-size:clamp(20px,2.5vw,28px);line-height:1.2;margin:8px 0 10px;color:#fff}
+.mf-parent-banner p{color:#e4ebff;line-height:1.55;font-size:14px;max-width:480px}
+.mf-banner-label{font-size:10px;letter-spacing:1.8px;font-weight:800;color:#bdd0ff}
+.mf-banner-art{display:grid;place-items:center;flex-shrink:0;width:80px;height:80px;border:1px solid rgba(255,255,255,.26);border-radius:22px;background:rgba(255,255,255,.12);font-size:42px;color:#fff}
+.mf-admin-banner{background:linear-gradient(115deg,#172b4d,#326879)}
+.mf-parent-page .mf-parent-panel{padding:24px;border:1px solid var(--mf-border);border-radius:16px;box-shadow:0 6px 22px rgba(22,44,83,.035);margin-bottom:20px}
+.mf-panel-heading{display:flex;justify-content:space-between;align-items:start;gap:15px;margin-bottom:20px}
+.mf-panel-heading h3{font-size:17px;font-weight:800;color:var(--mf-ink);margin:0 0 5px}
+.mf-panel-heading p{font-size:13px;color:#7b879c;line-height:1.55;margin:0}
+.mf-soft-tag{font-size:11px;font-weight:700;white-space:nowrap;color:#3463c2;background:#edf3ff;padding:8px 11px;border-radius:99px}
+.mf-parent-page .field label{font-size:12px;font-weight:700;color:#44546d;margin-bottom:7px;display:block}
+.mf-parent-page .field input,.mf-parent-page .field select,.mf-parent-page .field textarea{width:100%;max-width:100%;min-height:43px;border:1px solid #dfe6f1;border-radius:10px;padding:11px 12px;background:#fff;font:inherit;color:#26344d}
+.mf-parent-page .field textarea{min-height:115px;resize:vertical}
+.mf-parent-page .field input:focus,.mf-parent-page .field select:focus,.mf-parent-page .field textarea:focus{outline:2px solid #adc6ff;outline-offset:1px;border-color:#3767e8}
+.mf-parent-page .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:17px}
+.mf-parent-page .mf-full-field{grid-column:1/-1}
+.mf-parent-page .mf-child-picker{max-width:520px}
+.mf-parent-page .mf-form-actions{display:flex;flex-wrap:wrap;align-items:center;gap:15px;margin-top:22px}
+.mf-parent-page .mf-form-actions .action-btn{border-radius:10px;min-height:43px;padding:11px 20px;font-weight:700}
+.mf-parent-page .mf-parent-content{min-width:0}
+.mf-parent-page .mf-parent-content .panel{border-radius:15px;border:1px solid #e6ebf3}
+.mf-parent-page .mf-inline-help{font-size:12px;color:#71809a;line-height:1.65;margin-top:16px;padding:12px 14px;border-radius:10px;background:#f4f7fc}
+.mf-parent-page #parentLeaveHistory,.mf-parent-page #parentMessagesList,.mf-parent-page #parentLinksList,.mf-parent-page #teacherParentInbox{min-width:0;overflow-x:auto}
+.mf-parent-page table{width:100%;border-collapse:collapse}
+.mf-parent-page table td,.mf-parent-page table th{padding:11px 10px;border-bottom:1px solid #edf0f6;text-align:left}
+@media(max-width:720px){.mf-parent-page .form-grid{grid-template-columns:1fr}.mf-parent-page .mf-parent-panel{padding:18px}.mf-parent-banner{padding:22px}.mf-banner-art{display:none}.mf-panel-heading{flex-wrap:wrap}.mf-parent-page .mf-form-actions .action-btn{width:100%}}
+</style>
 </head>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
@@ -295,6 +333,7 @@ tr:last-child td{border-bottom:0}
             <strong>Teacher</strong>
             <span>Access your teaching portal</span>
           </button>
+          <button class="role-card" onclick="chooseRole('Parent')"><div class="role-icon">👨‍👩‍👧</div><strong>Parent</strong><span>View your children's records</span></button>
           <button class="role-card" onclick="chooseRole('Administration')" style="grid-column:1/-1"><div class="role-icon">🏢</div><strong>Administration</strong><span>Manage school office requests</span></button>
         </div>
       </div>
@@ -356,9 +395,8 @@ tr:last-child td{border-bottom:0}
           <label>School account email</label>
           <input id="usernameInput" type="email" placeholder="Enter your school account email" autocomplete="username" required>
         </div>
-        <div class="field">
-          <label>Password</label>
-          <input id="passwordInput" type="password" placeholder="Enter your account password" autocomplete="current-password" required>
+        <div id="mfGuardianChoice" class="field" style="display:none;margin-bottom:12px"><label for="mfGuardianType">Guardian type</label><select id="mfGuardianType"><option value="Mother">Mother</option><option value="Father">Father</option><option value="Guardian 1">Guardian 1</option><option value="Guardian 2">Guardian 2</option></select><small class="small-muted">Choose the guardian type assigned by school Administration.</small></div>
+          <div class="field"><label for="passwordInput">Password</label><input id="passwordInput" type="password" placeholder="Enter your account password" autocomplete="current-password" required>
         </div>
         <div class="login-error" id="studentError">Please enter both username and password.</div>
         <button class="primary-btn" onclick="finishLogin()">Done → Open MFESCAMPUS</button>
@@ -379,6 +417,12 @@ tr:last-child td{border-bottom:0}
       <div><strong>MFESCAMPUS</strong><small>SMART SCHOOL PORTAL</small></div>
     </div>
 
+    <div id="parentNavigation" style="display:none">
+      <div class="nav-label">PARENT WORKSPACE</div>
+      <button class="nav-link" data-page="parent-dashboard" onclick="navigate('parent-dashboard')"><span class="ico">⌂</span>Dashboard</button>
+      <button class="nav-link" data-page="parent-leave" onclick="navigate('parent-leave')"><span class="ico">▣</span>Leave Applications</button>
+      <button class="nav-link" data-page="parent-messages" onclick="navigate('parent-messages')"><span class="ico">✉</span>Teacher Messages</button>
+    </div>
     <!-- STUDENT NAVIGATION -->
     <div id="studentNavigation">
       <div class="nav-label">MAIN MENU</div>
@@ -396,11 +440,14 @@ tr:last-child td{border-bottom:0}
       <button class="nav-link" data-page="lost-found" onclick="navigate('lost-found')">🔎 Lost & Found</button>
       <button class="nav-link" data-page="clubs" onclick="navigate('clubs')">⚽ Clubs & Activities</button>
       <button class="nav-link" data-page="canteen" onclick="navigate('canteen')">🍔 Canteen Pre-Order</button>
+<button class="nav-link" data-page="smart-library" onclick="navigate('smart-library')">📚 Smart Library</button>
+<button class="nav-link" data-page="my-id-card" onclick="navigate('my-id-card')">🪪 My QR ID Card</button>
 </div>
 
     <!-- TEACHER NAVIGATION -->
     <div id="teacherNavigation" class="teacher-navigation">
       <div class="nav-label">TEACHER WORKSPACE</div>
+      <button class="nav-link" data-page="teacher-parent-messages" onclick="navigate('teacher-parent-messages')"><span class="ico">✉</span>Parent Messages</button>
       <button class="nav-link" data-page="teacher-dashboard" onclick="navigate('teacher-dashboard')"><span class="ico">▦</span>Dashboard</button>
       <button class="nav-link" data-page="teacher-timetable" onclick="navigate('teacher-timetable')"><span class="ico">▤</span>My Timetable</button>
       <button class="nav-link" data-page="teacher-attendance" onclick="navigate('teacher-attendance')"><span class="ico">✓</span>Manage Attendance</button>
@@ -419,6 +466,7 @@ tr:last-child td{border-bottom:0}
 
     <div id="adminNavigation" class="teacher-navigation">
       <div class="nav-label">ADMINISTRATION PORTAL</div>
+      <button class="nav-link" data-page="admin-parents" onclick="navigate('admin-parents')"><span class="ico">♧</span>Parent Links</button>
       <button class="nav-link" data-page="admin-dashboard" onclick="navigate('admin-dashboard')">🏢 &nbsp; Request Dashboard</button>
       <button class="nav-link" data-page="admin-students" onclick="navigate('admin-students')">🎓 &nbsp; Student Management</button>
       <button class="nav-link" data-page="admin-fee-records" onclick="navigate('admin-fee-records')">💳 &nbsp; Fee Records</button>
@@ -432,6 +480,8 @@ tr:last-child td{border-bottom:0}
       <button class="nav-link" data-page="lost-found" onclick="navigate('lost-found')">🔎 Lost & Found</button>
       <button class="nav-link" data-page="clubs" onclick="navigate('clubs')">⚽ Clubs & Activities</button>
       <button class="nav-link" data-page="canteen" onclick="navigate('canteen')">🍔 Canteen Pre-Order</button>
+<button class="nav-link" data-page="admin-library" onclick="navigate('admin-library')">📚 Library Management</button>
+<button class="nav-link" data-page="admin-canteen-qr" onclick="navigate('admin-canteen-qr')">📷 Canteen QR Scanner</button>
 </div>
     <div class="side-bottom">
       <div class="user-mini">
@@ -459,6 +509,33 @@ tr:last-child td{border-bottom:0}
 
     <div class="content">
 
+      <section class="page mf-parent-page" id="page-parent-dashboard">
+ <div class="page-header"><div><div class="mf-eyebrow">FAMILY WORKSPACE</div><h1>Parent Dashboard</h1><p>School updates for your verified children, all in one place.</p></div></div>
+ <div class="mf-parent-banner"><div><span class="mf-banner-label">WELCOME TO MFESCAMPUS</span><h2>Your family's school hub</h2><p>View attendance, results and academic information securely.</p></div><div class="mf-banner-art" aria-hidden="true">✦</div></div>
+ <div class="panel mf-parent-panel"><div class="mf-panel-heading"><div><h3>Choose your child</h3><p>Switch between your linked children to view their individual records.</p></div><span class="mf-soft-tag">Verified access</span></div><div class="field mf-child-picker"><label for="parentChild">Student</label><select id="parentChild" onchange="mfParentRender()"></select></div></div>
+ <div class="mf-parent-content" id="parentSummary" aria-live="polite">Loading…</div>
+</section>
+      <section class="page mf-parent-page" id="page-parent-leave">
+ <div class="page-header"><div><div class="mf-eyebrow">FAMILY WORKSPACE</div><h1>Leave Applications</h1><p>Send an absence request for your selected child.</p></div></div>
+ <div class="mf-parent-layout"><div class="panel mf-parent-panel"><div class="mf-panel-heading"><div><h3>New leave request</h3><p>Complete the details and submit for school review.</p></div><span class="mf-soft-tag">School approval required</span></div>
+ <div class="form-grid"><div class="field"><label for="parentLeaveFrom">Start date</label><input type="date" id="parentLeaveFrom"></div><div class="field"><label for="parentLeaveTo">End date</label><input type="date" id="parentLeaveTo"></div><div class="field"><label for="parentLeaveType">Leave duration</label><select id="parentLeaveType"><option>Full day</option><option>Half day</option></select></div><div class="field mf-full-field"><label for="parentLeaveReason">Reason for leave</label><textarea id="parentLeaveReason" rows="4" maxlength="500" placeholder="Briefly explain the reason for this request"></textarea></div></div>
+ <div class="mf-form-actions"><button class="action-btn" onclick="mfParentLeave()">Submit leave request →</button><div id="parentLeaveStatus" class="small-muted" aria-live="polite"></div></div></div>
+ <div class="panel mf-parent-panel"><div class="mf-panel-heading"><div><h3>Request history</h3><p>Check the status of your submitted requests.</p></div></div><div id="parentLeaveHistory">Loading…</div></div></div>
+</section>
+      <section class="page mf-parent-page" id="page-parent-messages">
+ <div class="page-header"><div><div class="mf-eyebrow">FAMILY WORKSPACE</div><h1>Parent–Teacher Messages</h1><p>Contact teachers assigned to your selected child's class.</p></div></div>
+ <div class="mf-parent-layout"><div class="panel mf-parent-panel"><div class="mf-panel-heading"><div><h3>Compose a message</h3><p>Use this space for school-related questions or updates.</p></div></div><div class="field"><label for="parentTeacher">Send to</label><select id="parentTeacher"></select></div><div class="field"><label for="parentMessageBody">Your message</label><textarea id="parentMessageBody" maxlength="1000" rows="5" placeholder="Type your message here..."></textarea></div><div class="mf-form-actions"><button class="action-btn" onclick="mfParentSend()">Send message →</button></div></div>
+ <div class="panel mf-parent-panel"><div class="mf-panel-heading"><div><h3>Conversations</h3><p>Messages and replies for your selected child.</p></div></div><div id="parentMessagesList">Loading…</div></div></div>
+</section>
+      <section class="page mf-parent-page" id="page-admin-parents">
+ <div class="page-header"><div><div class="mf-eyebrow">ADMINISTRATION</div><h1>Verified Parent Links</h1><p>Connect guardian accounts to students only after identity verification.</p></div></div>
+ <div class="mf-parent-banner mf-admin-banner"><div><span class="mf-banner-label">SECURE GUARDIAN ACCESS</span><h2>Manage family connections</h2><p>Every approved link controls which child's information a parent can see.</p></div><div class="mf-banner-art" aria-hidden="true">✓</div></div>
+ <div class="panel mf-parent-panel"><div class="mf-panel-heading"><div><h3>Verify & link a guardian</h3><p>Confirm guardian authorization before saving a new connection.</p></div><span class="mf-soft-tag">Admin only</span></div>
+ <div class="form-grid"><div class="field"><label for="parentLinkUser">Parent Supabase Auth user UUID</label><input id="parentLinkUser" placeholder="UUID from Authentication → Users"></div><div class="field"><label for="parentLinkAdmission">Student admission number</label><input id="parentLinkAdmission" placeholder="e.g. 1762"></div><div class="field"><label for="parentLinkRelationship">Relationship to student</label><select id="parentLinkRelationship"><option>Mother</option><option>Father</option><option>Guardian</option></select></div><div class="field"><label for="parentLoginGuardianType">Guardian type for login</label><select id="parentLoginGuardianType"><option>Mother</option><option>Father</option><option>Guardian 1</option><option>Guardian 2</option></select></div></div>
+ <p class="mf-inline-help">Each guardian uses their own private password. Guardian type distinguishes multiple guardians using the same admission number.</p><div class="mf-form-actions"><button class="action-btn" onclick="mfAdminLinkParent()">Verify & link guardian →</button><div id="parentAdminStatus" class="small-muted" aria-live="polite"></div></div></div>
+ <div class="panel mf-parent-panel"><div class="mf-panel-heading"><div><h3>Existing guardian connections</h3><p>Review verified links and manage access.</p></div></div><div id="parentLinksList">Loading…</div></div>
+</section>
+      <section class="page mf-parent-page" id="page-teacher-parent-messages"><div class="page-header"><div><div class="mf-eyebrow">TEACHER WORKSPACE</div><h1>Parent Messages</h1><p>Respond to guardians of students in your assigned classes.</p></div></div><div class="panel mf-parent-panel"><div class="mf-panel-heading"><div><h3>Message inbox</h3><p>Read and reply to parent messages.</p></div></div><div id="teacherParentInbox">Loading…</div></div></section>
       <section class="page" id="page-admin-dashboard"><div class="page-header"><div><h1>Administration Dashboard</h1><p>School office requests, connected to the database.</p></div></div><div id="mfAdminKpis"></div><div class="panel"><h3>Request status overview</h3><div id="mfAdminCharts"></div><div id="mfAdminSummary" style="margin-top:15px">Loading requests...</div></div></section>
       <section class="page" id="page-admin-students"><div class="page-header"><div><h1>Student Management</h1><p>Search the school directory and review each student's records.</p></div></div><div class="panel"><div class="field"><label>Search admission number or student name</label><input id="mfStudentSearch" placeholder="e.g. 1762" autocomplete="off"></div><div id="mfStudentDirectory" style="margin-top:16px"></div></div></section>
       <section class="page" id="page-admin-fee-records"><div class="page-header"><div><h1>Fee Records</h1><p>Office-managed fee records. No online payments are processed.</p></div></div><div class="panel"><div class="form-grid"><div class="field"><label>Student</label><select id="mfFeeStudent"></select></div><div class="field"><label>Fee description</label><input id="mfFeeDescription" placeholder="e.g. Term 1"></div><div class="field"><label>Amount due (₹)</label><input id="mfFeeDue" type="number" min="0" step="0.01"></div><div class="field"><label>Amount paid (₹)</label><input id="mfFeePaid" type="number" min="0" step="0.01"></div><div class="field"><label>Due date</label><input id="mfFeeDueDate" type="date"></div></div><button class="action-btn" id="mfFeeCreate">Add fee record</button><div id="mfFeeRecordsStatus" class="small-muted" style="margin:12px 0"></div><div id="mfAdminFeeRecords"></div></div></section>
@@ -509,10 +586,52 @@ tr:last-child td{border-bottom:0}
 <section class="page" id="page-canteen"><div class="page-header"><div><h1>🍛 School Lunch Pre-Order</h1><p>Choose today or a future school day. One lunch per student per date. Demo orders only; no online payments.</p></div></div>
 <div class="panel"><h3>Weekly school lunch menu</h3><div id="mfWeeklyMenu"></div></div>
 <div class="panel" id="mfLunchBookingPanel" style="margin-top:16px"><h3>Book your lunch</h3><div class="field" style="margin-top:12px"><label>Lunch date</label><input type="date" id="mfLunchDate" required></div><div id="mfLunchSelection" class="small-muted"></div><div class="field" style="margin-top:12px"><label>Note (optional)</label><input id="mfLunchNote" maxlength="500" placeholder="Optional note for the school office"></div><button type="button" class="action-btn" id="mfLunchBook">Confirm pre-order</button><p id="mfLunchMessage" class="small-muted" aria-live="polite"></p></div>
-<div class="panel" id="mfLunchAdminPanel" style="margin-top:16px;display:none"><h3>Administration · Daily lunch orders</h3><div class="field" style="margin-top:12px"><label>View orders for date</label><input type="date" id="mfLunchAdminDate"></div><div id="mfLunchSummary"></div></div>
+<div class="panel" id="mfLunchAdminPanel" style="margin-top:16px;display:none"><h3>Administration · Daily lunch orders</h3><div class="field" style="margin-top:12px"><label>View orders for date</label><input type="date" id="mfLunchAdminDate"></div><div id="mfLunchSummary"></div><div class="action-row" style="margin-top:12px"><button type="button" class="action-btn" id="mfPrintAllLunchTokens">🖨 Print all lunch tokens</button></div><p id="mfTokenPrintStatus" class="small-muted" aria-live="polite"></p></div>
 <div class="panel" style="margin-top:16px"><h3 id="mfOrdersTitle">My lunch orders</h3><div id="mfOrdersList">Open this page to load orders.</div></div></section>
 
-      <!-- STUDENT DASHBOARD -->
+      
+<!-- MFESCAMPUS RESIDENTIAL QR ID ADD-ON -->
+<section class="page" id="page-smart-library"><div class="page-header"><div><h1>📚 Smart Library</h1><p>Reserve physical books and track your borrowing history. Free library service.</p></div></div>
+<div class="panel"><div class="field"><label>Search book title or author</label><input id="mfLibSearch" placeholder="Search library catalogue..."></div><div id="mfLibCatalogue">Loading catalogue...</div></div>
+<div class="panel" style="margin-top:16px"><h3>My reservations</h3><div id="mfLibMyReservations"></div></div>
+<div class="panel" style="margin-top:16px"><h3>My borrowed books</h3><div id="mfLibMyLoans"></div></div></section>
+<section class="page" id="page-admin-library"><div class="page-header"><div><h1>📚 Library Management</h1><p>Manage copies, approve requests, scan the existing school QR ID, and record returns.</p></div></div>
+<div class="panel"><h3>Add a book and its first physical copy</h3><form id="mfLibAddForm"><div class="form-grid">
+<div class="field"><label>Book title</label><input id="mfLibTitle" required maxlength="200"></div><div class="field"><label>Author</label><input id="mfLibAuthor" maxlength="200"></div>
+<div class="field"><label>Category</label><input id="mfLibCategory" value="General" maxlength="80"></div><div class="field"><label>ISBN (optional)</label><input id="mfLibIsbn" maxlength="30"></div>
+<div class="field"><label>Unique copy barcode</label><input id="mfLibBarcode" required maxlength="80" placeholder="MFES-LIB-001"></div><div class="field"><label>Shelf</label><input id="mfLibShelf" maxlength="100" placeholder="Shelf A1"></div>
+</div><button class="action-btn" type="submit">Add book + copy</button></form><p id="mfLibAdminStatus" class="small-muted" aria-live="polite"></p></div>
+<div class="panel" style="margin-top:16px"><h3>Catalogue & additional copies</h3><div id="mfLibAdminCatalogue"></div></div>
+<div class="panel" style="margin-top:16px"><h3>Reservations — approve before issue</h3><div id="mfLibAdminReservations"></div></div>
+<div class="panel" style="margin-top:16px"><h3>Issue book using student's existing QR card</h3>
+<p class="small-muted">Choose an approved reservation. Scan the student's MFESQR card or paste the QR text. A card cannot issue a different student's reservation.</p>
+<div class="field"><label>Approved reservation</label><select id="mfLibIssueReservation"></select></div>
+<div class="field"><label>Scanned QR text (MFESQR:...)</label><input id="mfLibQrText" placeholder="MFESQR:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></div>
+<div class="action-row"><button class="action-btn" id="mfLibIssueBtn" type="button">Verify QR & Issue (14 days)</button><button class="action-btn secondary" id="mfLibCameraStart" type="button">📷 Start camera</button><button class="action-btn secondary" id="mfLibCameraStop" type="button">Stop camera</button></div>
+<div id="mfLibCameraReader" style="max-width:350px;margin-top:12px"></div><p id="mfLibIssueStatus" class="small-muted" aria-live="polite"></p></div>
+<div class="panel" style="margin-top:16px"><h3>Issued books & returns</h3><div id="mfLibAdminLoans"></div></div></section>
+<section class="page" id="page-my-id-card">
+ <div class="page-header"><div><h1>🪪 My Digital Student ID</h1><p>Residential students can use this card after pre-ordering lunch.</p></div></div>
+ <div class="panel"><div id="mfQrStudentStatus" class="small-muted" role="status">Loading ID card...</div>
+ <div id="mfQrStudentCard" style="display:none;max-width:340px;margin:16px auto;border:1px solid #dfe6f1;border-radius:14px;overflow:hidden;background:white;text-align:center">
+ <div style="background:#172b4d;color:white;padding:16px 12px"><strong style="font-size:14px">MOUNT FLOWER ENGLISH SCHOOL</strong><div style="font-size:10px">ULIYIL · STUDENT ID CARD</div></div>
+ <div style="padding:18px"><strong id="mfQrStudentName"></strong><p class="small-muted" id="mfQrStudentDetails"></p><div id="mfQrCode" style="display:flex;justify-content:center;margin:18px 0"></div><p class="small-muted">Show this card to authorized library staff. Residential students may also use it for pre-ordered lunch.</p></div></div>
+ <div class="action-row"><button class="action-btn" type="button" id="mfQrPrintCard" style="display:none">🖨 Print ID Card</button></div>
+ <p class="small-muted" style="margin-top:12px">If your card is lost, ask Administration to revoke and replace it. Never share a photo of your QR code publicly.</p></div>
+</section>
+<section class="page" id="page-admin-canteen-qr">
+ <div class="page-header"><div><h1>📷 Residential Lunch QR Scanner</h1><p>Check a pre-order and record one collection per student per lunch date.</p></div></div>
+ <div class="panel"><h3>Student classification</h3><p class="small-muted">Enter a student's admission number and choose their lunch category. Existing students default to day scholar until assigned.</p>
+ <div class="form-grid" style="margin-top:14px"><div class="field"><label>Admission number</label><input id="mfQrAdmission" placeholder="e.g. 1762"></div><div class="field"><label>Category</label><select id="mfQrCategory"><option value="residential">Residential (QR card)</option><option value="day">Day scholar (paper token)</option></select></div></div>
+ <button type="button" class="action-btn" id="mfQrSetCategory">Save student category</button><p id="mfQrCategoryStatus" class="small-muted" role="status"></p></div>
+ <div class="panel" style="margin-top:16px"><h3>Scan lunch ID</h3><p class="small-muted">Use a camera on an HTTPS website (such as Vercel). Only scan cards with the student's permission.</p>
+ <div id="mfQrReader" style="max-width:360px;margin:14px auto"></div><div class="action-row"><button type="button" class="action-btn" id="mfQrStart">Start camera scanner</button><button type="button" class="action-btn secondary" id="mfQrStop">Stop scanner</button></div>
+ <div class="field" style="margin-top:14px"><label>Or paste a QR value (for testing)</label><input id="mfQrManual" placeholder="MFESQR:..." autocomplete="off"></div><button type="button" class="action-btn secondary" id="mfQrManualCheck">Verify and collect lunch</button>
+ <p id="mfQrScanResult" style="font-size:13px;margin-top:14px" role="status" aria-live="polite"></p></div>
+ <div class="panel" style="margin-top:16px"><h3>Replace a lost card</h3><p class="small-muted">Enter an admission number to revoke its existing QR and issue a replacement.</p><div class="field" style="margin-top:12px"><label>Admission number</label><input id="mfQrReplaceAdmission" placeholder="e.g. 1762"></div><button class="action-btn danger" type="button" id="mfQrReplace">Revoke and replace QR card</button><p id="mfQrReplaceStatus" class="small-muted" role="status"></p></div>
+</section>
+
+<!-- STUDENT DASHBOARD -->
       <section class="page active" id="page-dashboard">
         <div class="welcome">
           <div>
@@ -2459,18 +2578,19 @@ const MFES_SUPABASE_KEY = "sb_publishable_VcDHhXB3WVwW05aXAFIwtw_d9z_cZMn";
     return db ||= window.supabase.createClient(MFES_SUPABASE_URL,MFES_SUPABASE_KEY);
   }
   window.chooseRole=function(role){
-    selectedRole=role==='Administration'?'Administration':role==='Teacher'?'Teacher':'Student';
+    selectedRole=['Administration','Teacher','Student','Parent'].includes(role)?role:'Student';
     $('detailsLabel').textContent=selectedRole.toUpperCase()+' SIGN IN';
     $('studentLoginStep').querySelector('.step-label').textContent=selectedRole.toUpperCase()+' ACCOUNT';
-    const student=selectedRole==='Student';
-    $('studentLoginStep').querySelector('.login-sub').textContent=student
-      ? 'Enter your admission number and school account password.'
-      : 'Enter your staff account email and password.';
-    $('studentLoginStep').querySelector('label').textContent=student?'Admission number':'Staff account email';
-    $('usernameInput').type=student?'text':'email';
-    $('usernameInput').inputMode=student?'numeric':'email';
-    $('usernameInput').placeholder=student?'e.g. 1762':selectedRole==='Administration'?'adminoffice@gmail.com':'Enter your teacher account email';
-    $('usernameInput').autocomplete=student?'off':'username';
+    const student=selectedRole==='Student',parent=selectedRole==='Parent';
+    $('studentLoginStep').querySelector('.login-sub').textContent=parent
+      ? 'Enter your child’s admission number, guardian type and your private parent password.'
+      :student?'Enter your admission number and school account password.':'Enter your school account email and password.';
+    $('studentLoginStep').querySelector('label').textContent=(student||parent)?'Student admission number':'School account email';
+    $('usernameInput').type=(student||parent)?'text':'email';
+    $('usernameInput').inputMode=(student||parent)?'numeric':'email';
+    $('usernameInput').placeholder=(student||parent)?'e.g. 1762':selectedRole==='Administration'?'adminoffice@gmail.com':'Enter your teacher account email';
+    $('usernameInput').autocomplete=(student||parent)?'off':'username';
+    $('mfGuardianChoice').style.display=parent?'block':'none';
     $('usernameInput').value='';
     $('passwordInput').value='';
     $('detailsTitle').textContent='School account sign in';
@@ -2491,11 +2611,12 @@ const MFES_SUPABASE_KEY = "sb_publishable_VcDHhXB3WVwW05aXAFIwtw_d9z_cZMn";
   async function loadProfile(user){
     const {data:p,error}=await db.from('profiles').select('id,role,student_id,teacher_id').eq('id',user.id).single();
     if(error||!p)throw Error('No linked school profile was found for this account.');
-    const role=p.role==='teacher'?'Teacher':p.role==='student'?'Student':p.role==='admin'?'Administration':null;
+    const role=p.role==='teacher'?'Teacher':p.role==='student'?'Student':p.role==='admin'?'Administration':p.role==='parent'?'Parent':null;
     if(!role)throw Error('Unknown account role.');
     if(role!==selectedRole)throw Error('This is a '+role+' account. Choose '+role+' on the login screen.');
     let person,classes=[];
-    if(role==='Administration'){person={full_name:'School Administration',subject:'School Office',teacher_code:'ADMIN'};}
+    if(role==='Parent'){person={full_name:user.email?.split('@')[0]||'Parent',subject:'Parent',teacher_code:'PARENT'};}
+    else if(role==='Administration'){person={full_name:'School Administration',subject:'School Office',teacher_code:'ADMIN'};}
     else if(role==='Student'){
       const {data,error}=await db.from('students').select('id,full_name,admission_no,class_id').eq('id',p.student_id).single();
       if(error||!data)throw Error('Your student record is not linked correctly.');
@@ -2510,7 +2631,7 @@ const MFES_SUPABASE_KEY = "sb_publishable_VcDHhXB3WVwW05aXAFIwtw_d9z_cZMn";
   }
   async function loadRecords(){
     const role=activeProfile.role,person=activeProfile.person;
-    if(role==='Administration'){records={classes:[],subjects:[],teachers:[],assignments:[],timetable:[],announcements:[],marks:[],attendance:[],students:[]};return;}
+    if(role==='Parent'||role==='Administration'){records={classes:[],subjects:[],teachers:[],assignments:[],timetable:[],announcements:[],marks:[],attendance:[],students:[]};return;}
     const [allClasses,subjects,teachers,allAssignments,allTimetable,allAnnouncements,allMarks,allAttendance,allStudents]=await Promise.all([
       query('classes','id,class_name'),query('subjects','id,subject_name,teacher_id'),query('teachers','id,full_name,subject'),
       query('assignments','id,title,description,subject_id,class_id,due_date,teacher_id'),
@@ -2536,6 +2657,15 @@ const MFES_SUPABASE_KEY = "sb_publishable_VcDHhXB3WVwW05aXAFIwtw_d9z_cZMn";
     window.mfesLeaveStudentId=u.role==='Student'?person.id:null;
     window.mfSetCurrentUser({role:u.role,id:u.profile.id,name:person.full_name,username:person.admission_no||person.teacher_code,
       school:'MOUNT FLOWER ENGLISH SCHOOL, ULIYIL',subject:person.subject||'',classId:person.class_id||null});
+    if(u.role==='Parent'){
+      document.getElementById('loginScreen').classList.add('hidden');document.getElementById('app').classList.remove('hidden');
+      document.getElementById('sideName').textContent=person.full_name;document.getElementById('sideRole').textContent='Parent account';
+      document.getElementById('sideAvatar').textContent='P';document.getElementById('topAvatar').textContent='P';document.getElementById('rolePill').textContent='PARENT';
+      document.getElementById('topSchoolName').textContent='MOUNT FLOWER ENGLISH SCHOOL, ULIYIL';
+      for(const id of ['studentNavigation','teacherNavigation','adminNavigation'])document.getElementById(id).style.display='none';
+      document.getElementById('parentNavigation').style.display='block';window.navigate('parent-dashboard');return;
+    }
+    document.getElementById('parentNavigation').style.display='none';
     window.enterApp();
     if(u.role==='Administration'){document.getElementById('studentNavigation').style.display='none';document.getElementById('teacherNavigation').style.display='none';document.getElementById('adminNavigation').style.display='block';window.navigate('admin-dashboard');return;}
     document.getElementById('adminNavigation').style.display='none';
@@ -2598,12 +2728,27 @@ const MFES_SUPABASE_KEY = "sb_publishable_VcDHhXB3WVwW05aXAFIwtw_d9z_cZMn";
         err('This demo currently supports admission numbers 1762–1765.');return;
       }
       email='student'+loginId+'@gmail.com';
+    }else if(selectedRole==='Parent'){
+      if(!/^[A-Za-z0-9-]{1,30}$/.test(loginId)){err('Enter a valid student admission number.');return;}
     }else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginId)){
       err('Enter a valid staff email address.');return;
     }
     const btn=$('studentLoginStep').querySelector('.primary-btn');btn.disabled=true;btn.textContent='Signing in...';
     try{
-      client();const {data,error}=await db.auth.signInWithPassword({email,password});if(error)throw error;
+      client();
+      let data,error;
+      if(selectedRole==='Parent'){
+        // Only the Edge Function resolves admission + guardian type to a verified Auth user.
+        // The browser never receives the guardian's email address or a service-role key.
+        const response=await fetch(MFES_SUPABASE_URL+'/functions/v1/mfes-parent-login',{
+          method:'POST',headers:{'Content-Type':'application/json','apikey':MFES_SUPABASE_KEY},
+          body:JSON.stringify({admission:loginId,guardian_type:$('mfGuardianType').value,password})
+        });
+        const result=await response.json().catch(()=>({}));
+        if(!response.ok||!result.access_token||!result.refresh_token)throw Error(result.error||'Parent sign-in failed.');
+        ({data,error}=await db.auth.setSession({access_token:result.access_token,refresh_token:result.refresh_token}));
+      }else{({data,error}=await db.auth.signInWithPassword({email,password}));}
+      if(error)throw error;
       if(!data.user)throw Error('Authentication failed.');
       activeProfile=await loadProfile(data.user);
       if(selectedRole==='Student' && String(activeProfile.person.admission_no)!==loginId)
@@ -3072,6 +3217,27 @@ function lunchLabel(date){const day=lunchDay(date);return day?new Date(date+'T12
 function lunchNextSchoolDate(date){let d=new Date(date+'T12:00:00Z');while([0,6].includes(d.getUTCDay()))d.setUTCDate(d.getUTCDate()+1);return d.toISOString().slice(0,10);}
 function renderWeeklyLunch(){const box=$('mfWeeklyMenu');if(!box)return;box.innerHTML=WEEKLY_LUNCH.slice(1).map((m,i)=>row(['Monday','Tuesday','Wednesday','Thursday','Friday'][i],`${m.meal} · ${money(m.price)}`)).join('')+'<p class="small-muted" style="margin-top:10px">No lunch orders on Saturday or Sunday. The menu and price are fixed by the school for each weekday.</p>';}
 function updateLunchSelection(){const date=$('mfLunchDate')?.value||'';const m=WEEKLY_LUNCH[lunchDay(date)];const valid=date>=lunchToday()&&!!m;$('mfLunchSelection').textContent=!date?'Choose a date.':date<lunchToday()?'Past dates are unavailable.':!m?'No lunch on Saturday or Sunday.':`${lunchLabel(date)} · ${m.meal} · ${money(m.price)}`;$('mfLunchBook').disabled=!valid;}
+// Small paper canteen tokens: one token per active lunch order.
+let mfLunchTokenOrders=[];
+let mfQrResidentialIds=new Set();
+let mfQrClassificationLoaded=false;
+function mfPrintLunchTokens(orders){
+ const active=orders.filter(o=>o&&o.order_status!=='cancelled'&&!mfQrResidentialIds.has(o.student_user_id));
+ if(!active.length){message('mfTokenPrintStatus','No active lunch orders to print for this date.');return;}
+ const printedOn=lunchToday();
+ const cards=active.map(o=>{
+  const amount=(o.canteen_order_items||[]).reduce((sum,item)=>sum+Number(item.quantity||0)*Number(item.unit_price_paise||0),0);
+  const reference=String(o.id||'').slice(0,8).toUpperCase();
+  return `<article class="token"><div class="school">MOUNT FLOWER ENGLISH SCHOOL, ULIYIL</div><div class="lunch">LUNCH</div><div class="price">${esc(money(amount))}</div><div class="date">Lunch date: ${esc(lunchLabel(o.pickup_date))}</div><div class="meta">Printed: ${esc(printedOn)} &nbsp; | &nbsp; Token: ${esc(reference)}</div></article>`;
+ }).join('');
+ const html=`<!doctype html><html><head><meta charset="utf-8"><title>MFESCAMPUS Lunch Tokens</title><style>
+ @page{size:A4;margin:6mm}*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;color:#111}.sheet{display:grid;grid-template-columns:repeat(3,60mm);grid-auto-rows:30mm;gap:3mm;justify-content:center;align-content:start}.token{width:60mm;height:30mm;border:1px dashed #333;padding:1.5mm 2mm;text-align:center;break-inside:avoid;display:flex;flex-direction:column;align-items:center;justify-content:center}.school{font-size:7px;font-weight:700;letter-spacing:0}.lunch{font-size:20px;font-weight:900;margin:1mm 0 0}.price{font-size:15px;font-weight:800}.date{font-size:8px;margin-top:.5mm}.meta{font-size:7px;margin-top:.5mm}@media print{.token{border:1px dashed #555}}
+ </style></head><body><main class="sheet">${cards}</main></body></html>`;
+ const win=window.open('','_blank');
+ if(!win){message('mfTokenPrintStatus','Allow pop-ups for this site to print tokens.');return;}
+ win.document.open();win.document.write(html);win.document.close();win.focus();win.print();
+}
+$('mfPrintAllLunchTokens')?.addEventListener('click',()=>mfPrintLunchTokens(mfLunchTokenOrders));
 async function canteen(){
  try{
   const d=requireDb();renderWeeklyLunch();
@@ -3089,15 +3255,20 @@ async function canteen(){
   const orders=await run(query);
   if(admin()){
    const active=orders.filter(o=>o.order_status!=='cancelled');
+   const {data:types,error:typeError}=await d.from('canteen_student_types').select('student_user_id,student_type');
+   mfQrClassificationLoaded=!typeError;
+   mfQrResidentialIds=new Set((types||[]).filter(t=>t.student_type==='residential').map(t=>t.student_user_id));
+   mfLunchTokenOrders=mfQrClassificationLoaded?active.filter(o=>!mfQrResidentialIds.has(o.student_user_id)):[];
    const total=active.reduce((sum,o)=>sum+(o.canteen_order_items||[]).reduce((n,i)=>n+i.quantity*i.unit_price_paise,0),0);
-   $('mfLunchSummary').innerHTML=`<div class="stats" style="margin-top:12px"><div class="stat-card"><small>Lunch date</small><h3 style="font-size:16px">${esc(lunchLabel(selectedDate))}</h3></div><div class="stat-card"><small>Active meals</small><h3>${active.length}</h3></div><div class="stat-card"><small>Expected amount</small><h3>${money(total)}</h3></div><div class="stat-card"><small>Cancelled</small><h3>${orders.length-active.length}</h3></div></div><p class="small-muted" style="margin-top:12px">Expected amount is a demo total, not a payment receipt.</p>`;
+   $('mfPrintAllLunchTokens').disabled=!mfQrClassificationLoaded;
+   $('mfLunchSummary').innerHTML=`<div class="stats" style="margin-top:12px"><div class="stat-card"><small>Lunch date</small><h3 style="font-size:16px">${esc(lunchLabel(selectedDate))}</h3></div><div class="stat-card"><small>Students ordered</small><h3>${new Set(active.map(o=>o.student_user_id)).size}</h3></div><div class="stat-card"><small>Expected amount</small><h3>${money(total)}</h3></div><div class="stat-card"><small>Cancelled</small><h3>${orders.length-active.length}</h3></div></div><p class="small-muted" style="margin-top:12px">Residential QR orders: ${active.filter(o=>mfQrResidentialIds.has(o.student_user_id)).length} · Paper tokens: ${mfLunchTokenOrders.length}. ${mfQrClassificationLoaded?'':'Could not load classifications: token printing disabled.'} Expected amount is a demo total, not a payment receipt.</p>`;
   }
   $('mfOrdersList').innerHTML=orders.length?orders.map(o=>{
    const total=(o.canteen_order_items||[]).reduce((n,i)=>n+i.quantity*i.unit_price_paise,0);
-   const actions=admin()&&!['collected','cancelled'].includes(o.order_status)?btn('Next status','next',o.id):student()&&o.order_status==='pending'&&o.pickup_date>=today?btn('Cancel order','cancel',o.id,'danger'):'';
+   const actions=(admin()&&o.order_status!=='cancelled'?(!mfQrClassificationLoaded?'':mfQrResidentialIds.has(o.student_user_id)?'<span class="status blue">QR ID</span>':btn('Print token','print',o.id)):'')+(admin()&&!['collected','cancelled'].includes(o.order_status)?btn('Next status','next',o.id):student()&&o.order_status==='pending'&&o.pickup_date>=today?btn('Cancel order','cancel',o.id,'danger'):'');
    return row(`${lunchLabel(o.pickup_date)} · ${money(total)}`,`${o.order_status} · ${WEEKLY_LUNCH[lunchDay(o.pickup_date)]?.meal||'Lunch'}${admin()?' · Student account: '+o.student_user_id:''}${o.note?' · Note: '+o.note:''}`,actions);
   }).join(''):'<p class="empty">No lunch orders for this selection.</p>';
-  bind('mfOrdersList',async(a,id)=>{try{const o=orders.find(x=>x.id===id);if(!o)return;const next={pending:'preparing',preparing:'ready',ready:'collected'}[o.order_status];const status=a==='cancel'?'cancelled':next;if(!status)return;await run(d.from('canteen_orders').update({order_status:status}).eq('id',id).select('id'));await canteen();}catch(e){alert(e.message);}});
+  bind('mfOrdersList',async(a,id)=>{try{const o=orders.find(x=>x.id===id);if(!o)return;if(a==='print'){if(!mfQrClassificationLoaded||mfQrResidentialIds.has(o.student_user_id))throw Error('Residential QR orders do not need paper tokens.');mfPrintLunchTokens([o]);return;}const next={pending:'preparing',preparing:'ready',ready:'collected'}[o.order_status];const status=a==='cancel'?'cancelled':next;if(!status)return;await run(d.from('canteen_orders').update({order_status:status}).eq('id',id).select('id'));await canteen();}catch(e){alert(e.message);}});
  }catch(e){message('mfOrdersList','Could not load canteen orders: '+e.message);}
 }
 $('mfLunchDate')?.addEventListener('change',updateLunchSelection);
@@ -3119,5 +3290,170 @@ window.navigate=function(page){previous(page);if(page==='lost-found')lost();if(p
 })();
 </script>
 
+
+<script>
+/* Residential student QR ID and canteen scanner. Supabase RPC validates scans server-side. */
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const user=()=>window.mfGetCurrentUser?.();
+const db=()=>window.mfesLeaveDb;
+const info=(id,msg)=>{if($(id))$(id).textContent=msg;};
+let scanner=null, busy=false, currentCard=null;
+function requireSession(role){if(!db()||!user()?.id||user().role!==role)throw Error('Please sign in as '+role+'.');return db();}
+async function rpc(name,args){const {data,error}=await db().rpc(name,args||{});if(error)throw Error(error.message);return data;}
+async function studentCard(){
+ if(user()?.role!=='Student')return;
+ $('mfQrStudentCard').style.display='none';$('mfQrPrintCard').style.display='none';
+ info('mfQrStudentStatus','Loading your school ID card...');
+ try{
+  requireSession('Student');
+  const data=await rpc('mfes_get_my_lunch_card');
+  if(!data?.eligible){info('mfQrStudentStatus','No student QR card is available. Please contact Administration.');return;}
+  currentCard={qr:'MFESQR:'+data.card_id,name:user().name,admission:user().username,residential:!!data.residential};
+  $('mfQrStudentName').textContent=currentCard.name;
+  $('mfQrStudentDetails').textContent='Admission No: '+currentCard.admission+' · '+(currentCard.residential?'Residential':'Day scholar');
+  $('mfQrCode').replaceChildren();
+  if(typeof QRCode==='undefined')throw Error('QR library could not load. Check internet access.');
+  new QRCode($('mfQrCode'),{text:currentCard.qr,width:174,height:174,correctLevel:QRCode.CorrectLevel.M});
+  $('mfQrStudentCard').style.display='block';$('mfQrPrintCard').style.display='inline-block';
+  info('mfQrStudentStatus','Your permanent QR card is ready for library borrowing.'+(currentCard.residential?' Pre-order lunch before canteen collection.':' Day scholars still use paper lunch tokens.'));
+ }catch(e){info('mfQrStudentStatus','Could not load ID card: '+e.message);}
+}
+$('mfQrPrintCard')?.addEventListener('click',()=>{
+ if(!currentCard)return;
+ const img=$('mfQrCode').querySelector('img');const canvas=$('mfQrCode').querySelector('canvas');
+ const url=img?.src||canvas?.toDataURL('image/png');if(!url)return;
+ const win=window.open('','_blank');if(!win){info('mfQrStudentStatus','Allow pop-ups to print the ID card.');return;}
+ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ win.document.write('<!doctype html><html><head><title>Student QR ID</title><style>@page{size:A4;margin:12mm}body{font-family:Arial}.card{width:86mm;height:54mm;border:1px solid #333;border-radius:3mm;text-align:center;overflow:hidden}.school{background:#172b4d;color:white;padding:2mm;font-size:10px;font-weight:bold}.details{display:flex;align-items:center;justify-content:space-around;padding:2mm;font-size:10px}.details img{width:30mm;height:30mm}.details div{text-align:left}</style></head><body><div class="card"><div class="school">MOUNT FLOWER ENGLISH SCHOOL, ULIYIL</div><div class="details"><div><b>'+esc(currentCard.name)+'</b><p>Admission: '+esc(currentCard.admission)+'</p><p>'+esc(currentCard.residential?'Residential Student':'Day Scholar')+'</p><small>Library ID · '+(currentCard.residential?'Canteen QR':'School ID')+'</small></div><img src="'+url+'"></div></div></body></html>');win.document.close();win.focus();setTimeout(()=>win.print(),450);
+});
+$('mfQrSetCategory')?.addEventListener('click',async()=>{
+ try{requireSession('Administration');const admission=$('mfQrAdmission').value.trim();if(!admission)throw Error('Enter an admission number.');
+  const result=await rpc('mfes_set_student_lunch_type',{p_admission:admission,p_type:$('mfQrCategory').value});
+  info('mfQrCategoryStatus',result?.message||'Student category saved.');
+ }catch(e){info('mfQrCategoryStatus','Could not update: '+e.message);}
+});
+async function collect(value){
+ if(busy)return;busy=true;
+ try{requireSession('Administration');const qr=String(value||'').trim();if(!/^MFESQR:[0-9a-f-]{36}$/i.test(qr))throw Error('This is not a valid MFESCAMPUS QR code.');
+  const result=await rpc('mfes_collect_lunch_by_qr',{p_card_id:qr.slice(7)});
+  info('mfQrScanResult',result?.ok?'✓ LUNCH APPROVED — '+result.student_name+' · '+result.admission_no+' · '+result.lunch_date+' · '+result.amount:'Lunch not approved: '+(result?.message||'No valid order.'));
+ }catch(e){info('mfQrScanResult','Lunch not approved: '+e.message);}finally{busy=false;}
+}
+$('mfQrManualCheck')?.addEventListener('click',()=>collect($('mfQrManual').value));
+$('mfQrStart')?.addEventListener('click',async()=>{
+ try{requireSession('Administration');if(scanner)return;
+  if(typeof Html5Qrcode==='undefined')throw Error('Camera scanner library could not load.');
+  scanner=new Html5Qrcode('mfQrReader');
+  await scanner.start({facingMode:'environment'},{fps:5,qrbox:{width:220,height:220}},value=>{
+   scanner?.pause(true);collect(value).finally(()=>{try{scanner?.resume();}catch(_){}});
+  },()=>{});
+  info('mfQrScanResult','Scanner active. Point the camera at a residential student ID card.');
+ }catch(e){scanner=null;info('mfQrScanResult','Could not start camera: '+e.message);}
+});
+$('mfQrStop')?.addEventListener('click',async()=>{
+ try{if(scanner){await scanner.stop();scanner.clear();scanner=null;}info('mfQrScanResult','Scanner stopped.');}
+ catch(e){info('mfQrScanResult',e.message);}
+});
+$('mfQrReplace')?.addEventListener('click',async()=>{
+ try{requireSession('Administration');const admission=$('mfQrReplaceAdmission').value.trim();if(!admission)throw Error('Enter admission number.');
+  if(!confirm('Revoke the old QR ID for admission '+admission+' and issue a replacement?'))return;
+  const result=await rpc('mfes_replace_lunch_card',{p_admission:admission});
+  info('mfQrReplaceStatus',result?.message||'Old card revoked and replacement issued.');
+ }catch(e){info('mfQrReplaceStatus','Could not replace card: '+e.message);}
+});
+const oldNavigate=window.navigate;
+window.navigate=function(page){oldNavigate(page);if(page==='my-id-card')studentCard();if(page!=='admin-canteen-qr'&&scanner){scanner.stop().then(()=>scanner.clear()).catch(()=>{});scanner=null;}};
+})();
+</script>
+
+<script>
+/* Smart Library: reuses MFESQR credentials; all writes validated by Supabase RPC. */
+(function(){
+'use strict';
+const $=id=>document.getElementById(id), db=()=>window.mfesLeaveDb, user=()=>window.mfGetCurrentUser?.();
+const admin=()=>user()?.role==='Administration',student=()=>user()?.role==='Student';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const msg=(id,s)=>{if($(id))$(id).textContent=s;};
+const date=s=>s?new Date(s).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}):'—';
+const requireDb=()=>{if(!db()||!user()?.id)throw Error('Sign in first.');return db();};
+async function query(q){const {data,error}=await q;if(error)throw Error(error.message);return data||[];}
+async function rpc(name,args){const {data,error}=await requireDb().rpc(name,args||{});if(error)throw Error(error.message);return data;}
+let books=[],copies=[],reservations=[],loans=[],camera=null,issuing=false;
+function line(title,details,buttons=''){return `<div class="student-row"><div style="flex:1"><strong>${esc(title)}</strong><div class="small-muted">${esc(details)}</div></div><div class="action-row">${buttons}</div></div>`;}
+function action(text,type,id){return `<button type="button" class="action-btn secondary" data-lib-action="${esc(type)}" data-lib-id="${esc(id)}">${esc(text)}</button>`;}
+function bind(id,handler){$(id)?.querySelectorAll('[data-lib-action]').forEach(b=>b.addEventListener('click',()=>handler(b.dataset.libAction,b.dataset.libId)));}
+function available(id){return copies.filter(c=>c.book_id===id&&c.active&&!loans.some(l=>l.copy_id===c.id&&!l.returned_at)).length;}
+async function load(){
+ const d=requireDb();[books,copies,reservations,loans]=await Promise.all([
+ query(d.from('library_books').select('*').order('title').limit(500)),
+ query(d.from('library_copies').select('*').limit(1500)),
+ query(d.from('library_reservations').select('*').order('created_at',{ascending:false}).limit(500)),
+ query(d.from('library_loans').select('*').order('issued_at',{ascending:false}).limit(500))]);
+}
+function bookName(id){return books.find(b=>b.id===id)?.title||'Unknown book';}
+function catalogue(){const q=($('mfLibSearch')?.value||'').toLowerCase();
+ $('mfLibCatalogue').innerHTML=books.filter(b=>(b.title+' '+b.author).toLowerCase().includes(q)).map(b=>line(b.title,`${b.author} · ${b.category} · ${available(b.id)} available`,available(b.id)&&!reservations.some(r=>r.book_id===b.id&&r.student_user_id===user()?.id&&['pending','approved'].includes(r.status))?action('Reserve','reserve',b.id):'')).join('')||'<p class="empty">No matching books found.</p>';
+ bind('mfLibCatalogue',async(a,id)=>{try{if(a==='reserve'){await rpc('mfes_library_reserve',{p_book_id:id});await openStudent();}}catch(e){msg('mfLibCatalogueError',e.message);alert('Reservation: '+e.message);}});
+}
+async function openStudent(){if(!student())return;try{await load();catalogue();
+ $('mfLibMyReservations').innerHTML=reservations.filter(r=>r.student_user_id===user().id).map(r=>line(bookName(r.book_id),`${r.status} · Requested ${date(r.created_at)}`,['pending','approved'].includes(r.status)?action('Cancel','cancel',r.id):'')).join('')||'<p class="empty">No reservations.</p>';
+ bind('mfLibMyReservations',async(a,id)=>{try{if(a==='cancel'){await rpc('mfes_library_cancel',{p_reservation_id:id});await openStudent();}}catch(e){alert(e.message);}});
+ $('mfLibMyLoans').innerHTML=loans.filter(l=>l.student_user_id===user().id).map(l=>{const c=copies.find(x=>x.id===l.copy_id);return line(bookName(c?.book_id),`Copy: ${c?.barcode||'—'} · Due: ${date(l.due_at)} · ${l.returned_at?'Returned '+date(l.returned_at):new Date(l.due_at)<new Date()?'OVERDUE':'Borrowed'}`);}).join('')||'<p class="empty">No borrowed books.</p>';
+ }catch(e){msg('mfLibCatalogue','Could not load library: '+e.message);}}
+async function openAdmin(){if(!admin())return;try{await load();
+ $('mfLibAdminCatalogue').innerHTML=books.map(b=>line(b.title,`${b.author} · ${available(b.id)} available / ${copies.filter(c=>c.book_id===b.id).length} total`,action('Add copy','addcopy',b.id))).join('')||'<p class="empty">No books yet.</p>';
+ bind('mfLibAdminCatalogue',async(a,id)=>{if(a!=='addcopy')return;const barcode=prompt('Unique barcode for new physical copy:');if(!barcode)return;const shelf=prompt('Shelf location (optional):')||'';try{await rpc('mfes_library_add_copy',{p_book_id:id,p_barcode:barcode,p_shelf:shelf});await openAdmin();}catch(e){msg('mfLibAdminStatus',e.message);}});
+ $('mfLibAdminReservations').innerHTML=reservations.map(r=>line(`${bookName(r.book_id)} · ${r.status}`,`Student account: ${r.student_user_id} · ${date(r.created_at)}`,r.status==='pending'?action('Approve','approve',r.id)+action('Reject','reject',r.id):'')).join('')||'<p class="empty">No reservations.</p>';
+ bind('mfLibAdminReservations',async(a,id)=>{try{await rpc('mfes_library_decide',{p_reservation_id:id,p_approve:a==='approve'});await openAdmin();}catch(e){msg('mfLibAdminStatus',e.message);}});
+ $('mfLibIssueReservation').innerHTML='<option value="">Select an approved reservation</option>'+reservations.filter(r=>r.status==='approved').map(r=>`<option value="${esc(r.id)}">${esc(bookName(r.book_id))} — ${esc(r.student_user_id.slice(0,8))}</option>`).join('');
+ $('mfLibAdminLoans').innerHTML=loans.map(l=>{const c=copies.find(x=>x.id===l.copy_id);return line(bookName(c?.book_id),`Copy ${c?.barcode||'—'} · Student ${l.student_user_id} · Due ${date(l.due_at)} · ${l.returned_at?'Returned':'On loan'}`,l.returned_at?'':action('Mark returned','return',l.id));}).join('')||'<p class="empty">No loans.</p>';
+ bind('mfLibAdminLoans',async(a,id)=>{try{if(a==='return'){await rpc('mfes_library_return',{p_loan_id:id});await openAdmin();}}catch(e){msg('mfLibAdminStatus',e.message);}});
+ }catch(e){msg('mfLibAdminStatus','Could not load library: '+e.message);}}
+$('mfLibSearch')?.addEventListener('input',catalogue);
+$('mfLibAddForm')?.addEventListener('submit',async e=>{e.preventDefault();try{await rpc('mfes_library_add_book',{p_title:$('mfLibTitle').value,p_author:$('mfLibAuthor').value,p_category:$('mfLibCategory').value,p_isbn:$('mfLibIsbn').value,p_barcode:$('mfLibBarcode').value,p_shelf:$('mfLibShelf').value});$('mfLibAddForm').reset();msg('mfLibAdminStatus','Book and copy added.');await openAdmin();}catch(e){msg('mfLibAdminStatus',e.message);}});
+async function issue(){if(issuing)return;issuing=true;try{const value=$('mfLibQrText').value.trim(),reservation=$('mfLibIssueReservation').value;if(!/^MFESQR:[0-9a-f-]{36}$/i.test(value))throw Error('Scan a valid MFESCAMPUS student QR card.');if(!reservation)throw Error('Select an approved reservation first.');const r=await rpc('mfes_library_issue_by_qr',{p_card_id:value.slice(7),p_reservation_id:reservation});msg('mfLibIssueStatus','✓ Book issued successfully. Due '+date(r.due_at));await openAdmin();}catch(e){msg('mfLibIssueStatus','Could not issue book: '+e.message);}finally{issuing=false;}}
+$('mfLibIssueBtn')?.addEventListener('click',issue);
+$('mfLibCameraStart')?.addEventListener('click',async()=>{try{if(!admin())throw Error('Administration login required');if(camera)return;if(typeof Html5Qrcode==='undefined')throw Error('Camera library unavailable.');camera=new Html5Qrcode('mfLibCameraReader');await camera.start({facingMode:'environment'},{fps:5,qrbox:{width:220,height:220}},value=>{$('mfLibQrText').value=value;msg('mfLibIssueStatus','QR scanned. Confirm the selected reservation and click Verify QR & Issue.');camera?.pause(true);},()=>{});msg('mfLibIssueStatus','Scanner ready.');}catch(e){camera=null;msg('mfLibIssueStatus',e.message);}});
+async function stopCamera(){if(camera){try{await camera.stop();camera.clear();}catch(e){}camera=null;}}
+$('mfLibCameraStop')?.addEventListener('click',stopCamera);
+const previous=window.navigate;window.navigate=function(page){previous(page);if(page==='smart-library')openStudent();if(page==='admin-library')openAdmin();if(page!=='admin-library')stopCamera();};
+})();
+</script>
+<script>
+/* MFESCAMPUS Parent Portal. All sensitive parent queries use verified server RPCs. */
+(function(){
+ const $=id=>document.getElementById(id), safe=x=>window.mfEscape(String(x??''));
+ const db=()=>{if(!window.mfesLeaveDb)throw Error('Please sign in.');return window.mfesLeaveDb;};
+ async function rpc(name,args={}){const {data,error}=await db().rpc(name,args);if(error)throw Error(error.message);return data;}
+ let children=[], teachers=[], messages=[];
+ const chosen=()=>children.find(c=>String(c.student_id)===$('parentChild').value);
+ async function refresh(){
+  const data=await rpc('mfes_parent_dashboard');children=data.children||[];
+  $('parentChild').innerHTML=children.map(c=>`<option value="${safe(c.student_id)}">${safe(c.full_name)} — ${safe(c.admission_no)}</option>`).join('');
+  await window.mfParentRender();
+ }
+ window.mfParentRender=async function(){
+  const c=chosen();if(!c){$('parentSummary').textContent='No verified children linked yet. Ask Administration to verify your account.';return;}
+  const d=await rpc('mfes_parent_child_detail',{p_student_id:c.student_id});
+  $('parentSummary').innerHTML=`<h3>${safe(c.full_name)} · ${safe(c.class_name||'')}</h3><div class="stats" style="margin:12px 0"><div class="stat-card"><small>Attendance</small><h3>${safe(d.attendance_percentage??'—')}${d.attendance_percentage===null?'':'%'}</h3></div><div class="stat-card"><small>Assignments</small><h3>${safe(d.assignment_count)}</h3></div><div class="stat-card"><small>Marks records</small><h3>${safe((d.marks||[]).length)}</h3></div><div class="stat-card"><small>Leave requests</small><h3>${safe((d.leaves||[]).length)}</h3></div></div><h3>Recent marks</h3><div class="table-wrap"><table><thead><tr><th>Exam</th><th>Marks</th><th>Date</th></tr></thead><tbody>${(d.marks||[]).map(m=>`<tr><td>${safe(m.exam_name)}</td><td>${safe(m.marks_obtained)} / ${safe(m.max_marks)}</td><td>${safe(m.exam_date)}</td></tr>`).join('')||'<tr><td colspan="3">No marks available</td></tr>'}</tbody></table></div>`;
+  $('parentLeaveHistory').innerHTML='<h3>Leave history</h3>'+(d.leaves||[]).map(l=>`<p>${safe(l.from_date)} – ${safe(l.to_date)} · ${safe(l.status)} · ${safe(l.reason)}</p>`).join('')||'No requests';
+  teachers=d.teachers||[];
+  $('parentTeacher').innerHTML=teachers.map(t=>`<option value="${safe(t.profile_id)}">${safe(t.full_name)}</option>`).join('');
+  await loadMessages();
+ };
+ async function loadMessages(){const c=chosen();if(!c)return;messages=await rpc('mfes_parent_messages',{p_student_id:c.student_id});$('parentMessagesList').innerHTML=messages.map(m=>`<div class="notice-item"><div><strong>${safe(m.sender_role)} · ${safe(m.created_at).slice(0,16)}</strong><small>${safe(m.body)}</small></div></div>`).join('')||'<p>No messages yet.</p>';}
+ window.mfParentLeave=async function(){try{const c=chosen();if(!c)throw Error('Select a child.');await rpc('mfes_parent_request_leave',{p_student_id:c.student_id,p_from:$('parentLeaveFrom').value,p_to:$('parentLeaveTo').value,p_type:$('parentLeaveType').value,p_reason:$('parentLeaveReason').value.trim()});$('parentLeaveStatus').textContent='Leave request submitted.';await window.mfParentRender();}catch(e){$('parentLeaveStatus').textContent=e.message;}};
+ window.mfParentSend=async function(){try{const c=chosen();if(!c)throw Error('Select a child.');await rpc('mfes_parent_send_message',{p_student_id:c.student_id,p_teacher_profile_id:$('parentTeacher').value,p_body:$('parentMessageBody').value.trim()});$('parentMessageBody').value='';await loadMessages();}catch(e){alert(e.message);}};
+ window.mfAdminLinkParent=async function(){try{await rpc('mfes_admin_link_parent',{p_parent_user_id:$('parentLinkUser').value.trim(),p_admission:$('parentLinkAdmission').value.trim(),p_relationship:$('parentLinkRelationship').value});await rpc('mfes_admin_set_parent_login',{p_parent_user_id:$('parentLinkUser').value.trim(),p_admission:$('parentLinkAdmission').value.trim(),p_guardian_type:$('parentLoginGuardianType').value});$('parentAdminStatus').textContent='Verified guardian linked and admission-number login enabled. Refresh the parent account.';await loadLinks();}catch(e){$('parentAdminStatus').textContent=e.message;}};
+ async function loadLinks(){const rows=await rpc('mfes_admin_parent_links');$('parentLinksList').innerHTML='<h3>Verified links</h3>'+rows.map(r=>`<div class="notice-item"><div><strong>${safe(r.full_name)} (${safe(r.admission_no)})</strong><small>Parent: ${safe(r.parent_user_id)} · ${safe(r.relationship)}</small></div><button class="action-btn" onclick="mfAdminUnlink('${safe(r.parent_user_id)}','${safe(r.student_id)}')">Revoke</button></div>`).join('');}
+ window.mfAdminUnlink=async function(p,s){if(!confirm('Revoke this guardian link?'))return;try{await rpc('mfes_admin_unlink_parent',{p_parent_user_id:p,p_student_id:s});await loadLinks();}catch(e){alert(e.message);}};
+ async function teacherInbox(){const rows=await rpc('mfes_teacher_parent_inbox');$('teacherParentInbox').innerHTML=rows.map(m=>`<div class="notice-item"><div><strong>${safe(m.student_name)} · ${safe(m.sender_role)}</strong><small>${safe(m.body)}</small><textarea id="reply_${safe(m.id)}" maxlength="1000" rows="2" placeholder="Reply to this parent"></textarea><button class="action-btn" onclick="mfTeacherReply('${safe(m.id)}')">Reply</button></div></div>`).join('')||'No parent messages yet.';}
+ window.mfTeacherReply=async function(id){try{await rpc('mfes_teacher_reply_parent',{p_message_id:id,p_body:$('reply_'+id).value.trim()});await teacherInbox();}catch(e){alert(e.message);}};
+ const old=window.navigate;
+ window.navigate=function(page){old(page);if(page==='parent-dashboard')refresh().catch(e=>$('parentSummary').textContent=e.message);if(page==='admin-parents')loadLinks().catch(e=>$('parentAdminStatus').textContent=e.message);if(page==='teacher-parent-messages')teacherInbox().catch(e=>$('teacherParentInbox').textContent=e.message);};
+})();
+</script>
 </body>
 </html>
